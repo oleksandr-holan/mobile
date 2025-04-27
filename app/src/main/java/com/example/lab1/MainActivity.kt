@@ -23,10 +23,15 @@ import com.example.lab1.ui.theme.Lab1Theme
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.RestaurantMenu
 import androidx.compose.material3.Icon
+import androidx.core.view.WindowCompat
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        // *** Enable Edge-to-Edge ***
+        // This allows drawing behind the system bars.
+        WindowCompat.setDecorFitsSystemWindows(window, false)
         setContent {
             Lab1Theme { 
                 Surface(
@@ -44,7 +49,8 @@ class MainActivity : ComponentActivity() {
 fun OrderScreen() {
     Column(
         modifier = Modifier
-            .fillMaxSize() 
+            .fillMaxSize()
+            .safeDrawingPadding()
             .padding(16.dp) 
     ) {
         Text(
