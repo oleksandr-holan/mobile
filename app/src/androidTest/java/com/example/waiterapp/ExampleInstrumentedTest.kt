@@ -1,4 +1,4 @@
-package com.example.lab1
+package com.example.waiterapp
 
 import androidx.test.platform.app.InstrumentationRegistry
 import androidx.test.ext.junit.runners.AndroidJUnit4

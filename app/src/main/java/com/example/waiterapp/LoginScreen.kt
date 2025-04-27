@@ -1,4 +1,4 @@
-package com.example.lab1
+package com.example.waiterapp
 
 import android.util.Log
 import androidx.compose.foundation.layout.*
@@ -15,7 +15,7 @@ import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.example.lab1.ui.theme.Lab1Theme
+import com.example.waiterapp.ui.theme.Lab1Theme
 import androidx.compose.foundation.text.KeyboardOptions
 
 @Composable

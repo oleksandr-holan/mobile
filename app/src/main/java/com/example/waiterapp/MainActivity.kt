@@ -1,4 +1,4 @@
-package com.example.lab1 
+package com.example.waiterapp
 
 import android.os.Bundle
 import androidx.activity.ComponentActivity
@@ -18,7 +18,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.example.lab1.ui.theme.Lab1Theme
+import com.example.waiterapp.ui.theme.Lab1Theme
 
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.RestaurantMenu

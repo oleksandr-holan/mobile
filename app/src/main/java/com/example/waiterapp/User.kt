@@ -1,4 +1,4 @@
-package com.example.lab1
+package com.example.waiterapp
 
 // Simple data class to hold user information
 data class User(

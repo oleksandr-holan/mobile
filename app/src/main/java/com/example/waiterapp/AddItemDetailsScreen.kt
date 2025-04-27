@@ -1,4 +1,4 @@
-package com.example.lab1 // Ensure this matches your project's package
+package com.example.waiterapp // Ensure this matches your project's package
 
 import android.util.Log
 import androidx.compose.foundation.layout.*
@@ -10,7 +10,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.example.lab1.ui.theme.Lab1Theme // Replace with your theme package
+import com.example.waiterapp.ui.theme.Lab1Theme // Replace with your theme package
 import kotlin.math.roundToInt // For converting slider value
 
 // Removed the class wrapper. Composable functions should be top-level.
