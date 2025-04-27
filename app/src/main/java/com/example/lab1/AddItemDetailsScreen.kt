@@ -1,4 +1,3 @@
-// File: AddItemDetailsScreen.kt
 package com.example.lab1 // Ensure this matches your project's package
 
 import android.util.Log
@@ -30,6 +29,7 @@ fun AddItemDetailsScreen(itemName: String) { // This is now a top-level function
     Column(
         modifier = Modifier
             .fillMaxSize()
+            .safeDrawingPadding()
             .padding(16.dp),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
@@ -101,16 +101,10 @@ fun AddItemDetailsScreen(itemName: String) { // This is now a top-level function
     }
 }
 
-// This Preview function should also be top-level
 @Preview(showBackground = true)
 @Composable
 fun AddItemDetailsScreenPreview() {
     Lab1Theme {
-        // Call the top-level composable function directly
         AddItemDetailsScreen(itemName = "Cheeseburger")
     }
 }
-
-// No changes needed for MainActivity.kt based on the errors provided.
-// The code for MainActivity, OrderScreen, MenuItemCard, and DefaultPreview remains the same
-// as in the second block of your previous message.
