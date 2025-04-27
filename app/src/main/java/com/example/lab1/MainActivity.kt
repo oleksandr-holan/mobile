@@ -12,6 +12,7 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import com.example.lab1.ui.feature.home.MainAppScreen
 import com.example.lab1.ui.feature.item.AddItemDetailsScreen
 import com.example.lab1.ui.feature.login.LoginScreen
 import com.example.lab1.ui.feature.order.view.OrderScreen
@@ -45,66 +46,51 @@ class MainActivity : ComponentActivity() {
 fun AppNavigationHost(navController: NavHostController) {
     NavHost(
         navController = navController,
-        // Set the start destination (usually login)
         startDestination = AppDestinations.LOGIN_ROUTE
     ) {
-        // Define composable for the Login screen
         composable(route = AppDestinations.LOGIN_ROUTE) {
-            // Pass navController for navigation actions
             LoginScreen(
                 onLoginSuccess = {
-                    // Navigate to order list on success
-                    // Clear back stack up to login to prevent going back
-                    navController.navigate(AppDestinations.ORDER_LIST_ROUTE) {
-                        popUpTo(AppDestinations.LOGIN_ROUTE) { inclusive = true }
-                        launchSingleTop = true // Avoid multiple copies of order list
+                    // Navigate to the Main App Screen (with Scaffold/BottomNav)
+                    navController.navigate(AppDestinations.MAIN_APP_ROUTE) {
+                        // Clear the back stack up to the start destination (login)
+                        popUpTo(navController.graph.startDestinationRoute!!) {
+                            inclusive = true
+                        }
+                        launchSingleTop = true
                     }
                 },
                 onNavigateToRegister = {
-                    // Navigate to registration screen
                     navController.navigate(AppDestinations.REGISTRATION_ROUTE)
                 }
             )
         }
 
-        // Define composable for the Registration screen
         composable(route = AppDestinations.REGISTRATION_ROUTE) {
-            // Pass navController for navigation actions
             RegistrationScreen(
                 onRegistrationSuccess = {
-                    // Navigate to order list on success
-                    // Clear back stack up to login to prevent going back
-                    navController.navigate(AppDestinations.ORDER_LIST_ROUTE) {
-                        popUpTo(AppDestinations.LOGIN_ROUTE) { inclusive = true }
+                    // Navigate to the Main App Screen after registration too
+                    navController.navigate(AppDestinations.MAIN_APP_ROUTE) {
+                        popUpTo(navController.graph.startDestinationRoute!!) {
+                            inclusive = true
+                        }
                         launchSingleTop = true
                     }
                 },
                 onNavigateBackToLogin = {
-                    // Navigate back to login
-                    navController.popBackStack() // Simple back navigation
-                }
-            )
-        }
-
-        // Define composable for the Order List screen
-        composable(route = AppDestinations.ORDER_LIST_ROUTE) {
-            OrderScreen(
-                onNavigateToAddItem = { /* Define action later if needed */ }
-                // We might add navigation to AddItemDetails from here later
-            )
-        }
-
-        // Define composable for the Add Item Details screen (example)
-        // This might need arguments later, but keep it simple for now
-        composable(route = AppDestinations.ADD_ITEM_DETAILS_ROUTE) {
-            // Example: Get item name argument if passed (we'll add this later)
-            val itemName = "Placeholder Item" // Replace with argument retrieval later
-            AddItemDetailsScreen(
-                itemName = itemName,
-                onNavigateBack = {
                     navController.popBackStack()
                 }
             )
         }
+
+        // Define the composable for the Main App Screen itself
+        composable(route = AppDestinations.MAIN_APP_ROUTE) {
+            MainAppScreen() // This screen contains its own NavHost and BottomNav
+        }
+
+        // Note: OrderScreen, HistoryScreen, AddItemDetailsScreen are now
+        // handled by the *inner* NavHost within MainAppScreen.
+        // We don't define them directly here anymore unless they are
+        // accessible *outside* the logged-in state (which is unlikely).
     }
 }
