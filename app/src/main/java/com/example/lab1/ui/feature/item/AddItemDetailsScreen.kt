@@ -1,5 +1,4 @@
-package com.example.waiterapp // Ensure this matches your project's package
-
+package com.example.lab1.ui.feature.item
 import android.util.Log
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.* // Use Material 3 components
@@ -10,13 +9,16 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.example.waiterapp.ui.theme.Lab1Theme // Replace with your theme package
+import com.example.lab1.ui.theme.Lab1Theme
 import kotlin.math.roundToInt // For converting slider value
 
 // Removed the class wrapper. Composable functions should be top-level.
 @OptIn(ExperimentalMaterial3Api::class) // Needed for OutlinedTextField
 @Composable
-fun AddItemDetailsScreen(itemName: String) { // This is now a top-level function
+fun AddItemDetailsScreen(
+    itemName: String,
+    onNavigateBack: () -> Unit
+) {
     // --- State Variables ---
     // Remember state for interactive components
     // Use mutableFloatStateOf for Slider's value for better precision if needed,
@@ -88,13 +90,12 @@ fun AddItemDetailsScreen(itemName: String) { // This is now a top-level function
         // --- Action Button ---
         Button(
             onClick = {
-                // In a real app, you'd add this item with details to the order
                 Log.d("AddItem", "Item: $itemName, Qty: ${quantity.roundToInt()}, Urgent: $isUrgent, Notes: $specialRequests")
-                // Maybe navigate back or show confirmation
+                onNavigateBack()
             },
             modifier = Modifier
                 .fillMaxWidth()
-                .height(50.dp) // Make button larger
+                .height(50.dp)
         ) {
             Text("Add to Order", fontSize = 16.sp)
         }
@@ -105,6 +106,6 @@ fun AddItemDetailsScreen(itemName: String) { // This is now a top-level function
 @Composable
 fun AddItemDetailsScreenPreview() {
     Lab1Theme {
-        AddItemDetailsScreen(itemName = "Cheeseburger")
+        AddItemDetailsScreen(itemName = "Cheeseburger", onNavigateBack = {})
     }
 }

@@ -1,4 +1,4 @@
-package com.example.waiterapp.ui.theme
+package com.example.lab1.ui.theme
 
 import android.os.Build
 import androidx.compose.foundation.isSystemInDarkTheme

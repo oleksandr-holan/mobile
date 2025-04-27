@@ -1,4 +1,4 @@
-package com.example.waiterapp.ui.theme
+package com.example.lab1.ui.theme
 
 import androidx.compose.material3.Typography
 import androidx.compose.ui.text.TextStyle

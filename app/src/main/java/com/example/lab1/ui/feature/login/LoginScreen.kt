@@ -1,4 +1,4 @@
-package com.example.waiterapp
+package com.example.lab1.ui.feature.login
 
 import android.util.Log
 import androidx.compose.foundation.layout.*
@@ -13,13 +13,14 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.example.waiterapp.ui.theme.Lab1Theme
 import androidx.compose.foundation.text.KeyboardOptions
 
 @Composable
-fun LoginScreen() {
+fun LoginScreen(
+    onLoginSuccess: () -> Unit, // Lambda for successful login
+    onNavigateToRegister: () -> Unit // Lambda to go to registration
+) {
     // State for input fields - use rememberSaveable to survive rotation
     var username by rememberSaveable { mutableStateOf("") }
     var password by rememberSaveable { mutableStateOf("") }
@@ -76,22 +77,28 @@ fun LoginScreen() {
         // Login Button
         Button(
             onClick = {
-                // Login action - just log for now
-                Log.d("LoginScreen", "Attempting login with User: $username, Pass: $password")
-                // In real app: call ViewModel -> Repository -> Network/DB
+                Log.d("LoginScreen", "Login clicked")
+                // Simulate successful login
+                onLoginSuccess()
             },
             enabled = isLoginEnabled, // Enable button based on state
             modifier = Modifier.fillMaxWidth()
         ) {
             Text("Log In")
         }
+
+        Spacer(modifier = Modifier.height(16.dp))
+
+        TextButton(onClick = onNavigateToRegister) {
+            Text("Don't have an account? Register")
+        }
     }
 }
 
-@Preview(showBackground = true)
-@Composable
-fun LoginScreenPreview() {
-    Lab1Theme {
-        LoginScreen()
-    }
-}
+//@Preview(showBackground = true)
+//@Composable
+//fun LoginScreenPreview() {
+//    Lab1Theme {
+//        LoginScreen()
+//    }
+//}

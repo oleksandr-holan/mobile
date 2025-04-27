@@ -1,4 +1,4 @@
-package com.example.waiterapp
+package com.example.lab1.ui.feature.register
 
 import android.util.Log
 import androidx.compose.foundation.layout.*
@@ -13,14 +13,15 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.example.waiterapp.ui.theme.Lab1Theme
 import androidx.compose.foundation.text.KeyboardOptions
 
 
 @Composable
-fun RegistrationScreen() {
+fun RegistrationScreen(
+    onRegistrationSuccess: () -> Unit,
+    onNavigateBackToLogin: () -> Unit
+) {
     // State for input fields
     var username by rememberSaveable { mutableStateOf("") }
     var password by rememberSaveable { mutableStateOf("") }
@@ -107,22 +108,29 @@ fun RegistrationScreen() {
         // Register Button
         Button(
             onClick = {
-                // Register action - just log for now
-                Log.d("RegisterScreen", "Attempting registration: User: $username, Pass: $password, DoB: $dateOfBirth, Accepted: $privacyPolicyAccepted")
-                // In real app: call ViewModel -> Repository -> Network/DB
+                Log.d("RegisterScreen", "Register clicked")
+                // Simulate success
+                onRegistrationSuccess()
             },
             enabled = isRegisterEnabled, // Enable button based on state
             modifier = Modifier.fillMaxWidth()
         ) {
             Text("Register")
         }
+
+        Spacer(modifier = Modifier.height(16.dp))
+
+        // Button to navigate back to Login
+        TextButton(onClick = onNavigateBackToLogin) { // Call lambda
+            Text("Already have an account? Log In")
+        }
     }
 }
 
-@Preview(showBackground = true)
-@Composable
-fun RegistrationScreenPreview() {
-    Lab1Theme {
-        RegistrationScreen()
-    }
-}
+//@Preview(showBackground = true)
+//@Composable
+//fun RegistrationScreenPreview() {
+//    Lab1Theme {
+//        RegistrationScreen()
+//    }
+//}

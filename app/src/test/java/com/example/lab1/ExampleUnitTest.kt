@@ -1,4 +1,4 @@
-package com.example.waiterapp
+package com.example.lab1
 
 import org.junit.Test
 
