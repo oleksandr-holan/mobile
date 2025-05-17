@@ -1,6 +1,7 @@
 package com.example.lab1
 
 import android.os.Bundle
+import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.layout.fillMaxSize
@@ -19,8 +20,11 @@ import com.example.lab1.ui.navigation.AppDestinations
 import com.example.lab1.ui.theme.Lab1Theme
 
 class MainActivity : ComponentActivity() {
+    private val tag = "MainActivityLifecycle"
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        Log.d(tag, "onCreate called")
         WindowCompat.setDecorFitsSystemWindows(window, false)
 
         setContent {
@@ -35,6 +39,36 @@ class MainActivity : ComponentActivity() {
                 }
             }
         }
+    }
+
+    override fun onStart() {
+        super.onStart()
+        Log.d(tag, "onStart called")
+    }
+
+    override fun onResume() {
+        super.onResume()
+        Log.d(tag, "onResume called")
+    }
+
+    override fun onPause() {
+        super.onPause()
+        Log.d(tag, "onPause called")
+    }
+
+    override fun onStop() {
+        super.onStop()
+        Log.d(tag, "onStop called")
+    }
+
+    override fun onRestart() {
+        super.onRestart()
+        Log.d(tag, "onRestart called") // Good to have for completeness
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        Log.d(tag, "onDestroy called")
     }
 }
 
