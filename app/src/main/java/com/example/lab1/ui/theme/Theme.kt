@@ -11,69 +11,68 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 
+private val DarkBrownColorScheme = darkColorScheme(
+    primary = BrownPrimaryDark,
+    onPrimary = TextOnPrimaryBrown,
+    primaryContainer = Color(0xFF4E342E),
+    onPrimaryContainer = TextPrimaryDark,
 
-private val DarkColorScheme = darkColorScheme(
-    primary = AppPrimaryDarkBlue,
-    onPrimary = AppTextOnPrimary,
-    primaryContainer = Color(0xFF004A8F),
-    onPrimaryContainer = Color(0xFFD2E4FF),
+    secondary = DeepOrangeAccent,
+    onSecondary = TextOnOrange,
+    secondaryContainer = Color(0xFFBF360C),
+    onSecondaryContainer = TextPrimaryDark,
 
-    secondary = AppSecondaryGreen,
-    onSecondary = Color.Black,
-    secondaryContainer = Color(0xFF003912),
-    onSecondaryContainer = Color(0xFF97F79D),
+    tertiary = BrownPrimaryLight,
+    onTertiary = TextPrimaryLight,
+    tertiaryContainer = Color(0xFF5D4037),
+    onTertiaryContainer = TextPrimaryDark,
 
-    tertiary = AppAccentPink,
-    onTertiary = Color.White,
-    tertiaryContainer = Color(0xFF99003A),
-    onTertiaryContainer = Color(0xFFFFD9E0),
+    background = BackgroundDark,
+    onBackground = TextPrimaryDark,
 
-    background = AppBackgroundDark,
-    onBackground = AppTextOnBackgroundDark,
+    surface = BackgroundDarkElevated,
+    onSurface = TextPrimaryDark,
+    surfaceVariant = Color(0xFF4A3B35),
+    onSurfaceVariant = TextSecondaryDark,
 
-    surface = AppBackgroundDarkElevated,
-    onSurface = AppTextOnBackgroundDark,
-    surfaceVariant = Color(0xFF303030),
-    onSurfaceVariant = Color(0xFFB0B0B0),
-
-    error = AppErrorRed,
-    onError = Color.White,
+    error = ErrorRed,
+    onError = OnError,
     errorContainer = Color(0xFF93000A),
     onErrorContainer = Color(0xFFFFDAD6),
 
-    outline = Color(0xFF899388)
+    outline = BrownPrimaryLight
 )
 
-private val LightColorScheme = lightColorScheme(
-    primary = AppPrimaryBlue,
-    onPrimary = AppTextOnPrimary,
-    primaryContainer = Color(0xFFD2E4FF),
-    onPrimaryContainer = Color(0xFF001C3B),
+private val LightBrownColorScheme = lightColorScheme(
+    primary = BrownPrimary,
+    onPrimary = TextOnPrimaryBrown,
+    primaryContainer = BrownPrimaryLight,
+    onPrimaryContainer = TextPrimaryLight,
 
-    secondary = AppSecondaryGreen,
-    onSecondary = Color.Black,
-    secondaryContainer = Color(0xFF97F79D),
-    onSecondaryContainer = Color(0xFF002105),
+    secondary = OrangeAccent,
+    onSecondary = TextOnOrange,
+    secondaryContainer = Color(0xFFFFCC80),
+    onSecondaryContainer = TextPrimaryLight,
 
-    tertiary = AppAccentPink,
-    onTertiary = Color.White,
-    tertiaryContainer = Color(0xFFFFD9E0),
-    onTertiaryContainer = Color(0xFF3E001D),
+    tertiary = CreamAccent,
+    onTertiary = TextOnCream,
+    tertiaryContainer = Color(0xFFFFF5DD),
+    onTertiaryContainer = TextPrimaryLight,
 
-    background = AppBackgroundLight,
-    onBackground = AppTextOnBackgroundLight,
+    background = BackgroundLight,
+    onBackground = TextPrimaryLight,
 
-    surface = AppBackgroundLightElevated,
-    onSurface = AppTextOnBackgroundLight,
-    surfaceVariant = Color(0xFFE0E0E0),
-    onSurfaceVariant = Color(0xFF424242),
+    surface = BackgroundLightElevated,
+    onSurface = TextPrimaryLight,
+    surfaceVariant = Color(0xFFEFEBE9),
+    onSurfaceVariant = TextSecondaryLight,
 
-    error = AppErrorRed,
-    onError = Color.White,
+    error = ErrorRed,
+    onError = OnError,
     errorContainer = Color(0xFFFFDAD6),
     onErrorContainer = Color(0xFF410002),
 
-    outline = Color(0xFF73796F)
+    outline = BrownPrimaryDark
 )
 
 @Composable
@@ -88,8 +87,8 @@ fun Lab1Theme(
             if (darkTheme) dynamicDarkColorScheme(context) else dynamicLightColorScheme(context)
         }
 
-        darkTheme -> DarkColorScheme
-        else -> LightColorScheme
+        darkTheme -> DarkBrownColorScheme
+        else -> LightBrownColorScheme
     }
 
     MaterialTheme(
