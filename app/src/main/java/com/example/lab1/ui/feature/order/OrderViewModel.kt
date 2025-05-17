@@ -2,8 +2,8 @@ package com.example.lab1.ui.feature.order
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.lab1.data.repository.DataResult
-import com.example.lab1.data.repository.MenuItem
+import com.example.lab1.util.DataResult
+import com.example.lab1.data.model.MenuItem
 import com.example.lab1.data.repository.OrderRepository
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -24,15 +24,13 @@ data class OrderScreenState(
 // --- Actions ---
 sealed class OrderScreenAction {
     data object LoadMenuItems : OrderScreenAction() // Initial load or refresh
-    data class MenuItemClicked(val itemId: String, val itemName: String) : OrderScreenAction()
+    data class MenuItemClicked(val itemId: String) : OrderScreenAction()
     data class FilterByCategory(val category: String?) : OrderScreenAction()
-    // Add more actions as needed, e.g., AddToCart, ViewCart
 }
 
 // --- Side Effects ---
 sealed class OrderScreenSideEffect {
-    data class NavigateToItemDetails(val itemId: String, val itemName: String) : OrderScreenSideEffect()
-    // data class ShowItemAddedMessage(val itemName: String) : OrderScreenSideEffect()
+    data class NavigateToItemDetails(val itemId: String) : OrderScreenSideEffect()
 }
 
 
@@ -66,15 +64,13 @@ class OrderViewModel(
                 viewModelScope.launch {
                     // The lab asks for AddItemDetailsScreen, so we navigate there.
                     // The item name is passed for display on the details screen.
-                    _sideEffect.emit(OrderScreenSideEffect.NavigateToItemDetails(action.itemId, action.itemName))
+                    _sideEffect.emit(OrderScreenSideEffect.NavigateToItemDetails(action.itemId))
                 }
             }
             is OrderScreenAction.FilterByCategory -> {
                 _uiState.update { it.copy(selectedCategory = action.category, isLoading = true, errorMessage = null) }
                 fetchMenuItems(action.category)
             }
-
-            else -> {}
         }
     }
 

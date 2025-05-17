@@ -4,12 +4,13 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.*
 import androidx.compose.runtime.* // Import remember, derivedStateOf, etc.
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.navigation.NavHostController
+import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
+import androidx.navigation.navArgument
 import com.example.lab1.ui.navigation.AppDestinations
 import com.example.lab1.ui.navigation.BottomNavItem
 import com.example.lab1.ui.navigation.bottomNavItems // Import list
@@ -19,11 +20,9 @@ import com.example.lab1.ui.components.AppTopAppBar
 import com.example.lab1.ui.feature.item.AddItemDetailsScreen
 import com.example.lab1.ui.feature.order.OrderScreen
 import com.example.lab1.ui.feature.profile.ProfileScreen
-import com.example.lab1.ui.theme.Lab1Theme
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun MainAppScreen() {
+fun MainAppScreen(outerNavController: NavHostController) {
     val innerNavController: NavHostController = rememberNavController()
 
     // Get current back stack entry to determine route, title, and back button visibility
@@ -66,34 +65,38 @@ fun MainAppScreen() {
             composable(BottomNavItem.Orders.route) {
                 OrderScreen(
                     // Pass lambda to navigate to details using the inner controller
-                    onNavigateToAddItem = { itemName -> // Example: pass item name
-                        // In real app, pass item ID or full object route parameter
-                        innerNavController.navigate(AppDestinations.ADD_ITEM_DETAILS_ROUTE)
+                    onNavigateToAddItem = { itemId -> // Lambda now only takes itemId
+                        innerNavController.navigate(
+                            // Navigate with only itemId in the path
+                            "${AppDestinations.ADD_ITEM_DETAILS_ROUTE}/$itemId"
+                        )
                     }
                 )
             }
-            // Updated composable for Profile
             composable(BottomNavItem.Profile.route) {
-                ProfileScreen()
+                ProfileScreen(
+                    onNavigateToLogin = {
+                        outerNavController.navigate(AppDestinations.LOGIN_ROUTE) {
+                            popUpTo(AppDestinations.MAIN_APP_ROUTE) {
+                                inclusive = true
+                            } // Pop MainAppScreen itself
+                            launchSingleTop = true
+                        }
+                    }
+                    // viewModel(...)
+                )
             }
-            // Destination for the detail screen
-            composable(AppDestinations.ADD_ITEM_DETAILS_ROUTE) {
-                // In real app, retrieve item details based on argument passed in navigate()
+            composable(
+                route = AppDestinations.ADD_ITEM_DETAILS_WITH_ID_ROUTE, // Uses the route with itemId
+                arguments = listOf(
+                    navArgument(AppDestinations.ARG_ITEM_ID) { type = NavType.StringType }
+                )
+            ) {
+                // ViewModel inside AddItemDetailsScreen will pick up itemId from SavedStateHandle
                 AddItemDetailsScreen(
-                    itemName = "Selected Item", // Replace with actual data later
-                    // Back navigation is handled by the AppTopAppBar now
-                    onNavigateBack = { innerNavController.popBackStack() } // Can keep for programmatic back
+                    onNavigateBack = { innerNavController.popBackStack() }
                 )
             }
         }
-    }
-}
-
-// Preview remains the same
-@Preview(showBackground = true)
-@Composable
-fun MainAppScreenPreview() {
-    Lab1Theme {
-        MainAppScreen()
     }
 }

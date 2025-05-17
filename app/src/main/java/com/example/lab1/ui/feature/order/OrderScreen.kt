@@ -8,7 +8,7 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.lifecycle.compose.LocalLifecycleOwner
+    import androidx.lifecycle.compose.LocalLifecycleOwner
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -36,10 +36,7 @@ fun OrderScreen(
         ).collect { effect ->
             when (effect) {
                 is OrderScreenSideEffect.NavigateToItemDetails -> {
-                    // The lab implies this navigation is to "AddItemDetailsScreen"
-                    // The `onNavigateToAddItem` lambda passed from MainAppScreen can handle this.
-                    // We pass the itemId (or itemName as per original signature)
-                    onNavigateToAddItem(effect.itemId) // Or effect.itemName if AddItemDetailsScreen expects that
+                    onNavigateToAddItem(effect.itemId)
                 }
             }
         }
@@ -98,7 +95,7 @@ fun OrderScreen(
                 items(uiState.menuItems, key = { item -> item.id }) { menuItem ->
                     Box(modifier = Modifier.clickable {
                         // Dispatch an action to the ViewModel when an item is clicked
-                        orderViewModel.onAction(OrderScreenAction.MenuItemClicked(menuItem.id, menuItem.name))
+                        orderViewModel.onAction(OrderScreenAction.MenuItemClicked(menuItem.id))
                     }) {
                         MenuItemCard(
                             itemName = menuItem.name,

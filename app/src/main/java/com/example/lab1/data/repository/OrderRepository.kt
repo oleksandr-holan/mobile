@@ -1,22 +1,8 @@
 package com.example.lab1.data.repository
 
+import com.example.lab1.data.model.MenuItem
+import com.example.lab1.util.DataResult
 import kotlinx.coroutines.delay
-
-// Represents a menu item
-data class MenuItem(
-    val id: String,
-    val name: String,
-    val description: String,
-    val price: String, // Keep as String for display simplicity, consider BigDecimal for real apps
-    val category: String // e.g., "Pizza", "Salad", "Drink"
-)
-
-// Result class for repository operations
-sealed class DataResult<out T> {
-    data class Success<T>(val data: T) : DataResult<T>()
-    data class Error(val message: String) : DataResult<Nothing>()
-    data object Loading : DataResult<Nothing>() // Optional: if you want to represent loading from repo
-}
 
 
 interface OrderRepository {

@@ -83,7 +83,7 @@ fun AppNavigationHost(navController: NavHostController) {
 
         // Define the composable for the Main App Screen itself
         composable(route = AppDestinations.MAIN_APP_ROUTE) {
-            MainAppScreen() // This screen contains its own NavHost and BottomNav
+            MainAppScreen(outerNavController = navController) // Pass the main NavController
         }
 
         // Note: OrderScreen, HistoryScreen, AddItemDetailsScreen are now

@@ -1,68 +1,110 @@
 package com.example.lab1.ui.feature.item
-import android.util.Log
+
 import androidx.compose.foundation.layout.*
-import androidx.compose.material3.* // Use Material 3 components
-import androidx.compose.runtime.* // Import remember, mutableStateOf, etc.
+import androidx.compose.material3.*
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.lifecycle.compose.LocalLifecycleOwner
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.example.lab1.ui.theme.Lab1Theme
-import kotlin.math.roundToInt // For converting slider value
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.flowWithLifecycle
+import androidx.lifecycle.viewmodel.compose.viewModel
+import com.example.lab1.data.repository.MockOrderRepository // For factory instantiation
 
 @Composable
 fun AddItemDetailsScreen(
-    itemName: String,
-    onNavigateBack: () -> Unit
+    onNavigateBack: () -> Unit,
+    addItemDetailsViewModel: AddItemDetailsViewModel = viewModel(
+        factory = AddItemDetailsViewModelFactory(MockOrderRepository())
+    )
 ) {
-    // --- State Variables ---
-    var quantity by remember { mutableFloatStateOf(1f) }
-    var specialRequests by remember { mutableStateOf("") }
-    var isUrgent by remember { mutableStateOf(false) }
+    val uiState by addItemDetailsViewModel.uiState.collectAsState()
+    val lifecycleOwner = LocalLifecycleOwner.current
 
-    // --- UI Layout ---
+    LaunchedEffect(addItemDetailsViewModel.sideEffect, lifecycleOwner) {
+        addItemDetailsViewModel.sideEffect.flowWithLifecycle(
+            lifecycleOwner.lifecycle,
+            Lifecycle.State.STARTED
+        ).collect { effect ->
+            when (effect) {
+                AddItemDetailsSideEffect.NavigateBack -> {
+                    onNavigateBack()
+                }
+                // is AddItemDetailsSideEffect.ShowMessage -> { /* Show Snackbar or Toast */ }
+            }
+        }
+    }
+
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .safeDrawingPadding()
+            .safeDrawingPadding() // Keep this if you have edge-to-edge
             .padding(16.dp),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        // Display the item being added
+        if (uiState.isLoadingDetails && uiState.itemId != null) { // Show loading only if fetching existing item
+            Spacer(modifier = Modifier.height(24.dp))
+            CircularProgressIndicator()
+            Spacer(modifier = Modifier.height(16.dp))
+            Text("Loading item details...")
+            Spacer(modifier = Modifier.weight(1f)) // Push button to bottom during loading
+        } else if (uiState.errorMessage != null) {
+            Text(
+                text = "Error: ${uiState.errorMessage}",
+                color = MaterialTheme.colorScheme.error,
+                modifier = Modifier.padding(vertical = 16.dp)
+            )
+        }
+
         Text(
             text = "Add Details for:",
             style = MaterialTheme.typography.headlineSmall
         )
         Text(
-            text = itemName,
+            text = uiState.itemName,
             style = MaterialTheme.typography.headlineMedium,
             fontWeight = FontWeight.Bold,
             modifier = Modifier.padding(bottom = 24.dp)
         )
 
         // --- 1. Quantity Slider ---
-        Text("Quantity: ${quantity.roundToInt()}", style = MaterialTheme.typography.bodyLarge) // Display rounded Int
+        Text("Quantity: ${uiState.roundedQuantity}", style = MaterialTheme.typography.bodyLarge)
         Slider(
-            value = quantity,
-            onValueChange = { newValue -> quantity = newValue }, // Update state on change
-            valueRange = 1f..10f, // Example range: 1 to 10 items
-            steps = 8, // Allows selecting integers: 1, 2, ..., 10 (steps = count - 2)
+            value = uiState.quantity,
+            onValueChange = {
+                addItemDetailsViewModel.onAction(
+                    AddItemDetailsAction.QuantityChanged(
+                        it
+                    )
+                )
+            },
+            valueRange = 1f..10f,
+            steps = 8,
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(vertical = 8.dp)
+                .padding(vertical = 8.dp),
+            enabled = !uiState.isLoadingDetails
         )
 
         Spacer(modifier = Modifier.height(24.dp))
 
         // --- 2. Special Requests Input ---
         OutlinedTextField(
-            value = specialRequests,
-            onValueChange = { newValue -> specialRequests = newValue }, // Update state
-            label = { Text("Special Requests (optional)") }, // Placeholder/label
+            value = uiState.specialRequests,
+            onValueChange = {
+                addItemDetailsViewModel.onAction(
+                    AddItemDetailsAction.SpecialRequestsChanged(
+                        it
+                    )
+                )
+            },
+            label = { Text("Special Requests (optional)") },
             modifier = Modifier.fillMaxWidth(),
-            maxLines = 3 // Allow multiple lines but limit height
+            maxLines = 3,
+            enabled = !uiState.isLoadingDetails
         )
 
         Spacer(modifier = Modifier.height(24.dp))
@@ -71,36 +113,33 @@ fun AddItemDetailsScreen(
         Row(
             modifier = Modifier.fillMaxWidth(),
             verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.SpaceBetween // Pushes items to ends
+            horizontalArrangement = Arrangement.SpaceBetween
         ) {
             Text("Mark as Urgent:", style = MaterialTheme.typography.bodyLarge)
             Switch(
-                checked = isUrgent,
-                onCheckedChange = { newValue -> isUrgent = newValue } // Update state
+                checked = uiState.isUrgent,
+                onCheckedChange = {
+                    addItemDetailsViewModel.onAction(
+                        AddItemDetailsAction.UrgencyChanged(
+                            it
+                        )
+                    )
+                },
+                enabled = !uiState.isLoadingDetails
             )
         }
 
-        Spacer(modifier = Modifier.weight(1f)) // Pushes the button to the bottom
+        Spacer(modifier = Modifier.weight(1f))
 
         // --- Action Button ---
         Button(
-            onClick = {
-                Log.d("AddItem", "Item: $itemName, Qty: ${quantity.roundToInt()}, Urgent: $isUrgent, Notes: $specialRequests")
-                onNavigateBack()
-            },
+            onClick = { addItemDetailsViewModel.onAction(AddItemDetailsAction.AddToOrderClicked) },
             modifier = Modifier
                 .fillMaxWidth()
-                .height(50.dp)
+                .height(50.dp),
+            enabled = !uiState.isLoadingDetails && uiState.errorMessage == null
         ) {
             Text("Add to Order", fontSize = 16.sp)
         }
-    }
-}
-
-@Preview(showBackground = true)
-@Composable
-fun AddItemDetailsScreenPreview() {
-    Lab1Theme {
-        AddItemDetailsScreen(itemName = "Cheeseburger", onNavigateBack = {})
     }
 }
