@@ -18,12 +18,15 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.flowWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel // Import for viewModel()
+import com.example.lab1.data.repository.MockAuthRepository
 
 @Composable
 fun LoginScreen(
     onLoginSuccess: () -> Unit,
     onNavigateToRegister: () -> Unit,
-    loginViewModel: LoginViewModel = viewModel() // Obtain ViewModel instance
+    loginViewModel: LoginViewModel = viewModel(
+        factory = LoginViewModelFactory(MockAuthRepository())
+    ) // Obtain ViewModel instance
 ) {
     // Collect UI state from the ViewModel
     // Use collectAsStateWithLifecycle for better lifecycle awareness (add dependency if needed)

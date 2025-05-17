@@ -2,7 +2,8 @@ package com.example.lab1.ui.feature.login
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-// import com.example.lab1.data.repository.AuthRepository // TODO: Uncomment and create AuthRepository
+import com.example.lab1.data.repository.AuthRepository
+import com.example.lab1.data.repository.AuthResult
 import kotlinx.coroutines.delay // For simulation
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -42,7 +43,7 @@ sealed class LoginSideEffect {
 }
 
 class LoginViewModel(
-    // private val authRepository: AuthRepository // TODO: Inject this when AuthRepository is created
+    private val authRepository: AuthRepository
 ) : ViewModel() {
 
     private val _uiState = MutableStateFlow(LoginScreenState())
@@ -66,6 +67,7 @@ class LoginViewModel(
                     )
                 }
             }
+
             is LoginUiAction.PasswordChanged -> {
                 _uiState.update { currentState ->
                     val newPassword = action.password
@@ -76,14 +78,17 @@ class LoginViewModel(
                     )
                 }
             }
+
             LoginUiAction.TogglePasswordVisibility -> {
                 _uiState.update { currentState ->
                     currentState.copy(isPasswordVisible = !currentState.isPasswordVisible)
                 }
             }
+
             LoginUiAction.LoginClicked -> {
                 attemptLogin()
             }
+
             LoginUiAction.ErrorMessageDismissed -> {
                 _uiState.update { it.copy(errorMessage = null) }
             }
@@ -100,24 +105,20 @@ class LoginViewModel(
 
         viewModelScope.launch {
             _uiState.update { it.copy(isLoading = true, errorMessage = null) }
+            // Call the repository
+            when (val result = authRepository.login(currentState.username, currentState.password)) {
+                is AuthResult.Success -> {
+                    _uiState.update { it.copy(isLoading = false) }
+                    _sideEffect.emit(LoginSideEffect.NavigateToMainApp) // Emit navigation event
+                }
 
-            // --- Simulate repository call and login logic ---
-            delay(1000) // Simulate network delay or processing time
-
-            // TODO: Replace this with a call to `authRepository.login(currentState.username, currentState.password)`
-            // For now, we'll simulate success if both fields are non-empty.
-            // In a real app, the repository would return a result (success/failure with error).
-            val loginSuccessful = currentState.username.length > 3 && currentState.password.length > 3 // Example criteria
-
-            if (loginSuccessful) {
-                _uiState.update { it.copy(isLoading = false) }
-                _sideEffect.emit(LoginSideEffect.NavigateToMainApp) // Emit navigation event
-            } else {
-                _uiState.update {
-                    it.copy(
-                        isLoading = false,
-                        errorMessage = "Invalid username or password. Please try again." // Or error from repository
-                    )
+                is AuthResult.Error -> {
+                    _uiState.update {
+                        it.copy(
+                            isLoading = false,
+                            errorMessage = result.message
+                        )
+                    }
                 }
             }
         }
