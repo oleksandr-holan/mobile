@@ -1,6 +1,8 @@
 package com.example.lab1.ui.feature.order.view
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -40,17 +42,21 @@ fun OrderScreen(
                 .padding(bottom = 16.dp)
                 .align(Alignment.CenterHorizontally)
         )
-        MenuItemCard(
-            itemName = "Піца Маргарита",
-            itemDescription = "Класична піца з томатним соусом, моцарелою та базиліком.",
-            price = "150 грн",
-        )
+        Box(modifier = Modifier.clickable { onNavigateToAddItem("Піца Маргарита") }) {
+            MenuItemCard(
+                itemName = "Піца Маргарита",
+                itemDescription = "Класична піца з томатним соусом, моцарелою та базиліком.",
+                price = "150 грн",
+            )
+        }
         Spacer(modifier = Modifier.height(16.dp))
-        MenuItemCard(
-            itemName = "Салат Цезар",
-            itemDescription = "Салат з куркою, грінками, пармезаном та соусом Цезар.",
-            price = "120 грн",
-        )
+        Box(modifier = Modifier.clickable { onNavigateToAddItem("Салат Цезар") }) {
+            MenuItemCard(
+                itemName = "Салат Цезар",
+                itemDescription = "Салат з куркою, грінками, пармезаном та соусом Цезар.",
+                price = "120 грн",
+            )
+        }
         Spacer(modifier = Modifier.height(24.dp))
         Text(
             text = "Підказка: Не забудьте запропонувати напої!",

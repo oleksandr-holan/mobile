@@ -12,17 +12,12 @@ import androidx.compose.ui.unit.sp
 import com.example.lab1.ui.theme.Lab1Theme
 import kotlin.math.roundToInt // For converting slider value
 
-// Removed the class wrapper. Composable functions should be top-level.
-@OptIn(ExperimentalMaterial3Api::class) // Needed for OutlinedTextField
 @Composable
 fun AddItemDetailsScreen(
     itemName: String,
     onNavigateBack: () -> Unit
 ) {
     // --- State Variables ---
-    // Remember state for interactive components
-    // Use mutableFloatStateOf for Slider's value for better precision if needed,
-    // but mutableStateOf<Float> is also common.
     var quantity by remember { mutableFloatStateOf(1f) }
     var specialRequests by remember { mutableStateOf("") }
     var isUrgent by remember { mutableStateOf(false) }
