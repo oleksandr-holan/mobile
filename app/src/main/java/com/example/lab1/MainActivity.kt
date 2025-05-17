@@ -24,7 +24,7 @@ class MainActivity : ComponentActivity() {
     private val tag = "MainActivityLifecycle"
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        val splashScreen = installSplashScreen()
+        installSplashScreen()
 
         super.onCreate(savedInstanceState)
         Log.d(tag, "onCreate called")
