@@ -4,13 +4,9 @@ import com.example.lab1.data.model.MenuItem
 import com.example.lab1.util.DataResult
 import kotlinx.coroutines.delay
 
-
 interface OrderRepository {
     suspend fun getMenuItems(category: String? = null): DataResult<List<MenuItem>>
     suspend fun getMenuItemDetails(itemId: String): DataResult<MenuItem?>
-    // Add other methods like:
-    // suspend fun addItemToOrder(tableId: String, itemId: String, quantity: Int, notes: String): Result<Boolean>
-    // suspend fun getCurrentOrder(tableId: String): Result<List<OrderItem>>
 }
 
 class MockOrderRepository : OrderRepository {
@@ -25,7 +21,7 @@ class MockOrderRepository : OrderRepository {
     )
 
     override suspend fun getMenuItems(category: String?): DataResult<List<MenuItem>> {
-        delay(700) // Simulate network delay
+        delay(700) 
         return try {
             val items = if (category == null) {
                 allMenuItems
@@ -33,8 +29,8 @@ class MockOrderRepository : OrderRepository {
                 allMenuItems.filter { it.category.equals(category, ignoreCase = true) }
             }
             if (items.isEmpty() && category != null) {
-                DataResult.Success(emptyList()) // Return empty list if category exists but no items
-                // Or DataResult.Error("No items found for category: $category")
+                DataResult.Success(emptyList()) 
+                
             } else {
                 DataResult.Success(items)
             }

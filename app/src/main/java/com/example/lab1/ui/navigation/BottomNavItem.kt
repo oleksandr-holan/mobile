@@ -11,19 +11,18 @@ sealed class BottomNavItem(
     val icon: ImageVector
 ) {
     data object Orders : BottomNavItem(
-        route = AppDestinations.ORDER_LIST_ROUTE, // Use the main screen route
-        title = "Orders", // Title for the bottom bar item
+        route = AppDestinations.ORDER_LIST_ROUTE,
+        title = "Orders",
         icon = Icons.AutoMirrored.Filled.ListAlt
     )
-    // Changed History to Profile
+
     data object Profile : BottomNavItem(
-        route = AppDestinations.PROFILE_ROUTE, // Use profile route
+        route = AppDestinations.PROFILE_ROUTE,
         title = "Profile",
         icon = Icons.Default.Person
     )
 }
 
-// Update the list
 val bottomNavItems = listOf(
     BottomNavItem.Orders,
     BottomNavItem.Profile

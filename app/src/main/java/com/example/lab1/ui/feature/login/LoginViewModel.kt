@@ -4,7 +4,6 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.lab1.data.repository.AuthRepository
 import com.example.lab1.data.repository.AuthResult
-import kotlinx.coroutines.delay // For simulation
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharedFlow
@@ -14,32 +13,25 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
-// --- State ---
-// Represents all the data needed to render the Login UI
 data class LoginScreenState(
     val username: String = "",
     val password: String = "",
     val isPasswordVisible: Boolean = false,
-    val isLoading: Boolean = false, // To show a loading indicator during login attempt
-    val errorMessage: String? = null, // To display any login errors
-    val isLoginEnabled: Boolean = false // Derived from username and password presence
+    val isLoading: Boolean = false,
+    val errorMessage: String? = null,
+    val isLoginEnabled: Boolean = false
 )
 
-// --- Actions (Events from UI to ViewModel) ---
-// Represents user interactions or events originating from the UI
 sealed class LoginUiAction {
     data class UsernameChanged(val username: String) : LoginUiAction()
     data class PasswordChanged(val password: String) : LoginUiAction()
     data object TogglePasswordVisibility : LoginUiAction()
     data object LoginClicked : LoginUiAction()
-    data object ErrorMessageDismissed : LoginUiAction() // If you want to allow dismissing errors
+    data object ErrorMessageDismissed : LoginUiAction()
 }
 
-// --- Side Effects (One-time events from ViewModel to UI) ---
-// Represents events that the UI should handle once, like navigation or showing a Toast/Snackbar
 sealed class LoginSideEffect {
     data object NavigateToMainApp : LoginSideEffect()
-    // You could add others like: data class ShowSnackbar(val message: String) : LoginSideEffect()
 }
 
 class LoginViewModel(
@@ -49,12 +41,9 @@ class LoginViewModel(
     private val _uiState = MutableStateFlow(LoginScreenState())
     val uiState: StateFlow<LoginScreenState> = _uiState.asStateFlow()
 
-    private val _sideEffect = MutableSharedFlow<LoginSideEffect>() // For one-time events
+    private val _sideEffect = MutableSharedFlow<LoginSideEffect>()
     val sideEffect: SharedFlow<LoginSideEffect> = _sideEffect.asSharedFlow()
 
-    /**
-     * Handles actions dispatched from the UI.
-     */
     fun onAction(action: LoginUiAction) {
         when (action) {
             is LoginUiAction.UsernameChanged -> {
@@ -62,7 +51,7 @@ class LoginViewModel(
                     val newUsername = action.username
                     currentState.copy(
                         username = newUsername,
-                        errorMessage = null, // Clear error when user types
+                        errorMessage = null,
                         isLoginEnabled = newUsername.isNotBlank() && currentState.password.isNotBlank()
                     )
                 }
@@ -73,7 +62,7 @@ class LoginViewModel(
                     val newPassword = action.password
                     currentState.copy(
                         password = newPassword,
-                        errorMessage = null, // Clear error when user types
+                        errorMessage = null,
                         isLoginEnabled = currentState.username.isNotBlank() && newPassword.isNotBlank()
                     )
                 }
@@ -97,7 +86,7 @@ class LoginViewModel(
 
     private fun attemptLogin() {
         val currentState = _uiState.value
-        // Basic check, though button should be disabled if not valid
+
         if (!currentState.isLoginEnabled) {
             _uiState.update { it.copy(errorMessage = "Username and password are required.") }
             return
@@ -105,11 +94,11 @@ class LoginViewModel(
 
         viewModelScope.launch {
             _uiState.update { it.copy(isLoading = true, errorMessage = null) }
-            // Call the repository
+
             when (val result = authRepository.login(currentState.username, currentState.password)) {
                 is AuthResult.Success -> {
                     _uiState.update { it.copy(isLoading = false) }
-                    _sideEffect.emit(LoginSideEffect.NavigateToMainApp) // Emit navigation event
+                    _sideEffect.emit(LoginSideEffect.NavigateToMainApp)
                 }
 
                 is AuthResult.Error -> {

@@ -12,7 +12,7 @@ import androidx.compose.ui.unit.sp
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.flowWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
-import com.example.lab1.data.repository.MockOrderRepository // For factory instantiation
+import com.example.lab1.data.repository.MockOrderRepository 
 
 @Composable
 fun AddItemDetailsScreen(
@@ -33,7 +33,6 @@ fun AddItemDetailsScreen(
                 AddItemDetailsSideEffect.NavigateBack -> {
                     onNavigateBack()
                 }
-                // is AddItemDetailsSideEffect.ShowMessage -> { /* Show Snackbar or Toast */ }
             }
         }
     }
@@ -41,16 +40,16 @@ fun AddItemDetailsScreen(
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .safeDrawingPadding() // Keep this if you have edge-to-edge
+            .safeDrawingPadding() 
             .padding(16.dp),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        if (uiState.isLoadingDetails && uiState.itemId != null) { // Show loading only if fetching existing item
+        if (uiState.isLoadingDetails && uiState.itemId != null) { 
             Spacer(modifier = Modifier.height(24.dp))
             CircularProgressIndicator()
             Spacer(modifier = Modifier.height(16.dp))
             Text("Loading item details...")
-            Spacer(modifier = Modifier.weight(1f)) // Push button to bottom during loading
+            Spacer(modifier = Modifier.weight(1f)) 
         } else if (uiState.errorMessage != null) {
             Text(
                 text = "Error: ${uiState.errorMessage}",
@@ -58,7 +57,6 @@ fun AddItemDetailsScreen(
                 modifier = Modifier.padding(vertical = 16.dp)
             )
         }
-
         Text(
             text = "Add Details for:",
             style = MaterialTheme.typography.headlineSmall
@@ -69,8 +67,6 @@ fun AddItemDetailsScreen(
             fontWeight = FontWeight.Bold,
             modifier = Modifier.padding(bottom = 24.dp)
         )
-
-        // --- 1. Quantity Slider ---
         Text("Quantity: ${uiState.roundedQuantity}", style = MaterialTheme.typography.bodyLarge)
         Slider(
             value = uiState.quantity,
@@ -90,8 +86,6 @@ fun AddItemDetailsScreen(
         )
 
         Spacer(modifier = Modifier.height(24.dp))
-
-        // --- 2. Special Requests Input ---
         OutlinedTextField(
             value = uiState.specialRequests,
             onValueChange = {
@@ -106,10 +100,7 @@ fun AddItemDetailsScreen(
             maxLines = 3,
             enabled = !uiState.isLoadingDetails
         )
-
         Spacer(modifier = Modifier.height(24.dp))
-
-        // --- 3. Urgent Switch ---
         Row(
             modifier = Modifier.fillMaxWidth(),
             verticalAlignment = Alignment.CenterVertically,
@@ -128,10 +119,7 @@ fun AddItemDetailsScreen(
                 enabled = !uiState.isLoadingDetails
             )
         }
-
         Spacer(modifier = Modifier.weight(1f))
-
-        // --- Action Button ---
         Button(
             onClick = { addItemDetailsViewModel.onAction(AddItemDetailsAction.AddToOrderClicked) },
             modifier = Modifier

@@ -18,12 +18,11 @@ import androidx.lifecycle.flowWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
-import com.example.lab1.R // Assuming you have a placeholder drawable
+import com.example.lab1.R
 import com.example.lab1.data.repository.MockProfileRepository
 
 @Composable
 fun ProfileScreen(
-    // This lambda would be provided by MainAppScreen's NavController to handle global navigation
     onNavigateToLogin: () -> Unit,
     profileViewModel: ProfileViewModel = viewModel(
         factory = ProfileViewModelFactory(MockProfileRepository())
@@ -67,13 +66,12 @@ fun ProfileScreen(
                 horizontalAlignment = Alignment.CenterHorizontally,
                 verticalArrangement = Arrangement.spacedBy(16.dp)
             ) {
-                // Profile Image
                 AsyncImage(
                     model = ImageRequest.Builder(LocalContext.current)
                         .data(userProfile.profileImageUrl)
                         .crossfade(true)
-                        .error(R.drawable.ic_launcher_foreground) // Replace with a placeholder avatar
-                        .placeholder(R.drawable.ic_launcher_foreground) // Replace
+                        .error(R.drawable.ic_launcher_foreground)
+                        .placeholder(R.drawable.ic_launcher_foreground)
                         .build(),
                     contentDescription = "Profile Picture",
                     modifier = Modifier
@@ -81,19 +79,20 @@ fun ProfileScreen(
                         .clip(CircleShape),
                     contentScale = ContentScale.Crop
                 )
-
                 Text(
                     text = userProfile.username,
                     style = MaterialTheme.typography.headlineSmall,
                     fontWeight = FontWeight.Bold
                 )
-
                 ProfileInfoRow(label = "Email:", value = userProfile.email)
-                userProfile.dateOfBirth?.let { ProfileInfoRow(label = "Date of Birth:", value = it) }
+                userProfile.dateOfBirth?.let {
+                    ProfileInfoRow(
+                        label = "Date of Birth:",
+                        value = it
+                    )
+                }
                 ProfileInfoRow(label = "Member Since:", value = userProfile.memberSince)
-
-                Spacer(modifier = Modifier.weight(1f)) // Pushes logout button to bottom
-
+                Spacer(modifier = Modifier.weight(1f))
                 Button(
                     onClick = { profileViewModel.onAction(ProfileScreenAction.LogoutClicked) },
                     modifier = Modifier.fillMaxWidth()
@@ -104,7 +103,6 @@ fun ProfileScreen(
         } else {
             Box(contentAlignment = Alignment.Center, modifier = Modifier.fillMaxSize()) {
                 Text("No profile data available. Please try again.")
-                // You could add a retry button here that dispatches LoadProfile action
             }
         }
     }

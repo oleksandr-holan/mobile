@@ -20,7 +20,7 @@ import com.example.lab1.ui.components.MenuItemCard
 
 @Composable
 fun OrderScreen(
-    onNavigateToAddItem: (itemId: String) -> Unit, // Keep this lambda for navigation triggered by MainAppScreen's NavController
+    onNavigateToAddItem: (itemId: String) -> Unit, 
     orderViewModel: OrderViewModel = viewModel(
         factory = OrderViewModelFactory(MockOrderRepository())
     )
@@ -28,7 +28,6 @@ fun OrderScreen(
     val uiState by orderViewModel.uiState.collectAsState()
     val lifecycleOwner = LocalLifecycleOwner.current
 
-    // Handle side effects from ViewModel, like navigation requests initiated by ViewModel logic
     LaunchedEffect(orderViewModel.sideEffect, lifecycleOwner) {
         orderViewModel.sideEffect.flowWithLifecycle(
             lifecycleOwner.lifecycle,
@@ -45,7 +44,7 @@ fun OrderScreen(
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .safeDrawingPadding() // Already present
+            .safeDrawingPadding() 
             .padding(16.dp)
     ) {
         Text(
@@ -58,7 +57,6 @@ fun OrderScreen(
                 .align(Alignment.CenterHorizontally)
         )
 
-        // Optional: Category Filter Buttons
         Row(
             modifier = Modifier.fillMaxWidth().padding(bottom = 8.dp),
             horizontalArrangement = Arrangement.SpaceEvenly
@@ -68,7 +66,6 @@ fun OrderScreen(
             Button(onClick = { orderViewModel.onAction(OrderScreenAction.FilterByCategory("Salad")) }) { Text("Салати") }
             Button(onClick = { orderViewModel.onAction(OrderScreenAction.FilterByCategory("Drink")) }) { Text("Напої") }
         }
-
 
         if (uiState.isLoading) {
             Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
@@ -94,7 +91,7 @@ fun OrderScreen(
             ) {
                 items(uiState.menuItems, key = { item -> item.id }) { menuItem ->
                     Box(modifier = Modifier.clickable {
-                        // Dispatch an action to the ViewModel when an item is clicked
+                        
                         orderViewModel.onAction(OrderScreenAction.MenuItemClicked(menuItem.id))
                     }) {
                         MenuItemCard(

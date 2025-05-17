@@ -25,14 +25,12 @@ class MainActivity : ComponentActivity() {
 
         setContent {
             Lab1Theme {
-                // Create the NavController
                 val navController: NavHostController = rememberNavController()
-
                 Surface(
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colorScheme.background
                 ) {
-                    // Setup the NavHost
+
                     AppNavigationHost(navController = navController)
                 }
             }
@@ -49,9 +47,9 @@ fun AppNavigationHost(navController: NavHostController) {
         composable(route = AppDestinations.LOGIN_ROUTE) {
             LoginScreen(
                 onLoginSuccess = {
-                    // Navigate to the Main App Screen (with Scaffold/BottomNav)
+
                     navController.navigate(AppDestinations.MAIN_APP_ROUTE) {
-                        // Clear the back stack up to the start destination (login)
+
                         popUpTo(navController.graph.startDestinationRoute!!) {
                             inclusive = true
                         }
@@ -67,7 +65,7 @@ fun AppNavigationHost(navController: NavHostController) {
         composable(route = AppDestinations.REGISTRATION_ROUTE) {
             RegistrationScreen(
                 onRegistrationSuccess = {
-                    // Navigate to the Main App Screen after registration too
+
                     navController.navigate(AppDestinations.MAIN_APP_ROUTE) {
                         popUpTo(navController.graph.startDestinationRoute!!) {
                             inclusive = true
@@ -81,14 +79,8 @@ fun AppNavigationHost(navController: NavHostController) {
             )
         }
 
-        // Define the composable for the Main App Screen itself
         composable(route = AppDestinations.MAIN_APP_ROUTE) {
-            MainAppScreen(outerNavController = navController) // Pass the main NavController
+            MainAppScreen(outerNavController = navController)
         }
-
-        // Note: OrderScreen, HistoryScreen, AddItemDetailsScreen are now
-        // handled by the *inner* NavHost within MainAppScreen.
-        // We don't define them directly here anymore unless they are
-        // accessible *outside* the logged-in state (which is unlikely).
     }
 }

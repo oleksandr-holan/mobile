@@ -39,8 +39,8 @@ com.example.waiterapp
 │       ├── login
 │       │   ├── LoginScreen.kt
 │       │   └── LoginViewModel.kt
-│       │   └── LoginUiState.kt // Optional state holder
-│       │   └── LoginEvent.kt   // Optional event definition
+│       │   └── LoginUiState.kt 
+│       │   └── LoginEvent.kt   
 │       ├── profile
 │       │   ├── ProfileScreen.kt
 │       │   └── ProfileViewModel.kt

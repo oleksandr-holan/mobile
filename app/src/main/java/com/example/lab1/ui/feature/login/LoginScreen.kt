@@ -17,7 +17,7 @@ import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.flowWithLifecycle
-import androidx.lifecycle.viewmodel.compose.viewModel // Import for viewModel()
+import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.lab1.data.repository.MockAuthRepository
 
 @Composable
@@ -26,15 +26,11 @@ fun LoginScreen(
     onNavigateToRegister: () -> Unit,
     loginViewModel: LoginViewModel = viewModel(
         factory = LoginViewModelFactory(MockAuthRepository())
-    ) // Obtain ViewModel instance
+    )
 ) {
-    // Collect UI state from the ViewModel
-    // Use collectAsStateWithLifecycle for better lifecycle awareness (add dependency if needed)
-    // or collectAsState for simplicity in this example.
     val uiState by loginViewModel.uiState.collectAsState()
     val lifecycleOwner = LocalLifecycleOwner.current
 
-    // Collect side effects from the ViewModel
     LaunchedEffect(loginViewModel.sideEffect, lifecycleOwner) {
         loginViewModel.sideEffect.flowWithLifecycle(
             lifecycleOwner.lifecycle,
@@ -45,7 +41,6 @@ fun LoginScreen(
                     Log.d("LoginScreen", "SideEffect: NavigateToMainApp received")
                     onLoginSuccess()
                 }
-                // Handle other side effects if any
             }
         }
     }
@@ -63,7 +58,6 @@ fun LoginScreen(
             Text("Login", style = MaterialTheme.typography.headlineMedium)
             Spacer(modifier = Modifier.height(16.dp))
 
-            // Display error message if present
             if (uiState.errorMessage != null) {
                 Text(
                     text = uiState.errorMessage!!,
@@ -75,19 +69,17 @@ fun LoginScreen(
 
             Spacer(modifier = Modifier.height(8.dp))
 
-            // Username Field
             OutlinedTextField(
                 value = uiState.username,
                 onValueChange = { loginViewModel.onAction(LoginUiAction.UsernameChanged(it)) },
                 label = { Text("Username/Login") },
                 singleLine = true,
                 modifier = Modifier.fillMaxWidth(),
-                isError = uiState.errorMessage != null, // Optionally highlight field on error
-                enabled = !uiState.isLoading // Disable when loading
+                isError = uiState.errorMessage != null,
+                enabled = !uiState.isLoading
             )
             Spacer(modifier = Modifier.height(16.dp))
 
-            // Password Field
             OutlinedTextField(
                 value = uiState.password,
                 onValueChange = { loginViewModel.onAction(LoginUiAction.PasswordChanged(it)) },
@@ -99,28 +91,28 @@ fun LoginScreen(
                     val image = if (uiState.isPasswordVisible)
                         Icons.Filled.Visibility
                     else Icons.Filled.VisibilityOff
-                    val description = if (uiState.isPasswordVisible) "Hide password" else "Show password"
+                    val description =
+                        if (uiState.isPasswordVisible) "Hide password" else "Show password"
 
                     IconButton(
                         onClick = { loginViewModel.onAction(LoginUiAction.TogglePasswordVisibility) },
-                        enabled = !uiState.isLoading // Disable when loading
+                        enabled = !uiState.isLoading
                     ) {
                         Icon(imageVector = image, description)
                     }
                 },
                 modifier = Modifier.fillMaxWidth(),
-                isError = uiState.errorMessage != null, // Optionally highlight field on error
-                enabled = !uiState.isLoading // Disable when loading
+                isError = uiState.errorMessage != null,
+                enabled = !uiState.isLoading
             )
             Spacer(modifier = Modifier.height(32.dp))
 
-            // Login Button
             Button(
                 onClick = {
                     Log.d("LoginScreen", "Login button clicked, dispatching LoginClicked action")
                     loginViewModel.onAction(LoginUiAction.LoginClicked)
                 },
-                enabled = uiState.isLoginEnabled && !uiState.isLoading, // Use derived state from ViewModel
+                enabled = uiState.isLoginEnabled && !uiState.isLoading,
                 modifier = Modifier.fillMaxWidth()
             ) {
                 if (uiState.isLoading) {
@@ -132,12 +124,11 @@ fun LoginScreen(
                     Text("Log In")
                 }
             }
-
             Spacer(modifier = Modifier.height(16.dp))
 
             TextButton(
                 onClick = onNavigateToRegister,
-                enabled = !uiState.isLoading // Disable when loading
+                enabled = !uiState.isLoading
             ) {
                 Text("Don't have an account? Register")
             }

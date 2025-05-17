@@ -6,7 +6,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.lab1.util.DataResult
 import com.example.lab1.data.repository.OrderRepository
-import com.example.lab1.ui.navigation.AppDestinations // For ARG_ITEM_ID
+import com.example.lab1.ui.navigation.AppDestinations 
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharedFlow
@@ -18,15 +18,12 @@ import kotlinx.coroutines.launch
 import kotlin.math.roundToInt
 
 data class AddItemDetailsScreenState(
-    val itemId: String? = null, // The ID of the item selected from the menu
-    val itemName: String = "Loading Item...", // Default while fetching
-    // You might want other fields from MenuItem here if they are customizable or displayed
-    // val itemDescription: String? = null,
-    // val itemPrice: String? = null,
+    val itemId: String? = null, 
+    val itemName: String = "Loading Item...", 
     val quantity: Float = 1f,
     val specialRequests: String = "",
     val isUrgent: Boolean = false,
-    val isLoadingDetails: Boolean = true, // True initially while fetching item details
+    val isLoadingDetails: Boolean = true, 
     val errorMessage: String? = null
 ) {
     val roundedQuantity: Int get() = quantity.roundToInt()
@@ -37,7 +34,6 @@ sealed class AddItemDetailsAction {
     data class SpecialRequestsChanged(val requests: String) : AddItemDetailsAction()
     data class UrgencyChanged(val urgent: Boolean) : AddItemDetailsAction()
     data object AddToOrderClicked : AddItemDetailsAction()
-    // No explicit LoadItemDetails action needed from UI if it happens on init
 }
 
 sealed class AddItemDetailsSideEffect {
@@ -48,13 +44,10 @@ class AddItemDetailsViewModel(
     private val orderRepository: OrderRepository,
     savedStateHandle: SavedStateHandle
 ) : ViewModel() {
-
     private val _uiState = MutableStateFlow(AddItemDetailsScreenState())
     val uiState: StateFlow<AddItemDetailsScreenState> = _uiState.asStateFlow()
-
     private val _sideEffect = MutableSharedFlow<AddItemDetailsSideEffect>()
     val sideEffect: SharedFlow<AddItemDetailsSideEffect> = _sideEffect.asSharedFlow()
-
     init {
         val itemIdFromNav: String? = savedStateHandle[AppDestinations.ARG_ITEM_ID]
         _uiState.update { it.copy(itemId = itemIdFromNav) }
@@ -62,7 +55,6 @@ class AddItemDetailsViewModel(
         if (itemIdFromNav != null) {
             fetchItemDetails(itemIdFromNav)
         } else {
-            // Handle case where itemId is unexpectedly null (e.g., navigation error)
             _uiState.update {
                 it.copy(
                     isLoadingDetails = false,
@@ -82,13 +74,10 @@ class AddItemDetailsViewModel(
                         _uiState.update {
                             it.copy(
                                 itemName = menuItem.name,
-                                // Potentially pre-fill other fields from menuItem
-                                // itemDescription = menuItem.description,
-                                // itemPrice = menuItem.price,
                                 isLoadingDetails = false
                             )
                         }
-                    } ?: _uiState.update { // Item ID valid, but item not found in repository
+                    } ?: _uiState.update { 
                         it.copy(
                             isLoadingDetails = false,
                             errorMessage = "Item details not found.",
@@ -105,7 +94,7 @@ class AddItemDetailsViewModel(
                         )
                     }
                 }
-                is DataResult.Loading -> { /* isLoadingDetails is already true */ }
+                is DataResult.Loading -> {  }
             }
         }
     }
@@ -117,7 +106,6 @@ class AddItemDetailsViewModel(
             is AddItemDetailsAction.UrgencyChanged -> _uiState.update { it.copy(isUrgent = action.urgent) }
             AddItemDetailsAction.AddToOrderClicked -> {
                 if (uiState.value.isLoadingDetails || uiState.value.itemId == null) {
-                    // Prevent adding if details are still loading or item is invalid
                     Log.w("AddItemDetailsVM", "Attempted to add to order while loading or item invalid.")
                     return
                 }
