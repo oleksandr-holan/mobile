@@ -11,7 +11,6 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.lifecycle.compose.LocalLifecycleOwner
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.Lifecycle
@@ -21,7 +20,6 @@ import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import com.example.lab1.R // Assuming you have a placeholder drawable
 import com.example.lab1.data.repository.MockProfileRepository
-import com.example.lab1.ui.theme.Lab1Theme
 
 @Composable
 fun ProfileScreen(

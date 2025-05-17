@@ -46,7 +46,7 @@ sealed class AddItemDetailsSideEffect {
 
 class AddItemDetailsViewModel(
     private val orderRepository: OrderRepository,
-    private val savedStateHandle: SavedStateHandle
+    savedStateHandle: SavedStateHandle
 ) : ViewModel() {
 
     private val _uiState = MutableStateFlow(AddItemDetailsScreenState())
