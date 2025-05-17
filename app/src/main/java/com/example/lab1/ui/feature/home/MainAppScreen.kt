@@ -17,7 +17,7 @@ import com.example.lab1.ui.navigation.bottomNavItems // Import list
 import com.example.lab1.ui.components.AppBottomNavigationBar
 import com.example.lab1.ui.components.AppTopAppBar
 import com.example.lab1.ui.feature.item.AddItemDetailsScreen
-import com.example.lab1.ui.feature.order.view.OrderScreen
+import com.example.lab1.ui.feature.order.OrderScreen
 import com.example.lab1.ui.feature.profile.ProfileScreen
 import com.example.lab1.ui.theme.Lab1Theme
 

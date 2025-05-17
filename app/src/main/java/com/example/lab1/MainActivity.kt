@@ -13,9 +13,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.example.lab1.ui.feature.home.MainAppScreen
-import com.example.lab1.ui.feature.item.AddItemDetailsScreen
 import com.example.lab1.ui.feature.login.LoginScreen
-import com.example.lab1.ui.feature.order.view.OrderScreen
 import com.example.lab1.ui.feature.register.RegistrationScreen
 import com.example.lab1.ui.navigation.AppDestinations
 import com.example.lab1.ui.theme.Lab1Theme
