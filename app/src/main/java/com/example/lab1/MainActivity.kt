@@ -1,11 +1,12 @@
 package com.example.lab1
 
 import android.os.Bundle
-import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.*
+import androidx.compose.material3.adaptive.ExperimentalMaterial3AdaptiveApi
+import androidx.compose.material3.adaptive.currentWindowAdaptiveInfo
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
@@ -14,6 +15,7 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import androidx.window.core.layout.WindowSizeClass
 import com.example.lab1.ui.feature.home.MainAppScreen
 import com.example.lab1.ui.feature.login.LoginScreen
 import com.example.lab1.ui.feature.register.RegistrationScreen
@@ -21,61 +23,37 @@ import com.example.lab1.ui.navigation.AppDestinations
 import com.example.lab1.ui.theme.Lab1Theme
 
 class MainActivity : ComponentActivity() {
-    private val tag = "MainActivityLifecycle"
-
     override fun onCreate(savedInstanceState: Bundle?) {
-        installSplashScreen()
-
+        val splashScreen = installSplashScreen()
         super.onCreate(savedInstanceState)
-        Log.d(tag, "onCreate called")
+
         WindowCompat.setDecorFitsSystemWindows(window, false)
 
         setContent {
             Lab1Theme {
+                val windowAdaptiveInfo = currentWindowAdaptiveInfo()
+                val windowSizeClass = windowAdaptiveInfo.windowSizeClass
+
                 val navController: NavHostController = rememberNavController()
                 Surface(
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colorScheme.background
                 ) {
-                    AppNavigationHost(navController = navController)
+                    AppNavigationHost(
+                        navController = navController,
+                        windowSizeClass = windowSizeClass
+                    )
                 }
             }
         }
     }
-
-    override fun onStart() {
-        super.onStart()
-        Log.d(tag, "onStart called")
-    }
-
-    override fun onResume() {
-        super.onResume()
-        Log.d(tag, "onResume called")
-    }
-
-    override fun onPause() {
-        super.onPause()
-        Log.d(tag, "onPause called")
-    }
-
-    override fun onStop() {
-        super.onStop()
-        Log.d(tag, "onStop called")
-    }
-
-    override fun onRestart() {
-        super.onRestart()
-        Log.d(tag, "onRestart called") // Good to have for completeness
-    }
-
-    override fun onDestroy() {
-        super.onDestroy()
-        Log.d(tag, "onDestroy called")
-    }
 }
 
 @Composable
-fun AppNavigationHost(navController: NavHostController) {
+fun AppNavigationHost(
+    navController: NavHostController,
+    windowSizeClass: WindowSizeClass
+) {
     NavHost(
         navController = navController,
         startDestination = AppDestinations.LOGIN_ROUTE
@@ -83,9 +61,7 @@ fun AppNavigationHost(navController: NavHostController) {
         composable(route = AppDestinations.LOGIN_ROUTE) {
             LoginScreen(
                 onLoginSuccess = {
-
                     navController.navigate(AppDestinations.MAIN_APP_ROUTE) {
-
                         popUpTo(navController.graph.startDestinationRoute!!) {
                             inclusive = true
                         }
@@ -101,7 +77,6 @@ fun AppNavigationHost(navController: NavHostController) {
         composable(route = AppDestinations.REGISTRATION_ROUTE) {
             RegistrationScreen(
                 onRegistrationSuccess = {
-
                     navController.navigate(AppDestinations.MAIN_APP_ROUTE) {
                         popUpTo(navController.graph.startDestinationRoute!!) {
                             inclusive = true
@@ -116,7 +91,10 @@ fun AppNavigationHost(navController: NavHostController) {
         }
 
         composable(route = AppDestinations.MAIN_APP_ROUTE) {
-            MainAppScreen(outerNavController = navController)
+            MainAppScreen(
+                outerNavController = navController,
+                windowSizeClass = windowSizeClass
+            )
         }
     }
 }
