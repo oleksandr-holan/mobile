@@ -1,15 +1,12 @@
 package com.example.lab1.ui.feature.home
 
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.*
 import androidx.compose.material3.adaptive.navigationsuite.NavigationSuiteScaffold
 import androidx.compose.material3.adaptive.navigationsuite.NavigationSuiteType
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
@@ -27,93 +24,6 @@ import com.example.lab1.ui.feature.profile.ProfileScreen
 import com.example.lab1.ui.navigation.AppDestinations
 import com.example.lab1.ui.navigation.BottomNavItem
 import com.example.lab1.ui.navigation.bottomNavItems
-
-@Composable
-fun AppNavigationRail(
-    navController: NavHostController,
-    navItems: List<BottomNavItem>,
-    currentRoute: String?,
-    modifier: Modifier = Modifier
-) {
-    NavigationRail(modifier = modifier) {
-        navItems.forEach { item ->
-            NavigationRailItem(
-                selected = currentRoute == item.route,
-                onClick = {
-                    if (currentRoute != item.route) {
-                        navController.navigate(item.route) {
-                            popUpTo(navController.graph.startDestinationRoute ?: item.route) {
-                                saveState = true
-                            }
-                            launchSingleTop = true
-                            restoreState = true
-                        }
-                    }
-                },
-                icon = { Icon(item.icon, contentDescription = item.title) },
-                label = { Text(item.title) },
-                alwaysShowLabel = true,
-                colors = NavigationRailItemDefaults.colors(
-                    selectedIconColor = MaterialTheme.colorScheme.primary,
-                    selectedTextColor = MaterialTheme.colorScheme.primary,
-                    indicatorColor = MaterialTheme.colorScheme.primaryContainer.copy(alpha = 0.5f),
-                    unselectedIconColor = MaterialTheme.colorScheme.onSurfaceVariant,
-                    unselectedTextColor = MaterialTheme.colorScheme.onSurfaceVariant
-                )
-            )
-        }
-    }
-}
-
-@Composable
-fun AppPermanentNavigationDrawer(
-    navController: NavHostController,
-    navItems: List<BottomNavItem>,
-    currentRoute: String?,
-    modifier: Modifier = Modifier,
-    drawerContent: @Composable () -> Unit
-) {
-    PermanentNavigationDrawer(
-        drawerContent = {
-            PermanentDrawerSheet(
-                modifier = modifier,
-                drawerContainerColor = MaterialTheme.colorScheme.surfaceColorAtElevation(1.dp)
-            ) {
-                Spacer(Modifier.height(12.dp))
-                navItems.forEach { item ->
-                    NavigationDrawerItem(
-                        icon = { Icon(item.icon, contentDescription = item.title) },
-                        label = { Text(item.title) },
-                        selected = currentRoute == item.route,
-                        onClick = {
-                            if (currentRoute != item.route) {
-                                navController.navigate(item.route) {
-                                    popUpTo(
-                                        navController.graph.startDestinationRoute ?: item.route
-                                    ) {
-                                        saveState = true
-                                    }
-                                    launchSingleTop = true
-                                    restoreState = true
-                                }
-                            }
-                        },
-                        modifier = Modifier.padding(NavigationDrawerItemDefaults.ItemPadding),
-                        colors = NavigationDrawerItemDefaults.colors(
-                            selectedContainerColor = MaterialTheme.colorScheme.primaryContainer,
-                            selectedIconColor = MaterialTheme.colorScheme.onPrimaryContainer,
-                            selectedTextColor = MaterialTheme.colorScheme.onPrimaryContainer,
-                            unselectedIconColor = MaterialTheme.colorScheme.onSurfaceVariant,
-                            unselectedTextColor = MaterialTheme.colorScheme.onSurfaceVariant
-                        )
-                    )
-                }
-            }
-        },
-        content = drawerContent
-    )
-}
-
 
 @Composable
 fun MainAppScreen(
@@ -135,21 +45,6 @@ fun MainAppScreen(
     val canNavigateBack = remember(currentRoute) {
 
         bottomNavItems.none { it.route == currentRoute } && currentRoute != null
-    }
-
-    val navigationSuiteLayoutType = when {
-        windowSizeClass.isWidthAtLeastBreakpoint(WIDTH_DP_EXPANDED_LOWER_BOUND) -> {
-
-            NavigationSuiteType.NavigationDrawer
-        }
-
-        windowSizeClass.isWidthAtLeastBreakpoint(WIDTH_DP_MEDIUM_LOWER_BOUND) -> {
-            NavigationSuiteType.NavigationRail
-        }
-
-        else -> {
-            NavigationSuiteType.NavigationBar
-        }
     }
 
     val determinedLayoutType = when {
@@ -205,6 +100,7 @@ fun MainAppScreen(
                                 "${AppDestinations.ADD_ITEM_DETAILS_ROUTE}/$itemId"
                             )
                         },
+                        windowSizeClass = windowSizeClass
                     )
                 }
                 composable(BottomNavItem.Profile.route) {
