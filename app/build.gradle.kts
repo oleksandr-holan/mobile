@@ -67,7 +67,6 @@ dependencies {
     implementation(libs.androidx.core.splashscreen)
     implementation(libs.material)
     implementation(libs.material3)
-    implementation(libs.material3.adaptive)
     implementation(libs.androidx.window)
 
 }
