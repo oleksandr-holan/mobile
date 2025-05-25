@@ -20,6 +20,7 @@ import com.example.lab1.ui.components.AppTopAppBar
 import com.example.lab1.ui.feature.item.AddItemDetailsScreen
 import com.example.lab1.ui.feature.order.OrderScreen
 import com.example.lab1.ui.feature.profile.ProfileScreen
+import com.example.lab1.ui.feature.settings.SettingsScreen
 
 @Composable
 fun MainAppScreen(outerNavController: NavHostController) {
@@ -30,7 +31,8 @@ fun MainAppScreen(outerNavController: NavHostController) {
         when (currentRoute) {
             BottomNavItem.Orders.route -> BottomNavItem.Orders.title
             BottomNavItem.Profile.route -> BottomNavItem.Profile.title
-            AppDestinations.ADD_ITEM_DETAILS_ROUTE -> "Item Details" 
+            AppDestinations.ADD_ITEM_DETAILS_ROUTE -> "Item Details"
+            BottomNavItem.Settings.route -> BottomNavItem.Settings.title
             else -> "" 
         }
     }
@@ -84,6 +86,10 @@ fun MainAppScreen(outerNavController: NavHostController) {
                 AddItemDetailsScreen(
                     onNavigateBack = { innerNavController.popBackStack() }
                 )
+            }
+
+            composable(BottomNavItem.Settings.route) {
+                SettingsScreen()
             }
         }
     }

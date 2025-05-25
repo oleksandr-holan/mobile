@@ -9,4 +9,5 @@ object AppDestinations {
     const val PROFILE_ROUTE = "profile"
     const val MAIN_APP_ROUTE = "main_app"
     const val ADD_ITEM_DETAILS_WITH_ID_ROUTE = "$ADD_ITEM_DETAILS_ROUTE/{$ARG_ITEM_ID}"
+    const val SETTINGS_ROUTE = "settings"
 }

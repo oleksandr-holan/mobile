@@ -3,6 +3,7 @@ package com.example.lab1.ui.navigation
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ListAlt
 import androidx.compose.material.icons.filled.Person
+import androidx.compose.material.icons.filled.Settings
 import androidx.compose.ui.graphics.vector.ImageVector
 
 sealed class BottomNavItem(
@@ -21,9 +22,16 @@ sealed class BottomNavItem(
         title = "Profile",
         icon = Icons.Default.Person
     )
+
+    data object Settings : BottomNavItem(
+        route = AppDestinations.SETTINGS_ROUTE,
+        title = "Settings",
+        icon = Icons.Default.Settings
+    )
 }
 
 val bottomNavItems = listOf(
     BottomNavItem.Orders,
-    BottomNavItem.Profile
+    BottomNavItem.Profile,
+    BottomNavItem.Settings,
 )
