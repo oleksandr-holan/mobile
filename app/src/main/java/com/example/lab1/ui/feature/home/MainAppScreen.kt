@@ -1,11 +1,8 @@
 package com.example.lab1.ui.feature.home
 
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.navigation.NavHostController
 import androidx.navigation.NavType
@@ -20,6 +17,7 @@ import com.example.lab1.ui.navigation.bottomNavItems
 
 import com.example.lab1.ui.components.AppBottomNavigationBar
 import com.example.lab1.ui.components.AppTopAppBar
+import com.example.lab1.ui.feature.menu.MenuScreen
 //import com.example.lab1.ui.feature.item.AddItemDetailsScreen // Keep for now
 import com.example.lab1.ui.feature.order.OrderScreen
 import com.example.lab1.ui.feature.profile.ProfileScreen
@@ -97,9 +95,16 @@ fun MainAppScreen(outerNavController: NavHostController) {
 
             // Placeholder for Menu Screen
             composable(AppDestinations.MENU_SCREEN_ROUTE) {
-                Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-                    Text("Placeholder: Menu Screen - List of MenuItems from DB here")
-                }
+                MenuScreen(
+                    onNavigateToNewOrderItemDetails = { menuItemId ->
+                        innerNavController.navigate(
+                            AppDestinations.NEW_ORDER_ITEM_DETAILS_ROUTE.replace(
+                                "{${AppDestinations.ARG_MENU_ITEM_ID}}",
+                                menuItemId
+                            )
+                        )
+                    }
+                )
             }
 
             // Route for ADDING a new item from menu - ARG_MENU_ITEM_ID

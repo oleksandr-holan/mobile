@@ -33,7 +33,7 @@ abstract class AppDatabase : RoomDatabase() {
         // This callback is for pre-populating the database.
         private class AppDatabaseCallback(
             private val scope: CoroutineScope
-        ) : RoomDatabase.Callback() {
+        ) : Callback() {
             override fun onCreate(db: SupportSQLiteDatabase) {
                 super.onCreate(db)
                 INSTANCE?.let { database ->
@@ -61,7 +61,7 @@ abstract class AppDatabase : RoomDatabase() {
                     "waiter_app_database"
                 )
                     .addCallback(AppDatabaseCallback(coroutineScope)) // Add callback here
-                    .fallbackToDestructiveMigration() // Not for production, but okay for dev
+                    .fallbackToDestructiveMigration(false) // Not for production, but okay for dev
                     .build()
                 INSTANCE = instance
                 instance
