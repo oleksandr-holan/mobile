@@ -14,7 +14,7 @@ import javax.inject.Singleton
 
 @Singleton
 class SettingsRepositoryImpl @Inject constructor(
-    private val dataStore: DataStore<Preferences> // Injected by Hilt
+    private val dataStore: DataStore<Preferences>
 ) : SettingsRepository {
 
     override val notificationsEnabledFlow: Flow<Boolean> = dataStore.data
