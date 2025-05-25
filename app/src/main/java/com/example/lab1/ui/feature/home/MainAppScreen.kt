@@ -1,8 +1,11 @@
 package com.example.lab1.ui.feature.home
 
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.navigation.NavHostController
 import androidx.navigation.NavType
@@ -18,10 +21,10 @@ import com.example.lab1.ui.navigation.bottomNavItems
 import com.example.lab1.ui.components.AppBottomNavigationBar
 import com.example.lab1.ui.components.AppTopAppBar
 import com.example.lab1.ui.feature.menu.MenuScreen
-//import com.example.lab1.ui.feature.item.AddItemDetailsScreen // Keep for now
 import com.example.lab1.ui.feature.order.OrderScreen
 import com.example.lab1.ui.feature.profile.ProfileScreen
 import com.example.lab1.ui.feature.settings.SettingsScreen
+import com.example.lab1.ui.feature.item.AddItemDetailsScreen
 
 @Composable
 fun MainAppScreen(outerNavController: NavHostController) {
@@ -68,18 +71,9 @@ fun MainAppScreen(outerNavController: NavHostController) {
             modifier = Modifier.padding(innerPadding)
         ) {
             composable(BottomNavItem.Orders.route) {
+                // OrderScreen will now manage its own ViewModel instance
                 OrderScreen(
-                    onNavigateToMenu = {
-                        innerNavController.navigate(AppDestinations.MENU_SCREEN_ROUTE)
-                    },
-                    onNavigateToEditOrderItem = { orderItemId ->
-                        innerNavController.navigate(
-                            AppDestinations.EDIT_ORDER_ITEM_DETAILS_ROUTE.replace(
-                                "{${AppDestinations.ARG_ITEM_ID}}",
-                                orderItemId.toString()
-                            )
-                        )
-                    }
+                    innerNavController = innerNavController
                 )
             }
             composable(BottomNavItem.Profile.route) {
@@ -93,45 +87,51 @@ fun MainAppScreen(outerNavController: NavHostController) {
                 )
             }
 
-            // Placeholder for Menu Screen
-            composable(AppDestinations.MENU_SCREEN_ROUTE) {
-                MenuScreen(
-                    onNavigateToNewOrderItemDetails = { menuItemId ->
-                        innerNavController.navigate(
-                            AppDestinations.NEW_ORDER_ITEM_DETAILS_ROUTE.replace(
-                                "{${AppDestinations.ARG_MENU_ITEM_ID}}",
-                                menuItemId
-                            )
-                        )
-                    }
+            composable(
+                route = AppDestinations.MENU_SCREEN_WITH_ORDER_ROUTE,
+                arguments = listOf(
+                    navArgument(AppDestinations.ARG_ACTIVE_ORDER_ID) { type = NavType.LongType }
                 )
+            ) { backStackEntry ->
+                val activeOrderId = backStackEntry.arguments?.getLong(AppDestinations.ARG_ACTIVE_ORDER_ID)
+                if (activeOrderId != null && activeOrderId != 0L) {
+                    MenuScreen(
+                        onNavigateToNewOrderItemDetails = { menuItemId ->
+                            innerNavController.navigate(
+                                AppDestinations.NEW_ORDER_ITEM_DETAILS_ROUTE
+                                    .replace("{${AppDestinations.ARG_MENU_ITEM_ID}}", menuItemId)
+                                    .replace("{${AppDestinations.ARG_ACTIVE_ORDER_ID}}", activeOrderId.toString())
+                            )
+                        }
+                    )
+                } else {
+                    Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+                        Text("Error: Active order ID is missing for Menu Screen.")
+                    }
+                }
             }
 
-            // Route for ADDING a new item from menu - ARG_MENU_ITEM_ID
             composable(
                 route = AppDestinations.NEW_ORDER_ITEM_DETAILS_ROUTE,
                 arguments = listOf(
-                    navArgument(AppDestinations.ARG_MENU_ITEM_ID) { type = NavType.StringType }
+                    navArgument(AppDestinations.ARG_MENU_ITEM_ID) { type = NavType.StringType },
+                    navArgument(AppDestinations.ARG_ACTIVE_ORDER_ID) { type = NavType.LongType }
                 )
             ) {
-                // We'll fully implement AddItemDetailsScreen with its ViewModel later
-                // For now, it can use its existing structure or be a placeholder
-//                AddItemDetailsScreen( // This will need its ViewModel factory for now
-//                    onNavigateBack = { innerNavController.popBackStack() }
-//                )
+                AddItemDetailsScreen(
+                    onNavigateBack = { innerNavController.popBackStack() }
+                )
             }
 
-            // Route for EDITING an existing order item - ARG_ITEM_ID (Long)
             composable(
                 route = AppDestinations.EDIT_ORDER_ITEM_DETAILS_ROUTE,
                 arguments = listOf(
-                    navArgument(AppDestinations.ARG_ITEM_ID) { type = NavType.LongType } // Changed to LongType
+                    navArgument(AppDestinations.ARG_ITEM_ID) { type = NavType.LongType }
                 )
             ) {
-                // Same AddItemDetailsScreen, but will load an OrderItemEntity
-//                AddItemDetailsScreen( // This will need its ViewModel factory for now
-//                    onNavigateBack = { innerNavController.popBackStack() }
-//                )
+                AddItemDetailsScreen(
+                    onNavigateBack = { innerNavController.popBackStack() }
+                )
             }
 
             composable(BottomNavItem.Settings.route) {

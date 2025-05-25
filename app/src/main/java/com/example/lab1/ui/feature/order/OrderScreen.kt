@@ -22,14 +22,14 @@ import com.example.lab1.data.model.OrderItemEntity
 import kotlinx.coroutines.flow.collectLatest
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.flowWithLifecycle
+import androidx.navigation.NavHostController
+import com.example.lab1.ui.navigation.AppDestinations
 
 
 @Composable
 fun OrderScreen(
-    // NavController for navigating to MenuScreen and AddItemDetailsScreen (passed from MainAppScreen's innerNavController)
-    onNavigateToMenu: () -> Unit,
-    onNavigateToEditOrderItem: (orderItemId: Long) -> Unit,
-    orderViewModel: OrderViewModel = hiltViewModel()
+    innerNavController: NavHostController, // ADD this
+    orderViewModel: OrderViewModel = hiltViewModel() // ViewModel obtained here
 ) {
     val uiState by orderViewModel.uiState.collectAsState()
     val lifecycleOwner = LocalLifecycleOwner.current
@@ -41,10 +41,25 @@ fun OrderScreen(
         ).collectLatest { effect ->
             when (effect) {
                 is OrderScreenSideEffect.NavigateToEditOrderItem -> {
-                    onNavigateToEditOrderItem(effect.orderItemId)
+                    // onNavigateToEditOrderItem(effect.orderItemId)
+                    innerNavController.navigate(
+                        AppDestinations.EDIT_ORDER_ITEM_DETAILS_ROUTE.replace(
+                            "{${AppDestinations.ARG_ITEM_ID}}",
+                            effect.orderItemId.toString()
+                        )
+                    )
                 }
                 OrderScreenSideEffect.NavigateToMenuScreen -> {
-                    onNavigateToMenu()
+                    // onNavigateToMenu()
+                    val activeOrderId = uiState.currentOrder?.orderId // Get it from its own state
+                    if (activeOrderId != null) {
+                        innerNavController.navigate(
+                            AppDestinations.MENU_SCREEN_WITH_ORDER_ROUTE.replace(
+                                "{${AppDestinations.ARG_ACTIVE_ORDER_ID}}",
+                                activeOrderId.toString()
+                            )
+                        )
+                    }
                 }
             }
         }
