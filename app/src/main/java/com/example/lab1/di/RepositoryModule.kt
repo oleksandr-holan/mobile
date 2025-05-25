@@ -1,5 +1,7 @@
 package com.example.lab1.di
 
+import com.example.lab1.data.repository.OrderRepository
+import com.example.lab1.data.repository.OrderRepositoryImpl
 import com.example.lab1.data.repository.SettingsRepository
 import com.example.lab1.data.repository.SettingsRepositoryImpl
 import dagger.Binds
@@ -17,4 +19,10 @@ abstract class RepositoryModule {
     abstract fun bindSettingsRepository(
         settingsRepositoryImpl: SettingsRepositoryImpl
     ): SettingsRepository
+
+    @Binds
+    @Singleton
+    abstract fun bindOrderRepository(
+        orderRepositoryImpl: OrderRepositoryImpl
+    ): OrderRepository
 }
