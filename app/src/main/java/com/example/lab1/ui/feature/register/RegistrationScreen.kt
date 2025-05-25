@@ -19,7 +19,7 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.flowWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.lab1.data.repository.MockAuthRepository
-import com.example.lab1.ui.components.AppTopAppBar // Added import
+import com.example.lab1.ui.components.AppTopAppBar 
 
 @Composable
 fun RegistrationScreen(

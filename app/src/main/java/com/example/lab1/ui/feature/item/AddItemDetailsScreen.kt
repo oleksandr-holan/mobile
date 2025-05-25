@@ -27,7 +27,7 @@ fun AddItemDetailsScreen(
         addItemDetailsViewModel.sideEffect.flowWithLifecycle(
             lifecycleOwner.lifecycle,
             Lifecycle.State.STARTED
-        ).collectLatest { effect -> // Use collectLatest for side effects
+        ).collectLatest { effect ->
             when (effect) {
                 AddItemDetailsSideEffect.NavigateBack -> {
                     onNavigateBack()
@@ -58,7 +58,7 @@ fun AddItemDetailsScreen(
 
         if (!uiState.isLoading) {
             Text(
-                text = if(uiState.isEditMode) "Edit Details for:" else "Add Details for:",
+                text = if (uiState.isEditMode) "Edit Details for:" else "Add Details for:",
                 style = MaterialTheme.typography.headlineSmall
             )
             Text(
@@ -67,7 +67,7 @@ fun AddItemDetailsScreen(
                 modifier = Modifier.padding(bottom = 8.dp)
             )
             Text(
-                text = "Price: ${uiState.itemPrice}", // Show price
+                text = "Price: ${uiState.itemPrice}",
                 style = MaterialTheme.typography.bodyLarge,
                 modifier = Modifier.padding(bottom = 16.dp)
             )
@@ -80,14 +80,13 @@ fun AddItemDetailsScreen(
                         AddItemDetailsAction.QuantityChanged(it)
                     )
                 },
-                valueRange = 1f..10f, // Or make dynamic based on item type
-                steps = 8, // valueRange (10-1) / steps (8) -> 9/8 = 1.125 per step.
+                valueRange = 1f..10f,
+                steps = 8,
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(vertical = 8.dp),
                 enabled = !uiState.isSaving && uiState.errorMessage == null
             )
-
             Spacer(modifier = Modifier.height(16.dp))
             OutlinedTextField(
                 value = uiState.specialRequests,
@@ -102,8 +101,6 @@ fun AddItemDetailsScreen(
                 enabled = !uiState.isSaving && uiState.errorMessage == null
             )
             Spacer(modifier = Modifier.height(16.dp))
-
-            // isUrgent switch (kept UI, but not saved in VM logic yet)
             Row(
                 modifier = Modifier.fillMaxWidth(),
                 verticalAlignment = Alignment.CenterVertically,
@@ -121,10 +118,7 @@ fun AddItemDetailsScreen(
                 )
             }
         }
-
-
-        Spacer(modifier = Modifier.weight(1f)) // Push button to bottom
-
+        Spacer(modifier = Modifier.weight(1f))
         Button(
             onClick = { addItemDetailsViewModel.onAction(AddItemDetailsAction.SaveOrUpdateItemClicked) },
             modifier = Modifier
@@ -133,7 +127,10 @@ fun AddItemDetailsScreen(
             enabled = !uiState.isSaving && uiState.errorMessage == null && uiState.menuItemOriginalId != null
         ) {
             if (uiState.isSaving) {
-                CircularProgressIndicator(modifier = Modifier.size(24.dp), color = MaterialTheme.colorScheme.onPrimary)
+                CircularProgressIndicator(
+                    modifier = Modifier.size(24.dp),
+                    color = MaterialTheme.colorScheme.onPrimary
+                )
             } else {
                 Text(uiState.buttonText, fontSize = 16.sp)
             }

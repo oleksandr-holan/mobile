@@ -8,11 +8,11 @@ import kotlinx.coroutines.flow.Flow
 interface OrderRepository {
     fun getAllMenuItems(): Flow<List<MenuItem>>
     fun getMenuItemById(itemId: String): Flow<MenuItem?>
-    suspend fun addMenuItem(menuItem: MenuItem) // For admin/menu management later
-    suspend fun deleteMenuItem(itemId: String) // For admin/menu management later
-    suspend fun getMenuItemCount(): Int // For initial seeding check
+    suspend fun addMenuItem(menuItem: MenuItem) 
+    suspend fun deleteMenuItem(itemId: String) 
+    suspend fun getMenuItemCount(): Int 
 
-    suspend fun createNewOrder(tableNumber: Int): Long // Returns new Order ID
+    suspend fun createNewOrder(tableNumber: Int): Long 
     fun getOrderById(orderId: Long): Flow<OrderEntity?>
     fun getLatestActiveOrder(): Flow<OrderEntity?>
     suspend fun updateOrder(order: OrderEntity)

@@ -32,7 +32,6 @@ object DatabaseModule {
         @ApplicationContext context: Context,
         applicationScope: CoroutineScope
     ): AppDatabase {
-        // Using the manual getDatabase to include the callback for pre-population
         return AppDatabase.getDatabase(context, applicationScope)
     }
 

@@ -12,7 +12,7 @@ import kotlinx.coroutines.flow.Flow
 interface OrderDao {
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun insertOrder(order: OrderEntity): Long // Returns the new orderId
+    suspend fun insertOrder(order: OrderEntity): Long 
 
     @Update
     suspend fun updateOrder(order: OrderEntity)

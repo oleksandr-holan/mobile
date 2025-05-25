@@ -117,7 +117,7 @@ com.example.waiterapp
         NavHost(navController = navController, startDestination = "profile") {
             composable("profile") { ProfileScreen(navController) }
             composable("friends") { FriendsScreen(navController) }
-            // ... інші екрани
+            
         }
         ```
 

@@ -28,8 +28,8 @@ import com.example.lab1.ui.navigation.AppDestinations
 
 @Composable
 fun OrderScreen(
-    innerNavController: NavHostController, // ADD this
-    orderViewModel: OrderViewModel = hiltViewModel() // ViewModel obtained here
+    innerNavController: NavHostController, 
+    orderViewModel: OrderViewModel = hiltViewModel() 
 ) {
     val uiState by orderViewModel.uiState.collectAsState()
     val lifecycleOwner = LocalLifecycleOwner.current
@@ -41,7 +41,6 @@ fun OrderScreen(
         ).collectLatest { effect ->
             when (effect) {
                 is OrderScreenSideEffect.NavigateToEditOrderItem -> {
-                    // onNavigateToEditOrderItem(effect.orderItemId)
                     innerNavController.navigate(
                         AppDestinations.EDIT_ORDER_ITEM_DETAILS_ROUTE.replace(
                             "{${AppDestinations.ARG_ITEM_ID}}",
@@ -50,8 +49,7 @@ fun OrderScreen(
                     )
                 }
                 OrderScreenSideEffect.NavigateToMenuScreen -> {
-                    // onNavigateToMenu()
-                    val activeOrderId = uiState.currentOrder?.orderId // Get it from its own state
+                    val activeOrderId = uiState.currentOrder?.orderId 
                     if (activeOrderId != null) {
                         innerNavController.navigate(
                             AppDestinations.MENU_SCREEN_WITH_ORDER_ROUTE.replace(
@@ -75,7 +73,7 @@ fun OrderScreen(
         Column(
             modifier = Modifier
                 .fillMaxSize()
-                .padding(paddingValues) // Apply padding from Scaffold
+                .padding(paddingValues) 
                 .safeDrawingPadding()
                 .padding(16.dp)
         ) {
@@ -162,9 +160,9 @@ fun OrderItemRow(
 ) {
     val dismissState = rememberSwipeToDismissBoxState(
         confirmValueChange = {
-            if (it == SwipeToDismissBoxValue.EndToStart) { // Swiped from right to left
+            if (it == SwipeToDismissBoxValue.EndToStart) { 
                 onDelete()
-                true // Confirm the dismiss
+                true 
             } else {
                 false
             }
@@ -183,7 +181,7 @@ fun OrderItemRow(
                     .fillMaxSize()
                     .background(color)
                     .padding(12.dp),
-                contentAlignment = Alignment.CenterEnd // Icon on the right for EndToStart
+                contentAlignment = Alignment.CenterEnd 
             ) {
                 Icon(
                     Icons.Filled.Delete,
@@ -192,7 +190,7 @@ fun OrderItemRow(
                 )
             }
         },
-        enableDismissFromStartToEnd = false, // Disable swipe from left to right
+        enableDismissFromStartToEnd = false, 
         enableDismissFromEndToStart = true
     ) {
         Card(
@@ -218,7 +216,6 @@ fun OrderItemRow(
                         Text("Notes: $it", style = MaterialTheme.typography.bodySmall, fontStyle = androidx.compose.ui.text.font.FontStyle.Italic)
                     }
                 }
-                // Potentially add total price for this line item later
             }
         }
     }

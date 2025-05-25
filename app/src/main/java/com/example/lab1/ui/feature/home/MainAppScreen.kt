@@ -37,14 +37,12 @@ fun MainAppScreen(outerNavController: NavHostController) {
             currentRoute == BottomNavItem.Orders.route -> BottomNavItem.Orders.title
             currentRoute == BottomNavItem.Profile.route -> BottomNavItem.Profile.title
             currentRoute == AppDestinations.MENU_SCREEN_ROUTE -> "Select Menu Items"
-            currentRoute?.startsWith(AppDestinations.ADD_ITEM_DETAILS_ROUTE) == true -> "Item Details" // Catches both new/edit
+            currentRoute?.startsWith(AppDestinations.ADD_ITEM_DETAILS_ROUTE) == true -> "Item Details" 
             currentRoute == BottomNavItem.Settings.route -> BottomNavItem.Settings.title
             else -> "Order App"
         }
     }
     val canNavigateBack = remember(currentRoute) {
-        // True if not a bottom nav item AND currentRoute is not null
-        // AND currentRoute is not the start destination of the inner graph (Orders)
         bottomNavItems.none { it.route == currentRoute } &&
                 currentRoute != null &&
                 currentRoute != BottomNavItem.Orders.route
@@ -54,12 +52,12 @@ fun MainAppScreen(outerNavController: NavHostController) {
         topBar = {
             AppTopAppBar(
                 title = currentScreenTitle,
-                canNavigateBack = canNavigateBack, // Enable back for MenuScreen and AddItemDetailsScreen
+                canNavigateBack = canNavigateBack, 
                 onNavigateBack = { innerNavController.popBackStack() }
             )
         },
         bottomBar = {
-            // Show bottom nav only for top-level bottom nav destinations
+            
             if (bottomNavItems.any { it.route == currentRoute}) {
                 AppBottomNavigationBar(navController = innerNavController)
             }
@@ -71,7 +69,6 @@ fun MainAppScreen(outerNavController: NavHostController) {
             modifier = Modifier.padding(innerPadding)
         ) {
             composable(BottomNavItem.Orders.route) {
-                // OrderScreen will now manage its own ViewModel instance
                 OrderScreen(
                     innerNavController = innerNavController
                 )

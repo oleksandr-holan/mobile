@@ -41,11 +41,6 @@ fun SettingsScreen(
             currentTheme = currentTheme,
             onThemeSelected = { settingsViewModel.onAppThemeChanged(it) }
         )
-
-//        LanguageSettingItem(
-//            currentLanguage = currentLanguage,
-//            onThemeSelected = { settingsViewModel.onAppThemeChanged(it) }
-//        )
     }
 }
 

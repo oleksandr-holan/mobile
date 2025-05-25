@@ -24,18 +24,18 @@ data class OrderScreenState(
     val currentOrder: OrderEntity? = null,
     val currentOrderItems: List<OrderItemEntity> = emptyList(),
     val isLoadingOrder: Boolean = true,
-    val isLoadingItems: Boolean = false, // To show loading when items for a new order are fetched
+    val isLoadingItems: Boolean = false, 
     val errorMessage: String? = null,
-    val showMenuScreen: Boolean = false // To trigger navigation to MenuScreen
+    val showMenuScreen: Boolean = false 
 )
 
 sealed class OrderScreenAction {
     data object CreateNewOrder : OrderScreenAction()
     data class OrderItemClicked(val orderItemId: Long) : OrderScreenAction()
     data class OrderItemSwipedToDelete(val orderItemEntity: OrderItemEntity) : OrderScreenAction()
-    data object FabClicked : OrderScreenAction() // To navigate to MenuScreen
-    data object MenuScreenDismissed : OrderScreenAction() // To reset showMenuScreen
-    data object LoadActiveOrder : OrderScreenAction() // Initial load
+    data object FabClicked : OrderScreenAction() 
+    data object MenuScreenDismissed : OrderScreenAction() 
+    data object LoadActiveOrder : OrderScreenAction() 
 }
 
 sealed class OrderScreenSideEffect {
@@ -55,13 +55,10 @@ class OrderViewModel @Inject constructor(
     private val _sideEffect = MutableSharedFlow<OrderScreenSideEffect>()
     val sideEffect: SharedFlow<OrderScreenSideEffect> = _sideEffect.asSharedFlow()
 
-    // Holds the ID of the currently active order. Can be null if no active order.
     private val activeOrderIdFlow = MutableStateFlow<Long?>(null)
 
     init {
         loadLatestActiveOrder()
-
-        // Observe the activeOrderIdFlow and fetch its items whenever it changes
         viewModelScope.launch {
             activeOrderIdFlow.filterNotNull().flatMapLatest { orderId ->
                 _uiState.update { it.copy(isLoadingItems = true) }
@@ -83,8 +80,8 @@ class OrderViewModel @Inject constructor(
             _uiState.update { it.copy(isLoadingOrder = true) }
             orderRepository.getLatestActiveOrder().collectLatest { order ->
                 _uiState.update { it.copy(currentOrder = order, isLoadingOrder = false) }
-                activeOrderIdFlow.value = order?.orderId // Update active order ID
-                if (order == null) { // No active order, clear items
+                activeOrderIdFlow.value = order?.orderId 
+                if (order == null) { 
                     _uiState.update { it.copy(currentOrderItems = emptyList(), isLoadingItems = false) }
                 }
             }
@@ -95,16 +92,13 @@ class OrderViewModel @Inject constructor(
     fun onAction(action: OrderScreenAction) {
         when (action) {
             OrderScreenAction.LoadActiveOrder -> {
-                loadLatestActiveOrder() // Re-trigger loading if needed
+                loadLatestActiveOrder() 
             }
             OrderScreenAction.CreateNewOrder -> {
                 viewModelScope.launch {
                     _uiState.update { it.copy(isLoadingOrder = true) }
-                    // For simplicity, using a default table number. This could be an input.
                     val newOrderId = orderRepository.createNewOrder(tableNumber = _uiState.value.currentOrder?.tableNumber?.plus(1) ?: 1)
-                    activeOrderIdFlow.value = newOrderId // Set the new order as active
-                    // The flow for fetching the order itself will update _uiState.currentOrder
-                    // Need to explicitly reload the order details for the new ID
+                    activeOrderIdFlow.value = newOrderId
                     orderRepository.getOrderById(newOrderId).collectLatest { newOrder ->
                         _uiState.update { it.copy(currentOrder = newOrder, isLoadingOrder = false, currentOrderItems = emptyList()) }
                     }
@@ -118,13 +112,11 @@ class OrderViewModel @Inject constructor(
             is OrderScreenAction.OrderItemSwipedToDelete -> {
                 viewModelScope.launch {
                     orderRepository.deleteOrderItem(action.orderItemEntity)
-                    // The list will auto-update due to the Flow from getOrderItemsForOrder
                 }
             }
             OrderScreenAction.FabClicked -> {
                 if (_uiState.value.currentOrder == null) {
                     _uiState.update { it.copy(errorMessage = "Please create or select an order first.") }
-                    // Optionally, could auto-create an order here.
                 } else {
                     viewModelScope.launch { _sideEffect.emit(OrderScreenSideEffect.NavigateToMenuScreen) }
                 }

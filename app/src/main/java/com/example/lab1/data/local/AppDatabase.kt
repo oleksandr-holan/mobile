@@ -17,8 +17,8 @@ import kotlinx.coroutines.launch
 
 @Database(
     entities = [MenuItem::class, OrderEntity::class, OrderItemEntity::class],
-    version = 1, // Increment version on schema changes
-    exportSchema = false // For simplicity in this project
+    version = 1, 
+    exportSchema = false 
 )
 abstract class AppDatabase : RoomDatabase() {
 
@@ -29,8 +29,7 @@ abstract class AppDatabase : RoomDatabase() {
     companion object {
         @Volatile
         private var INSTANCE: AppDatabase? = null
-
-        // This callback is for pre-populating the database.
+        
         private class AppDatabaseCallback(
             private val scope: CoroutineScope
         ) : Callback() {
@@ -44,15 +43,14 @@ abstract class AppDatabase : RoomDatabase() {
             }
 
             suspend fun populateInitialMenu(menuItemDao: MenuItemDao) {
-                // Add a check to prevent re-populating if already done or if db is not empty
+                
                 if (menuItemDao.getMenuItemsCount() == 0) {
                     val initialMenuItems = MockMenuItemDataProvider.getMockMenuItems()
                     menuItemDao.insertAll(initialMenuItems)
                 }
             }
         }
-
-        // Hilt will manage the singleton instance, but this is how you'd do it manually or for the callback
+        
         fun getDatabase(context: Context, coroutineScope: CoroutineScope): AppDatabase {
             return INSTANCE ?: synchronized(this) {
                 val instance = Room.databaseBuilder(
@@ -60,8 +58,8 @@ abstract class AppDatabase : RoomDatabase() {
                     AppDatabase::class.java,
                     "waiter_app_database"
                 )
-                    .addCallback(AppDatabaseCallback(coroutineScope)) // Add callback here
-                    .fallbackToDestructiveMigration(false) // Not for production, but okay for dev
+                    .addCallback(AppDatabaseCallback(coroutineScope)) 
+                    .fallbackToDestructiveMigration(false) 
                     .build()
                 INSTANCE = instance
                 instance

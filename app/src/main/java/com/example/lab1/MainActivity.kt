@@ -29,7 +29,7 @@ import javax.inject.Inject
 class MainActivity : ComponentActivity() {
     private val tag = "MainActivityLifecycle"
 
-    @Inject // Hilt will inject this
+    @Inject 
     lateinit var settingsRepository: SettingsRepository
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -82,7 +82,7 @@ class MainActivity : ComponentActivity() {
 
     override fun onRestart() {
         super.onRestart()
-        Log.d(tag, "onRestart called") // Good to have for completeness
+        Log.d(tag, "onRestart called") 
     }
 
     override fun onDestroy() {

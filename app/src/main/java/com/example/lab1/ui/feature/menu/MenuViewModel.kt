@@ -2,7 +2,7 @@ package com.example.lab1.ui.feature.menu
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.lab1.data.model.MenuItem // This is your MenuItem @Entity
+import com.example.lab1.data.model.MenuItem 
 import com.example.lab1.data.repository.OrderRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableSharedFlow
@@ -21,12 +21,12 @@ data class MenuScreenState(
     val menuItems: List<MenuItem> = emptyList(),
     val isLoading: Boolean = true,
     val errorMessage: String? = null,
-    val selectedCategory: String? = null // For future filtering
+    val selectedCategory: String? = null 
 )
 
 sealed class MenuScreenAction {
     data class MenuItemClicked(val menuItemId: String) : MenuScreenAction()
-    data class FilterByCategory(val category: String?) : MenuScreenAction() // For future use
+    data class FilterByCategory(val category: String?) : MenuScreenAction() 
 }
 
 sealed class MenuScreenSideEffect {
@@ -51,8 +51,7 @@ class MenuViewModel @Inject constructor(
     private fun fetchMenuItems(category: String? = null) {
         viewModelScope.launch {
             _uiState.update { it.copy(isLoading = true, errorMessage = null, selectedCategory = category) }
-            orderRepository.getAllMenuItems() // Assuming this fetches all for now
-                // Add filtering logic here if categories are implemented for MenuItemEntity
+            orderRepository.getAllMenuItems()
                 .catch { e ->
                     _uiState.update {
                         it.copy(

@@ -13,7 +13,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.compose.LocalLifecycleOwner
 import androidx.lifecycle.flowWithLifecycle
-import com.example.lab1.ui.components.MenuItemCard // Reusing the existing MenuItemCard
+import com.example.lab1.ui.components.MenuItemCard 
 
 @Composable
 fun MenuScreen(
@@ -39,7 +39,7 @@ fun MenuScreen(
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .padding(16.dp) // Apply padding here, Scaffold will handle overall padding
+            .padding(16.dp) 
     ) {
         if (uiState.isLoading) {
             Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
@@ -67,10 +67,10 @@ fun MenuScreen(
                     Box(modifier = Modifier.clickable {
                         menuViewModel.onAction(MenuScreenAction.MenuItemClicked(menuItem.id))
                     }) {
-                        MenuItemCard( // Assuming MenuItemCard takes these parameters
+                        MenuItemCard( 
                             itemName = menuItem.name,
                             itemDescription = menuItem.description,
-                            price = menuItem.price // Ensure MenuItemCard can handle the price format
+                            price = menuItem.price 
                         )
                     }
                 }

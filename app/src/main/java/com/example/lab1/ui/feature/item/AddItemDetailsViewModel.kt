@@ -22,14 +22,14 @@ import javax.inject.Inject
 import kotlin.math.roundToInt
 
 data class AddItemDetailsScreenState(
-    val currentOrderItemId: Long? = null, // Null if creating new
-    val activeOrderIdForNewItem: Long? = null, // Only for new items
-    val menuItemOriginalId: String? = null, // ID of the base MenuItem
+    val currentOrderItemId: Long? = null,
+    val activeOrderIdForNewItem: Long? = null,
+    val menuItemOriginalId: String? = null,
     val itemName: String = "Loading...",
-    var itemPrice: String = "0.00", // Price at the time of adding to order
+    var itemPrice: String = "0.00",
     val quantity: Float = 1f,
     val specialRequests: String = "",
-    val isUrgent: Boolean = false, // Kept for now
+    val isUrgent: Boolean = false,
     val isLoading: Boolean = true,
     val isSaving: Boolean = false,
     val errorMessage: String? = null,
@@ -69,10 +69,10 @@ class AddItemDetailsViewModel @Inject constructor(
 
         _uiState.update { it.copy(buttonText = if (editingOrderItemId != null) "Update Item" else "Add to Order") }
 
-        if (editingOrderItemId != null && editingOrderItemId != 0L) { // Editing existing OrderItem
+        if (editingOrderItemId != null && editingOrderItemId != 0L) {
             _uiState.update { it.copy(currentOrderItemId = editingOrderItemId) }
             fetchOrderItemDetailsForEdit(editingOrderItemId)
-        } else if (newFromMenuItemId != null && activeOrderIdForNew != null && activeOrderIdForNew != 0L) { // Creating new from MenuItem
+        } else if (newFromMenuItemId != null && activeOrderIdForNew != null && activeOrderIdForNew != 0L) {
             _uiState.update { it.copy(activeOrderIdForNewItem = activeOrderIdForNew) }
             fetchMenuItemDetailsForNewOrder(newFromMenuItemId)
         } else {
@@ -95,7 +95,7 @@ class AddItemDetailsViewModel @Inject constructor(
                         it.copy(
                             menuItemOriginalId = menuItem.id,
                             itemName = menuItem.name,
-                            itemPrice = menuItem.price, // Price from MenuItem is the initial price
+                            itemPrice = menuItem.price,
                             isLoading = false
                         )
                     }
@@ -141,12 +141,17 @@ class AddItemDetailsViewModel @Inject constructor(
     }
 
     fun onAction(action: AddItemDetailsAction) {
-        _uiState.update { it.copy(errorMessage = null) } // Clear previous error on new action
+        _uiState.update { it.copy(errorMessage = null) }
 
         when (action) {
             is AddItemDetailsAction.QuantityChanged -> _uiState.update { it.copy(quantity = action.newQuantity) }
-            is AddItemDetailsAction.SpecialRequestsChanged -> _uiState.update { it.copy(specialRequests = action.requests) }
-            is AddItemDetailsAction.UrgencyChanged -> _uiState.update { it.copy(isUrgent = action.urgent) } // isUrgent not saved yet
+            is AddItemDetailsAction.SpecialRequestsChanged -> _uiState.update {
+                it.copy(
+                    specialRequests = action.requests
+                )
+            }
+
+            is AddItemDetailsAction.UrgencyChanged -> _uiState.update { it.copy(isUrgent = action.urgent) }
             AddItemDetailsAction.SaveOrUpdateItemClicked -> handleSaveOrUpdate()
         }
     }
@@ -155,7 +160,7 @@ class AddItemDetailsViewModel @Inject constructor(
         val currentState = _uiState.value
         if (currentState.isLoading || currentState.isSaving) return
         if (currentState.menuItemOriginalId == null) {
-            _uiState.update { it.copy(errorMessage = "Cannot save, item base information missing.")}
+            _uiState.update { it.copy(errorMessage = "Cannot save, item base information missing.") }
             return
         }
 
@@ -164,12 +169,13 @@ class AddItemDetailsViewModel @Inject constructor(
         viewModelScope.launch {
             try {
                 if (currentState.isEditMode && currentState.currentOrderItemId != null) {
-                    val existingItem = orderRepository.getOrderItemById(currentState.currentOrderItemId).first() // Get current value
+                    val existingItem =
+                        orderRepository.getOrderItemById(currentState.currentOrderItemId).first()
                     if (existingItem != null) {
                         val itemToUpdate = existingItem.copy(
                             quantity = currentState.roundedQuantity,
                             specialRequests = currentState.specialRequests.takeIf { it.isNotBlank() }
-                            // itemName and itemPrice are fixed once added. isUrgent not saved.
+
                         )
                         orderRepository.updateOrderItem(itemToUpdate)
                         _sideEffect.emit(AddItemDetailsSideEffect.NavigateBack)
@@ -177,7 +183,7 @@ class AddItemDetailsViewModel @Inject constructor(
                         _uiState.update { it.copy(errorMessage = "Failed to find item to update.") }
                     }
 
-                } else if (currentState.activeOrderIdForNewItem != null) { // Create new
+                } else if (currentState.activeOrderIdForNewItem != null) {
                     val newOrderItem = OrderItemEntity(
                         orderIdFk = currentState.activeOrderIdForNewItem,
                         menuOriginalId = currentState.menuItemOriginalId,

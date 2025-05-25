@@ -13,7 +13,6 @@ object MockMenuItemDataProvider {
             MenuItem("drink1", "Кока-Кола", "Освіжаючий газований напій.", "30.00", "Drink", imageUrl = null),
             MenuItem("drink2", "Сік Апельсиновий", "Натуральний апельсиновий сік.", "40.00", "Drink", imageUrl = null),
             MenuItem("dessert1", "Тірамісу", "Класичний італійський десерт.", "90.00", "Dessert", imageUrl = null)
-            // Add more items as needed
         )
     }
 }
