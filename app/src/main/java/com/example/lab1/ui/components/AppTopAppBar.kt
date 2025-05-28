@@ -34,31 +34,3 @@ fun AppTopAppBar(
         actions = actions
     )
 }
-
-@Preview
-@Composable
-fun AppTopAppBarPreviewBack() {
-    Lab1Theme {
-        AppTopAppBar(title = "Details", canNavigateBack = true, onNavigateBack = {})
-    }
-}
-
-@Preview
-@Composable
-fun AppTopAppBarPreviewNoBack() {
-    Lab1Theme {
-        AppTopAppBar(title = "Orders", canNavigateBack = false, onNavigateBack = {})
-    }
-}
-
-@Preview
-@Composable
-fun AppTopAppBarPreviewWithActions() {
-    Lab1Theme {
-        AppTopAppBar(title = "Orders", canNavigateBack = false, onNavigateBack = {}, actions = {
-            IconButton(onClick = { /*TODO*/ }) {
-                Icon(imageVector = Icons.Filled.Favorite, contentDescription = "Favorite")
-            }
-        })
-    }
-}
