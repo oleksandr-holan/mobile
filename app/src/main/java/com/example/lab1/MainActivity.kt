@@ -11,7 +11,6 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.res.stringResource
 import androidx.core.view.WindowCompat
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
@@ -75,7 +74,7 @@ class MainActivity : ComponentActivity() {
                 }
                 Log.d(tag, "[[LAUNCHED_EFFECT_LANG]] Target language determined: $targetLanguage (from persisted: '$persistedLanguageSetting')")
 
-                val locale = Locale(targetLanguage)
+                val locale = Locale(targetLanguage!!)
                 val config = resources.configuration
                 val currentActivityLocale = Locale(config.locales[0].toLanguageTag())
 

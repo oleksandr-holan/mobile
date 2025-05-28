@@ -42,8 +42,8 @@
     <string name="order_id_table_text">Замовлення №%1$d (Столик %2$d)</string>
     <string name="no_active_order_text">Немає активного замовлення</string>
     <string name="new_order_button">Нове</string>
-    <string name="loading_order_text">Завантаження замовлення...</string>
-    <string name="loading_items_text">Завантаження позицій...</string>
+    <string name="loading_order_text">Завантаження замовлення…</string>
+    <string name="loading_items_text">Завантаження позицій…</string>
     <string name="create_new_order_prompt">Створіть нове замовлення, щоб почати!</string>
     <string name="empty_order_prompt">Це замовлення порожнє. Додайте позиції за допомогою кнопки +.</string>
     <string name="delete_item_desc">Видалити позицію</string>

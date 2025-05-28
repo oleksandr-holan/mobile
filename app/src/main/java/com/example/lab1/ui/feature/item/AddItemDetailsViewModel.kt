@@ -187,7 +187,7 @@ class AddItemDetailsViewModel @Inject constructor(
                         _uiState.update { it.copy(errorMessage = "failed_to_find_item_to_update_error") }
                     }
 
-                } else if (currentState.activeOrderIdForNewItem != null && currentState.menuItemOriginalId != null) {
+                } else if (currentState.activeOrderIdForNewItem != null) {
                     val baseMenuItem = orderRepository.getMenuItemById(currentState.menuItemOriginalId).first()
                     if (baseMenuItem == null) {
                         _uiState.update { it.copy(errorMessage = "menu_item_not_found_error") }

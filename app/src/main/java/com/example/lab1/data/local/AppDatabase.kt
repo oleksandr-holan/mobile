@@ -45,16 +45,16 @@ abstract class AppDatabase : RoomDatabase() {
                 scope.launch(Dispatchers.IO) {
                     val databaseInstance = getDatabase(applicationContext, scope)
                     Log.d(TAG, "Coroutine in onCreate: Populating initial menu.")
-                    populateInitialMenu(applicationContext, databaseInstance.menuItemDao())
+                    populateInitialMenu(databaseInstance.menuItemDao())
                 }
             }
 
-            suspend fun populateInitialMenu(context: Context, menuItemDao: MenuItemDao) {
+            suspend fun populateInitialMenu(menuItemDao: MenuItemDao) {
                 val currentCount = menuItemDao.getMenuItemsCount()
                 Log.d(TAG, "populateInitialMenu called. Current menu items count: $currentCount")
                 if (currentCount == 0) {
                     Log.d(TAG, "Populating initial menu items as count is 0.")
-                    val initialMenuItems = MockMenuItemDataProvider.getMockMenuItems(context)
+                    val initialMenuItems = MockMenuItemDataProvider.getMockMenuItems()
                     menuItemDao.insertAll(initialMenuItems)
                     Log.d(TAG, "Finished populating ${initialMenuItems.size} initial menu items. New count: ${menuItemDao.getMenuItemsCount()}")
                 } else {

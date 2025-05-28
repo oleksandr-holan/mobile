@@ -42,8 +42,8 @@
     <string name="order_id_table_text">Order #%1$d (Table %2$d)</string>
     <string name="no_active_order_text">No Active Order</string>
     <string name="new_order_button">New Order</string>
-    <string name="loading_order_text">Loading Order...</string>
-    <string name="loading_items_text">Loading Items...</string>
+    <string name="loading_order_text">Loading Order…</string>
+    <string name="loading_items_text">Loading Items…</string>
     <string name="create_new_order_prompt">Create a new order to get started!</string>
     <string name="empty_order_prompt">This order is empty. Add items using the + button.</string>
     <string name="delete_item_desc">Delete Item</string>

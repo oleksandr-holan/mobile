@@ -1,10 +1,9 @@
 package com.example.lab1.data.local
 
-import android.content.Context
 import com.example.lab1.data.model.MenuItem
 
 object MockMenuItemDataProvider {
-    fun getMockMenuItems(context: Context): List<MenuItem> {
+    fun getMockMenuItems(): List<MenuItem> {
         return listOf(
             MenuItem("pizza1", "pizza1_name", "pizza1_desc", "150.00", "Pizza", imageUrl = null),
             MenuItem("pizza2", "pizza2_name", "pizza2_desc", "180.00", "Pizza", imageUrl = null),
