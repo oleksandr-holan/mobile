@@ -84,4 +84,24 @@
     <string name="username_already_exists_error">Username already exists. Please choose another.</string>
     <string name="date_of_birth_error_substring">Date of Birth</string>
     <string name="registration_failed_unknown_error">Registration failed. Please try again later.</string>
+
+    <!-- Mock Menu Item Names -->
+    <string name="pizza1_name">Margarita Pizza</string>
+    <string name="pizza2_name">Pepperoni Pizza</string>
+    <string name="pizza3_name">Hawaiian Pizza</string>
+    <string name="salad1_name">Caesar Salad</string>
+    <string name="salad2_name">Greek Salad</string>
+    <string name="drink1_name">Coca-Cola</string>
+    <string name="drink2_name">Orange Juice</string>
+    <string name="dessert1_name">Tiramisu</string>
+
+    <!-- Mock Menu Item Descriptions -->
+    <string name="pizza1_desc">Classic pizza with tomato sauce, mozzarella, and basil.</string>
+    <string name="pizza2_desc">Spicy pizza with pepperoni salami and mozzarella.</string>
+    <string name="pizza3_desc">Pizza with ham, pineapple, and mozzarella.</string>
+    <string name="salad1_desc">Salad with chicken, croutons, parmesan, and Caesar dressing.</string>
+    <string name="salad2_desc">Fresh vegetables, feta, olives, and olive oil.</string>
+    <string name="drink1_desc">Refreshing carbonated drink.</string>
+    <string name="drink2_desc">Natural orange juice.</string>
+    <string name="dessert1_desc">Classic Italian dessert.</string>
 </resources>

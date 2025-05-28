@@ -1,6 +1,7 @@
 package com.example.lab1.data.local
 
 import android.content.Context
+import android.util.Log
 import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
@@ -32,40 +33,52 @@ abstract class AppDatabase : RoomDatabase() {
     companion object {
         @Volatile
         private var INSTANCE: AppDatabase? = null
-        
+        private const val TAG = "AppDatabase"
+
         private class AppDatabaseCallback(
+            private val applicationContext: Context,
             private val scope: CoroutineScope
         ) : Callback() {
             override fun onCreate(db: SupportSQLiteDatabase) {
                 super.onCreate(db)
-                INSTANCE?.let { database ->
-                    scope.launch(Dispatchers.IO) {
-                        populateInitialMenu(database.menuItemDao())
-                    }
+                Log.d(TAG, "Database onCreate called.")
+                scope.launch(Dispatchers.IO) {
+                    val databaseInstance = getDatabase(applicationContext, scope)
+                    Log.d(TAG, "Coroutine in onCreate: Populating initial menu.")
+                    populateInitialMenu(applicationContext, databaseInstance.menuItemDao())
                 }
             }
 
-            suspend fun populateInitialMenu(menuItemDao: MenuItemDao) {
-                
-                if (menuItemDao.getMenuItemsCount() == 0) {
-                    val initialMenuItems = MockMenuItemDataProvider.getMockMenuItems()
+            suspend fun populateInitialMenu(context: Context, menuItemDao: MenuItemDao) {
+                val currentCount = menuItemDao.getMenuItemsCount()
+                Log.d(TAG, "populateInitialMenu called. Current menu items count: $currentCount")
+                if (currentCount == 0) {
+                    Log.d(TAG, "Populating initial menu items as count is 0.")
+                    val initialMenuItems = MockMenuItemDataProvider.getMockMenuItems(context)
                     menuItemDao.insertAll(initialMenuItems)
+                    Log.d(TAG, "Finished populating ${initialMenuItems.size} initial menu items. New count: ${menuItemDao.getMenuItemsCount()}")
+                } else {
+                    Log.d(TAG, "Menu items already exist (count: $currentCount). Skipping population.")
                 }
             }
         }
-        
+
         fun getDatabase(context: Context, coroutineScope: CoroutineScope): AppDatabase {
             return INSTANCE ?: synchronized(this) {
-                val instance = Room.databaseBuilder(
-                    context.applicationContext,
-                    AppDatabase::class.java,
-                    "waiter_app_database"
-                )
-                    .addCallback(AppDatabaseCallback(coroutineScope)) 
-                    .fallbackToDestructiveMigration()
-                    .build()
-                INSTANCE = instance
-                instance
+                INSTANCE ?: run {
+                    Log.d(TAG, "Creating new database instance.")
+                    val instance = Room.databaseBuilder(
+                        context.applicationContext,
+                        AppDatabase::class.java,
+                        "waiter_app_database"
+                    )
+                        .addCallback(AppDatabaseCallback(context.applicationContext, coroutineScope))
+                        .fallbackToDestructiveMigration(false)
+                        .build()
+                    INSTANCE = instance
+                    Log.d(TAG, "Database instance created and INSTANCE set.")
+                    instance
+                }
             }
         }
     }

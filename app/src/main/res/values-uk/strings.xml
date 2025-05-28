@@ -41,7 +41,7 @@
     <string name="add_items_to_order_fab_desc">Додати позиції до замовлення</string>
     <string name="order_id_table_text">Замовлення №%1$d (Столик %2$d)</string>
     <string name="no_active_order_text">Немає активного замовлення</string>
-    <string name="new_order_button">Нове замовлення</string>
+    <string name="new_order_button">Нове</string>
     <string name="loading_order_text">Завантаження замовлення...</string>
     <string name="loading_items_text">Завантаження позицій...</string>
     <string name="create_new_order_prompt">Створіть нове замовлення, щоб почати!</string>
@@ -55,7 +55,7 @@
     <string name="member_since_label">Учасник з:</string>
     <string name="no_profile_data_text">Дані профілю відсутні. Будь ласка, спробуйте ще раз.</string>
     <string name="register_title">Реєстрація</string>
-    <string name="dob_hint">Дата народження (напр., РРРР-ММ-ДД)</string>
+    <string name="dob_hint">Дата народження</string>
     <string name="privacy_policy_accept">Я приймаю Політику конфіденційності</string>
     <string name="login_prompt">Вже є обліковий запис? Увійти</string>
     <string name="generic_error_text">Помилка: %1$s</string>
@@ -84,4 +84,24 @@
     <string name="username_already_exists_error">Таке ім\'я користувача вже існує. Будь ласка, виберіть інше.</string>
     <string name="date_of_birth_error_substring">Дата народження</string>
     <string name="registration_failed_unknown_error">Реєстрація не вдалася. Будь ласка, спробуйте пізніше.</string>
+
+    <!-- Mock Menu Item Names (Ukrainian) -->
+    <string name="pizza1_name">Піца Маргарита</string>
+    <string name="pizza2_name">Піца Пепероні</string>
+    <string name="pizza3_name">Піца Гавайська</string>
+    <string name="salad1_name">Салат Цезар</string>
+    <string name="salad2_name">Грецький Салат</string>
+    <string name="drink1_name">Кока-Кола</string>
+    <string name="drink2_name">Сік Апельсиновий</string>
+    <string name="dessert1_name">Тірамісу</string>
+
+    <!-- Mock Menu Item Descriptions (Ukrainian) -->
+    <string name="pizza1_desc">Класична піца з томатним соусом, моцарелою та базиліком.</string>
+    <string name="pizza2_desc">Гостра піца з салямі пепероні та моцарелою.</string>
+    <string name="pizza3_desc">Піца з шинкою, ананасами та моцарелою.</string>
+    <string name="salad1_desc">Салат з куркою, грінками, пармезаном та соусом Цезар.</string>
+    <string name="salad2_desc">Свіжі овочі, фета, оливки та оливкова олія.</string>
+    <string name="drink1_desc">Освіжаючий газований напій.</string>
+    <string name="drink2_desc">Натуральний апельсиновий сік.</string>
+    <string name="dessert1_desc">Класичний італійський десерт.</string>
 </resources> 
