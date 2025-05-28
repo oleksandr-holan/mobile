@@ -16,6 +16,9 @@ import androidx.lifecycle.flowWithLifecycle
 import com.example.lab1.ui.components.MenuItemCard 
 import androidx.compose.ui.res.stringResource
 import com.example.lab1.R
+import android.content.Intent
+import androidx.compose.ui.platform.LocalContext
+import com.example.lab1.ui.feature.dailyspecials.DailySpecialsActivity
 
 @Composable
 fun MenuScreen(
@@ -24,6 +27,7 @@ fun MenuScreen(
 ) {
     val uiState by menuViewModel.uiState.collectAsState()
     val lifecycleOwner = LocalLifecycleOwner.current
+    val context = LocalContext.current
 
     LaunchedEffect(menuViewModel.sideEffect, lifecycleOwner) {
         menuViewModel.sideEffect.flowWithLifecycle(
@@ -43,6 +47,17 @@ fun MenuScreen(
             .fillMaxSize()
             .padding(16.dp) 
     ) {
+        Button(
+            onClick = {
+                context.startActivity(Intent(context, DailySpecialsActivity::class.java))
+            },
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(bottom = 16.dp)
+        ) {
+            Text("View Daily Specials")
+        }
+
         if (uiState.isLoading) {
             Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
                 CircularProgressIndicator()

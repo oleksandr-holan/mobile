@@ -104,4 +104,10 @@
     <string name="drink1_desc">Освіжаючий газований напій.</string>
     <string name="drink2_desc">Натуральний апельсиновий сік.</string>
     <string name="dessert1_desc">Класичний італійський десерт.</string>
+
+    <!-- Daily Specials Screen (Ukrainian) -->
+    <string name="daily_specials_title">Сьогоднішня Супер Пропозиція!</string>
+    <string name="daily_specials_image_desc">Зображення сьогоднішньої пропозиції</string>
+    <string name="daily_specials_description">Це дуже смачна страва, приготована нашими найкращими кухарями. Вона містить свіжі інгредієнти та секретний соус. Вам неодмінно сподобається! Доступно протягом обмеженого часу.</string>
+    <string name="daily_specials_close_button">Закрити</string>
 </resources> 

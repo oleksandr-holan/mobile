@@ -104,4 +104,10 @@
     <string name="drink1_desc">Refreshing carbonated drink.</string>
     <string name="drink2_desc">Natural orange juice.</string>
     <string name="dessert1_desc">Classic Italian dessert.</string>
+
+    <!-- Daily Specials Screen -->
+    <string name="daily_specials_title">Today\'s Super Special!</string>
+    <string name="daily_specials_image_desc">Image of the daily special</string>
+    <string name="daily_specials_description">This is a very delicious dish prepared by our finest chefs. It includes fresh ingredients and a secret sauce. You will absolutely love it! Available for a limited time only.</string>
+    <string name="daily_specials_close_button">Close</string>
 </resources>
