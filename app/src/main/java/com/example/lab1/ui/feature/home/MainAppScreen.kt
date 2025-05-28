@@ -29,8 +29,7 @@ import com.example.lab1.ui.feature.settings.SettingsScreen
 import com.example.lab1.ui.feature.item.AddItemDetailsScreen
 
 @Composable
-fun MainAppScreen(outerNavController: NavHostController) {
-    val innerNavController: NavHostController = rememberNavController()
+fun MainAppScreen(outerNavController: NavHostController, innerNavController: NavHostController) {
     val navBackStackEntry by innerNavController.currentBackStackEntryAsState()
     val currentRoute = navBackStackEntry?.destination?.route
 

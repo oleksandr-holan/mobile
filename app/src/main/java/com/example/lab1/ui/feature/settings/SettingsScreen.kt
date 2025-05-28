@@ -14,7 +14,6 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
-import com.example.lab1.MainActivity
 import com.example.lab1.R
 
 @Composable
@@ -25,47 +24,7 @@ fun SettingsScreen(
     val soundsEnabled by settingsViewModel.soundsEnabled.collectAsState()
     val currentTheme by settingsViewModel.appTheme.collectAsState()
     val currentLanguage by settingsViewModel.appLanguage.collectAsState()
-    var showLanguageRestartDialog by remember { mutableStateOf(false) }
-    var pendingLanguageChange by remember { mutableStateOf<String?>(null) }
     val context = LocalContext.current
-
-    if (showLanguageRestartDialog && pendingLanguageChange != null) {
-        AlertDialog(
-            onDismissRequest = {
-                showLanguageRestartDialog = false
-                pendingLanguageChange = null
-            },
-            title = { Text(stringResource(R.string.restart_app_dialog_title)) },
-            text = { Text(stringResource(R.string.restart_app_dialog_text)) },
-            confirmButton = {
-                TextButton(
-                    onClick = {
-                        settingsViewModel.onAppLanguageChanged(pendingLanguageChange!!)
-                        showLanguageRestartDialog = false
-                        pendingLanguageChange = null
-                        // Restart app
-                        val intent = Intent(context, MainActivity::class.java)
-                        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK)
-                        context.startActivity(intent)
-                        (context as? Activity)?.finish()
-                    }
-                ) {
-                    Text(stringResource(R.string.restart_now_button))
-                }
-            },
-            dismissButton = {
-                TextButton(
-                    onClick = {
-                        settingsViewModel.onAppLanguageChanged(pendingLanguageChange!!) // Apply change, but don't restart
-                        showLanguageRestartDialog = false
-                        pendingLanguageChange = null
-                    }
-                ) {
-                    Text(stringResource(R.string.restart_later_button))
-                }
-            }
-        )
-    }
 
     Column(
         modifier = Modifier
@@ -90,8 +49,7 @@ fun SettingsScreen(
             currentLanguage = currentLanguage,
             onLanguageSelected = { newLanguage ->
                 if (newLanguage != currentLanguage) {
-                    pendingLanguageChange = newLanguage
-                    showLanguageRestartDialog = true
+                    settingsViewModel.onAppLanguageChanged(newLanguage)
                 }
             }
         )

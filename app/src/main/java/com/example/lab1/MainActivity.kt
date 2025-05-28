@@ -13,6 +13,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.core.view.WindowCompat
+import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -48,6 +49,9 @@ class MainActivity : ComponentActivity() {
 
             var languageToApplyForUI by remember { mutableStateOf<String?>(null) }
             var startDestination by remember { mutableStateOf<String?>(null) }
+
+            val navController: NavHostController = rememberNavController()
+            val innerNavController: NavHostController = rememberNavController()
 
             LaunchedEffect(key1 = Unit) {
                 val loggedInUser = settingsRepository.loggedInUserUsernameFlow.first()
@@ -103,13 +107,12 @@ class MainActivity : ComponentActivity() {
                         else -> isSystemInDarkTheme()
                     }
                     Lab1Theme(darkTheme = useDarkTheme) {
-                        val navController: NavHostController = rememberNavController()
                         Surface(
                             modifier = Modifier.fillMaxSize(),
                             color = MaterialTheme.colorScheme.background
                         ) {
                             Log.d(tag, "[[SURFACE_IN_KEY_BLOCK]] AppNavigationHost to be composed. Start: $startDestination, Language: $languageToApplyForUI. Locale.getDefault(): ${Locale.getDefault().language}")
-                            AppNavigationHost(navController = navController, startDestination = startDestination!!)
+                            AppNavigationHost(outerNavController = navController, innerNavController = innerNavController, startDestination = startDestination!!)
                         }
                     }
                 }
@@ -152,24 +155,24 @@ class MainActivity : ComponentActivity() {
 }
 
 @Composable
-fun AppNavigationHost(navController: NavHostController, startDestination: String) {
+fun AppNavigationHost(outerNavController: NavHostController, innerNavController: NavHostController, startDestination: String) {
     Log.d("AppNavigationHost", "Composing with startDestination: $startDestination. Current Locale.getDefault(): ${Locale.getDefault().language}. LoginScreen title res ID: ${R.string.login_title}")
     NavHost(
-        navController = navController,
+        navController = outerNavController,
         startDestination = startDestination
     ) {
         composable(route = AppDestinations.LOGIN_ROUTE) {
             LoginScreen(
                 onLoginSuccess = {
-                    navController.navigate(AppDestinations.MAIN_APP_ROUTE) {
-                        popUpTo(AppDestinations.LOGIN_ROUTE) {
+                    outerNavController.navigate(AppDestinations.MAIN_APP_ROUTE) {
+                        popUpTo(outerNavController.graph.findStartDestination().id) {
                             inclusive = true
                         }
                         launchSingleTop = true
                     }
                 },
                 onNavigateToRegister = {
-                    navController.navigate(AppDestinations.REGISTRATION_ROUTE)
+                    outerNavController.navigate(AppDestinations.REGISTRATION_ROUTE)
                 }
             )
         }
@@ -177,21 +180,21 @@ fun AppNavigationHost(navController: NavHostController, startDestination: String
         composable(route = AppDestinations.REGISTRATION_ROUTE) {
             RegistrationScreen(
                 onRegistrationSuccess = {
-                    navController.navigate(AppDestinations.MAIN_APP_ROUTE) {
-                        popUpTo(AppDestinations.LOGIN_ROUTE) {
+                    outerNavController.navigate(AppDestinations.MAIN_APP_ROUTE) {
+                        popUpTo(outerNavController.graph.findStartDestination().id) {
                             inclusive = true
                         }
                         launchSingleTop = true
                     }
                 },
                 onNavigateBackToLogin = {
-                    navController.popBackStack()
+                    outerNavController.popBackStack()
                 }
             )
         }
 
         composable(route = AppDestinations.MAIN_APP_ROUTE) {
-            MainAppScreen(outerNavController = navController)
+            MainAppScreen(outerNavController = outerNavController, innerNavController = innerNavController)
         }
     }
 }
