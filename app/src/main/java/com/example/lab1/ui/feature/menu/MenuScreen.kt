@@ -73,8 +73,8 @@ fun MenuScreen(
                         menuViewModel.onAction(MenuScreenAction.MenuItemClicked(menuItem.id))
                     }) {
                         MenuItemCard( 
-                            itemName = menuItem.name,
-                            itemDescription = menuItem.description,
+                            itemNameKey = menuItem.nameKey,
+                            itemDescriptionKey = menuItem.descriptionKey,
                             price = menuItem.price 
                         )
                     }

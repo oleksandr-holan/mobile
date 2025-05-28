@@ -11,6 +11,7 @@ interface OrderRepository {
     suspend fun addMenuItem(menuItem: MenuItem) 
     suspend fun deleteMenuItem(itemId: String) 
     suspend fun getMenuItemCount(): Int 
+    suspend fun clearAndRepopulateMenuItems()
 
     suspend fun createNewOrder(tableNumber: Int): Long 
     fun getOrderById(orderId: Long): Flow<OrderEntity?>

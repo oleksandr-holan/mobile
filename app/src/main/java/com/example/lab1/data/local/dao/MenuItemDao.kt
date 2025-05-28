@@ -16,7 +16,7 @@ interface MenuItemDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertMenuItem(menuItem: MenuItem)
 
-    @Query("SELECT * FROM menu_items ORDER BY category, name")
+    @Query("SELECT * FROM menu_items ORDER BY category, nameKey")
     fun getAllMenuItems(): Flow<List<MenuItem>>
 
     @Query("SELECT * FROM menu_items WHERE id = :itemId")
@@ -27,4 +27,7 @@ interface MenuItemDao {
 
     @Query("DELETE FROM menu_items WHERE id = :itemId")
     suspend fun deleteMenuItemById(itemId: String)
+
+    @Query("DELETE FROM menu_items")
+    suspend fun deleteAllMenuItems()
 }

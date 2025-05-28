@@ -20,6 +20,9 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 import kotlin.math.roundToInt
+import android.content.Context
+import com.example.lab1.util.getStringResourceByName
+import dagger.hilt.android.qualifiers.ApplicationContext
 
 data class AddItemDetailsScreenState(
     val currentOrderItemId: Long? = null,
@@ -53,7 +56,8 @@ sealed class AddItemDetailsSideEffect {
 @HiltViewModel
 class AddItemDetailsViewModel @Inject constructor(
     private val orderRepository: OrderRepository,
-    savedStateHandle: SavedStateHandle
+    savedStateHandle: SavedStateHandle,
+    @ApplicationContext private val applicationContext: Context
 ) : ViewModel() {
 
     private val _uiState = MutableStateFlow(AddItemDetailsScreenState())
@@ -94,7 +98,7 @@ class AddItemDetailsViewModel @Inject constructor(
                     _uiState.update {
                         it.copy(
                             menuItemOriginalId = menuItem.id,
-                            itemName = menuItem.name,
+                            itemName = getStringResourceByName(applicationContext, menuItem.nameKey),
                             itemPrice = menuItem.price,
                             isLoading = false
                         )
@@ -183,12 +187,17 @@ class AddItemDetailsViewModel @Inject constructor(
                         _uiState.update { it.copy(errorMessage = "failed_to_find_item_to_update_error") }
                     }
 
-                } else if (currentState.activeOrderIdForNewItem != null) {
+                } else if (currentState.activeOrderIdForNewItem != null && currentState.menuItemOriginalId != null) {
+                    val baseMenuItem = orderRepository.getMenuItemById(currentState.menuItemOriginalId).first()
+                    if (baseMenuItem == null) {
+                        _uiState.update { it.copy(errorMessage = "menu_item_not_found_error") }
+                        return@launch
+                    }
                     val newOrderItem = OrderItemEntity(
                         orderIdFk = currentState.activeOrderIdForNewItem,
                         menuOriginalId = currentState.menuItemOriginalId,
-                        itemName = currentState.itemName,
-                        itemPrice = currentState.itemPrice,
+                        itemName = getStringResourceByName(applicationContext, baseMenuItem.nameKey),
+                        itemPrice = baseMenuItem.price,
                         quantity = currentState.roundedQuantity,
                         specialRequests = currentState.specialRequests.takeIf { it.isNotBlank() }
                     )

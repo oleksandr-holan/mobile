@@ -20,16 +20,22 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.shadow
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.example.lab1.util.getStringResourceByName
 
 @Composable
 fun MenuItemCard(
-    itemName: String,
-    itemDescription: String,
+    itemNameKey: String,
+    itemDescriptionKey: String,
     price: String
 ) {
+    val context = LocalContext.current
+    val itemName = getStringResourceByName(context, itemNameKey)
+    val itemDescription = getStringResourceByName(context, itemDescriptionKey)
+
     Row(
         modifier = Modifier
             .fillMaxWidth()

@@ -7,8 +7,8 @@ import androidx.room.PrimaryKey
 data class MenuItem(
     @PrimaryKey
     val id: String,
-    val name: String,
-    val description: String,
+    val nameKey: String,
+    val descriptionKey: String,
     val price: String,
     val category: String,
     val imageUrl: String? = null

@@ -37,6 +37,10 @@ class OrderRepositoryImpl @Inject constructor(
         return menuItemDao.getMenuItemsCount()
     }
 
+    override suspend fun clearAndRepopulateMenuItems() {
+        menuItemDao.deleteAllMenuItems()
+    }
+
     override suspend fun createNewOrder(tableNumber: Int): Long {
         val newOrder = OrderEntity(tableNumber = tableNumber, status = "Active")
         return orderDao.insertOrder(newOrder)
