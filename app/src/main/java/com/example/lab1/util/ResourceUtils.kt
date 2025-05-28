@@ -3,8 +3,23 @@ package com.example.lab1.util
 import android.content.Context
 import android.util.Log
 import com.example.lab1.R
+import java.util.Locale
 
 fun getStringResourceForKey(context: Context, key: String): String {
+    val desiredLocale = Locale.getDefault()
+    var localizedContext = context
+    val currentConfiguration = context.resources.configuration
+
+    // Check if the context's primary locale matches the desired default locale
+    val primaryLocaleInContext = if (currentConfiguration.locales.isEmpty) null else currentConfiguration.locales[0]
+
+    if (primaryLocaleInContext != desiredLocale) {
+        Log.d("ResourceUtils", "Context locale (${primaryLocaleInContext}) doesn\'t match default (${desiredLocale}). Creating new localized context for key: $key")
+        val config = android.content.res.Configuration(currentConfiguration)
+        config.setLocale(desiredLocale)
+        localizedContext = context.createConfigurationContext(config)
+    }
+
     val resId = when (key) {
         "pizza1_name" -> R.string.pizza1_name
         "pizza1_desc" -> R.string.pizza1_desc
@@ -27,13 +42,13 @@ fun getStringResourceForKey(context: Context, key: String): String {
 
     return if (resId != 0) {
         try {
-            context.getString(resId)
+            localizedContext.getString(resId)
         } catch (e: Exception) {
-            Log.e("ResourceUtils", "Error getting string resource for ID: $resId from key: $key", e)
-            key // Fallback to key if getString fails for a valid ID (should not happen)
+            Log.e("ResourceUtils", "Error getting string resource for ID: $resId from key: $key (locale: ${desiredLocale.toLanguageTag()})", e)
+            key
         }
     } else {
         Log.w("ResourceUtils", "Unknown string resource key: $key. Returning key as fallback.")
-        key // Fallback to the key itself if not found
+        key
     }
 } 

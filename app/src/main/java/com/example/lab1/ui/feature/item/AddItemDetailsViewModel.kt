@@ -95,6 +95,7 @@ class AddItemDetailsViewModel @Inject constructor(
             _uiState.update { it.copy(isLoading = true, errorMessage = null) }
             orderRepository.getMenuItemById(menuItemId).collectLatest { menuItem ->
                 if (menuItem != null) {
+                    Log.d("AddItemDetailsVM", "Context locale in fetchMenuItemDetailsForNewOrder: ${applicationContext.resources.configuration.locales[0].toLanguageTag()}")
                     _uiState.update {
                         it.copy(
                             menuItemOriginalId = menuItem.id,
