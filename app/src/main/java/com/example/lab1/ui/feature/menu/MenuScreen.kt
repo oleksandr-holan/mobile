@@ -19,7 +19,6 @@ import com.example.lab1.R
 import android.content.Intent
 import androidx.compose.ui.platform.LocalContext
 import com.example.lab1.ui.feature.dailyspecials.DailySpecialsActivity
-import com.example.lab1.ui.feature.orderhistory.OrderHistoryActivity
 
 @Composable
 fun MenuScreen(
@@ -57,17 +56,6 @@ fun MenuScreen(
                 .padding(bottom = 16.dp)
         ) {
             Text("View Daily Specials")
-        }
-
-        Button(
-            onClick = {
-                context.startActivity(Intent(context, OrderHistoryActivity::class.java))
-            },
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(bottom = 16.dp)
-        ) {
-            Text(stringResource(R.string.order_history_title))
         }
 
         if (uiState.isLoading) {

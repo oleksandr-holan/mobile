@@ -96,7 +96,6 @@ fun OrderScreen(
                     fontSize = 20.sp,
                     fontWeight = FontWeight.Bold
                 )
-
                 Button(onClick = { orderViewModel.onAction(OrderScreenAction.CreateNewOrder) }) {
                     Text(stringResource(R.string.new_order_button))
                 }

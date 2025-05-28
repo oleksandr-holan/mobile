@@ -1,12 +1,16 @@
 package com.example.lab1.ui.feature.home
 
+import android.content.Intent
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.outlined.History
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.navigation.NavHostController
 import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
@@ -24,6 +28,7 @@ import com.example.lab1.ui.components.AppBottomNavigationBar
 import com.example.lab1.ui.components.AppTopAppBar
 import com.example.lab1.ui.feature.menu.MenuScreen
 import com.example.lab1.ui.feature.order.OrderScreen
+import com.example.lab1.ui.feature.orderhistory.OrderHistoryActivity
 import com.example.lab1.ui.feature.profile.ProfileScreen
 import com.example.lab1.ui.feature.settings.SettingsScreen
 import com.example.lab1.ui.feature.item.AddItemDetailsScreen
@@ -33,6 +38,7 @@ fun MainAppScreen(outerNavController: NavHostController) {
     val innerNavController: NavHostController = rememberNavController()
     val navBackStackEntry by innerNavController.currentBackStackEntryAsState()
     val currentRoute = navBackStackEntry?.destination?.route
+    val context = LocalContext.current
 
     val currentScreenTitle = currentRoute?.let {
         when {
@@ -56,7 +62,19 @@ fun MainAppScreen(outerNavController: NavHostController) {
             AppTopAppBar(
                 title = currentScreenTitle,
                 canNavigateBack = canNavigateBack, 
-                onNavigateBack = { innerNavController.popBackStack() }
+                onNavigateBack = { innerNavController.popBackStack() },
+                actions = {
+                    if (currentRoute == BottomNavItem.Orders.route) {
+                        IconButton(onClick = { 
+                            context.startActivity(Intent(context, OrderHistoryActivity::class.java))
+                        }) {
+                            Icon(
+                                imageVector = Icons.Outlined.History,
+                                contentDescription = stringResource(R.string.order_history_title)
+                            )
+                        }
+                    }
+                }
             )
         },
         bottomBar = {
