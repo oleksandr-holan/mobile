@@ -8,23 +8,26 @@ import androidx.sqlite.db.SupportSQLiteDatabase
 import com.example.lab1.data.local.dao.MenuItemDao
 import com.example.lab1.data.local.dao.OrderDao
 import com.example.lab1.data.local.dao.OrderItemDao
+import com.example.lab1.data.local.dao.UserDao
 import com.example.lab1.data.model.MenuItem
 import com.example.lab1.data.model.OrderEntity
 import com.example.lab1.data.model.OrderItemEntity
+import com.example.lab1.data.model.User
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
 @Database(
-    entities = [MenuItem::class, OrderEntity::class, OrderItemEntity::class],
-    version = 1, 
-    exportSchema = false 
+    entities = [MenuItem::class, OrderEntity::class, OrderItemEntity::class, User::class],
+    version = 2,
+    exportSchema = false
 )
 abstract class AppDatabase : RoomDatabase() {
 
     abstract fun menuItemDao(): MenuItemDao
     abstract fun orderDao(): OrderDao
     abstract fun orderItemDao(): OrderItemDao
+    abstract fun userDao(): UserDao
 
     companion object {
         @Volatile
@@ -59,7 +62,7 @@ abstract class AppDatabase : RoomDatabase() {
                     "waiter_app_database"
                 )
                     .addCallback(AppDatabaseCallback(coroutineScope)) 
-                    .fallbackToDestructiveMigration(false) 
+                    .fallbackToDestructiveMigration()
                     .build()
                 INSTANCE = instance
                 instance

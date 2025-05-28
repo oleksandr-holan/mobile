@@ -5,6 +5,7 @@ import com.example.lab1.data.local.AppDatabase
 import com.example.lab1.data.local.dao.MenuItemDao
 import com.example.lab1.data.local.dao.OrderDao
 import com.example.lab1.data.local.dao.OrderItemDao
+import com.example.lab1.data.local.dao.UserDao
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -50,5 +51,11 @@ object DatabaseModule {
     @Singleton
     fun provideOrderItemDao(appDatabase: AppDatabase): OrderItemDao {
         return appDatabase.orderItemDao()
+    }
+
+    @Provides
+    @Singleton
+    fun provideUserDao(appDatabase: AppDatabase): UserDao {
+        return appDatabase.userDao()
     }
 }

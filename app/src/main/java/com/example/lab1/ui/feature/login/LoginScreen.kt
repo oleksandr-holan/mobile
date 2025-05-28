@@ -17,8 +17,7 @@ import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.flowWithLifecycle
-import androidx.lifecycle.viewmodel.compose.viewModel
-import com.example.lab1.data.repository.MockAuthRepository
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.compose.ui.res.stringResource
 import com.example.lab1.R
 import java.util.Locale
@@ -27,9 +26,7 @@ import java.util.Locale
 fun LoginScreen(
     onLoginSuccess: () -> Unit,
     onNavigateToRegister: () -> Unit,
-    loginViewModel: LoginViewModel = viewModel(
-        factory = LoginViewModelFactory(MockAuthRepository())
-    )
+    loginViewModel: LoginViewModel = hiltViewModel()
 ) {
     val currentLanguage = Locale.getDefault().language
     val loginTitleString = stringResource(R.string.login_title)

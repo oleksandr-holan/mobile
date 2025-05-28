@@ -3,15 +3,16 @@ package com.example.lab1.ui.feature.profile
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.lab1.util.DataResult
-import com.example.lab1.data.repository.MockProfileRepository
 import com.example.lab1.data.repository.ProfileRepository
 import com.example.lab1.data.repository.UserProfile
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import javax.inject.Inject
 
 data class ProfileScreenState(
     val userProfile: UserProfile? = null,
@@ -28,7 +29,8 @@ sealed class ProfileScreenSideEffect {
     data object NavigateToLogin : ProfileScreenSideEffect()
 }
 
-class ProfileViewModel(
+@HiltViewModel
+class ProfileViewModel @Inject constructor(
     private val profileRepository: ProfileRepository
 ) : ViewModel() {
     private val _uiState = MutableStateFlow(ProfileScreenState())
@@ -59,12 +61,8 @@ class ProfileViewModel(
     private fun fetchUserProfile() {
         viewModelScope.launch {
             _uiState.update { it.copy(isLoading = true, errorMessage = null) }
-
-            val result = if (profileRepository is MockProfileRepository) {
-                profileRepository.getCurrentUserProfile()
-            } else {
-                profileRepository.getUserProfile("testuser")
-            }
+            
+            val result = profileRepository.getUserProfile("testuser")
 
             when (result) {
                 is DataResult.Success -> {

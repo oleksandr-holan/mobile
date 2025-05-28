@@ -2,6 +2,8 @@ package com.example.lab1.data.repository
 
 import com.example.lab1.util.DataResult
 import kotlinx.coroutines.delay
+import javax.inject.Inject
+import javax.inject.Singleton
 
 data class UserProfile(
     val userId: String,
@@ -16,7 +18,8 @@ interface ProfileRepository {
     suspend fun getUserProfile(userId: String): DataResult<UserProfile>
 }
 
-class MockProfileRepository : ProfileRepository {
+@Singleton
+class MockProfileRepository @Inject constructor() : ProfileRepository {
     private val currentLoggedInUserId = "testuser"
     private val userProfiles = mapOf(
         "testuser" to UserProfile(

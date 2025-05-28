@@ -16,6 +16,7 @@ import androidx.compose.ui.unit.sp
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.flowWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.hilt.navigation.compose.hiltViewModel
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import com.example.lab1.R
@@ -25,9 +26,7 @@ import androidx.compose.ui.res.stringResource
 @Composable
 fun ProfileScreen(
     onNavigateToLogin: () -> Unit,
-    profileViewModel: ProfileViewModel = viewModel(
-        factory = ProfileViewModelFactory(MockProfileRepository())
-    )
+    profileViewModel: ProfileViewModel = hiltViewModel()
 ) {
     val uiState by profileViewModel.uiState.collectAsState()
     val lifecycleOwner = LocalLifecycleOwner.current
