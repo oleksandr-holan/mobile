@@ -23,7 +23,9 @@ import kotlinx.coroutines.flow.collectLatest
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.flowWithLifecycle
 import androidx.navigation.NavHostController
+import com.example.lab1.R
 import com.example.lab1.ui.navigation.AppDestinations
+import androidx.compose.ui.res.stringResource
 
 
 @Composable
@@ -66,7 +68,7 @@ fun OrderScreen(
     Scaffold(
         floatingActionButton = {
             FloatingActionButton(onClick = { orderViewModel.onAction(OrderScreenAction.FabClicked) }) {
-                Icon(Icons.Filled.Add, contentDescription = "Add items to order")
+                Icon(Icons.Filled.Add, contentDescription = stringResource(R.string.add_items_to_order_fab_desc))
             }
         }
     ) { paddingValues ->
@@ -84,19 +86,19 @@ fun OrderScreen(
             ) {
                 uiState.currentOrder?.let { order ->
                     Text(
-                        text = "Order: #${order.orderId} (Table ${order.tableNumber})",
+                        text = stringResource(R.string.order_id_table_text, order.orderId, order.tableNumber),
                         fontSize = 20.sp,
                         fontWeight = FontWeight.Bold,
                         color = MaterialTheme.colorScheme.primary
                     )
                 } ?: Text(
-                    text = "No Active Order",
+                    text = stringResource(R.string.no_active_order_text),
                     fontSize = 20.sp,
                     fontWeight = FontWeight.Bold
                 )
 
                 Button(onClick = { orderViewModel.onAction(OrderScreenAction.CreateNewOrder) }) {
-                    Text("New Order")
+                    Text(stringResource(R.string.new_order_button))
                 }
             }
 
@@ -105,13 +107,13 @@ fun OrderScreen(
             if (uiState.isLoadingOrder) {
                 Box(modifier = Modifier.fillMaxWidth(), contentAlignment = Alignment.Center) {
                     CircularProgressIndicator()
-                    Text("Loading order...", modifier = Modifier.padding(start = 8.dp))
+                    Text(stringResource(R.string.loading_order_text), modifier = Modifier.padding(start = 8.dp))
                 }
             }
 
             uiState.errorMessage?.let {
                 Text(
-                    text = "Error: $it",
+                    text = stringResource(R.string.generic_error_text, it),
                     color = MaterialTheme.colorScheme.error,
                     modifier = Modifier.padding(vertical = 8.dp)
                 )
@@ -120,15 +122,15 @@ fun OrderScreen(
             if (uiState.currentOrder != null && uiState.isLoadingItems) {
                 Box(modifier = Modifier.fillMaxWidth().padding(top=16.dp), contentAlignment = Alignment.Center) {
                     CircularProgressIndicator()
-                    Text("Loading items...", modifier = Modifier.padding(start = 8.dp))
+                    Text(stringResource(R.string.loading_items_text), modifier = Modifier.padding(start = 8.dp))
                 }
             } else if (uiState.currentOrder == null && !uiState.isLoadingOrder) {
                 Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-                    Text("Please create a new order to add items.", fontSize = 18.sp)
+                    Text(stringResource(R.string.create_new_order_prompt), fontSize = 18.sp)
                 }
             } else if (uiState.currentOrderItems.isEmpty() && uiState.currentOrder != null) {
                 Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-                    Text("This order is empty. Click '+' to add items.", fontSize = 18.sp)
+                    Text(stringResource(R.string.empty_order_prompt), fontSize = 18.sp)
                 }
             } else {
                 LazyColumn(
@@ -185,7 +187,7 @@ fun OrderItemRow(
             ) {
                 Icon(
                     Icons.Filled.Delete,
-                    contentDescription = "Delete item",
+                    contentDescription = stringResource(R.string.delete_item_desc),
                     tint = MaterialTheme.colorScheme.onErrorContainer
                 )
             }
@@ -209,11 +211,11 @@ fun OrderItemRow(
                 Column(modifier = Modifier.weight(1f)) {
                     Text(orderItem.itemName, style = MaterialTheme.typography.titleMedium)
                     Text(
-                        "Qty: ${orderItem.quantity} Price: ${orderItem.itemPrice}",
+                        stringResource(R.string.order_item_details_text, orderItem.quantity, orderItem.itemPrice),
                         style = MaterialTheme.typography.bodySmall
                     )
                     orderItem.specialRequests?.takeIf { it.isNotBlank() }?.let {
-                        Text("Notes: $it", style = MaterialTheme.typography.bodySmall, fontStyle = androidx.compose.ui.text.font.FontStyle.Italic)
+                        Text(stringResource(R.string.notes_label, it), style = MaterialTheme.typography.bodySmall, fontStyle = androidx.compose.ui.text.font.FontStyle.Italic)
                     }
                 }
             }

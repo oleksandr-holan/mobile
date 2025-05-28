@@ -116,7 +116,7 @@ class OrderViewModel @Inject constructor(
             }
             OrderScreenAction.FabClicked -> {
                 if (_uiState.value.currentOrder == null) {
-                    _uiState.update { it.copy(errorMessage = "Please create or select an order first.") }
+                    _uiState.update { it.copy(errorMessage = "R.string.select_order_first_prompt") }
                 } else {
                     viewModelScope.launch { _sideEffect.emit(OrderScreenSideEffect.NavigateToMenuScreen) }
                 }

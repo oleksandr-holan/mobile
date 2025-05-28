@@ -1,5 +1,7 @@
 package com.example.lab1.ui.feature.settings
 
+import android.app.Activity
+import android.content.Intent
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.icons.Icons
@@ -8,8 +10,12 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import com.example.lab1.MainActivity
+import com.example.lab1.R
 
 @Composable
 fun SettingsScreen(
@@ -19,6 +25,47 @@ fun SettingsScreen(
     val soundsEnabled by settingsViewModel.soundsEnabled.collectAsState()
     val currentTheme by settingsViewModel.appTheme.collectAsState()
     val currentLanguage by settingsViewModel.appLanguage.collectAsState()
+    var showLanguageRestartDialog by remember { mutableStateOf(false) }
+    var pendingLanguageChange by remember { mutableStateOf<String?>(null) }
+    val context = LocalContext.current
+
+    if (showLanguageRestartDialog && pendingLanguageChange != null) {
+        AlertDialog(
+            onDismissRequest = {
+                showLanguageRestartDialog = false
+                pendingLanguageChange = null
+            },
+            title = { Text(stringResource(R.string.restart_app_dialog_title)) },
+            text = { Text(stringResource(R.string.restart_app_dialog_text)) },
+            confirmButton = {
+                TextButton(
+                    onClick = {
+                        settingsViewModel.onAppLanguageChanged(pendingLanguageChange!!)
+                        showLanguageRestartDialog = false
+                        pendingLanguageChange = null
+                        // Restart app
+                        val intent = Intent(context, MainActivity::class.java)
+                        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK)
+                        context.startActivity(intent)
+                        (context as? Activity)?.finish()
+                    }
+                ) {
+                    Text(stringResource(R.string.restart_now_button))
+                }
+            },
+            dismissButton = {
+                TextButton(
+                    onClick = {
+                        settingsViewModel.onAppLanguageChanged(pendingLanguageChange!!) // Apply change, but don't restart
+                        showLanguageRestartDialog = false
+                        pendingLanguageChange = null
+                    }
+                ) {
+                    Text(stringResource(R.string.restart_later_button))
+                }
+            }
+        )
+    }
 
     Column(
         modifier = Modifier
@@ -26,20 +73,27 @@ fun SettingsScreen(
             .padding(16.dp)
     ) {
         SettingItemSwitch(
-            title = "Enable Notifications",
+            title = stringResource(R.string.notifications_enabled_label),
             checked = notificationsEnabled,
             onCheckedChange = { settingsViewModel.onNotificationsEnabledChanged(it) }
         )
-        HorizontalDivider()
         SettingItemSwitch(
-            title = "Enable Sounds",
+            title = stringResource(R.string.sounds_enabled_label),
             checked = soundsEnabled,
             onCheckedChange = { settingsViewModel.onSoundsEnabledChanged(it) }
         )
-        HorizontalDivider()
         ThemeSettingItem(
             currentTheme = currentTheme,
             onThemeSelected = { settingsViewModel.onAppThemeChanged(it) }
+        )
+        LanguageSettingItem(
+            currentLanguage = currentLanguage,
+            onLanguageSelected = { newLanguage ->
+                if (newLanguage != currentLanguage) {
+                    pendingLanguageChange = newLanguage
+                    showLanguageRestartDialog = true
+                }
+            }
         )
     }
 }
@@ -68,18 +122,28 @@ fun ThemeSettingItem(
     onThemeSelected: (String) -> Unit
 ) {
     var expanded by remember { mutableStateOf(false) }
-    val themes =
-        listOf("Light", "Dark", "System")
+    val themes = listOf(
+        stringResource(R.string.light_theme),
+        stringResource(R.string.dark_theme),
+        stringResource(R.string.system_theme)
+    )
+    // Map display names back to keys for saving
+    val themeKeys = listOf("Light", "Dark", "System")
+
 
     Column(modifier = Modifier.padding(vertical = 8.dp)) {
-        Text("App Theme", style = MaterialTheme.typography.bodyLarge)
+        Text(stringResource(R.string.app_theme_label), style = MaterialTheme.typography.bodyLarge)
         Spacer(modifier = Modifier.height(4.dp))
         Box(modifier = Modifier.fillMaxWidth()) {
             OutlinedTextField(
-                value = currentTheme,
+                value = when (currentTheme) {
+                    "Light" -> stringResource(R.string.light_theme)
+                    "Dark" -> stringResource(R.string.dark_theme)
+                    else -> stringResource(R.string.system_theme)
+                },
                 onValueChange = { },
                 readOnly = true,
-                label = { Text("Selected Theme") },
+                label = { Text(stringResource(R.string.selected_theme_label)) },
                 trailingIcon = { Icon(Icons.Filled.ArrowDropDown, "dropdown") },
                 modifier = Modifier
                     .fillMaxWidth()
@@ -90,11 +154,55 @@ fun ThemeSettingItem(
                 onDismissRequest = { expanded = false },
                 modifier = Modifier.fillMaxWidth()
             ) {
-                themes.forEach { theme ->
+                themes.forEachIndexed { index, themeName ->
                     DropdownMenuItem(
-                        text = { Text(theme) },
+                        text = { Text(themeName) },
                         onClick = {
-                            onThemeSelected(theme)
+                            onThemeSelected(themeKeys[index])
+                            expanded = false
+                        }
+                    )
+                }
+            }
+        }
+    }
+}
+
+@Composable
+fun LanguageSettingItem(
+    currentLanguage: String,
+    onLanguageSelected: (String) -> Unit
+) {
+    var expanded by remember { mutableStateOf(false) }
+    val languages = listOf(
+        "en" to stringResource(R.string.english),
+        "uk" to stringResource(R.string.ukrainian)
+    )
+
+    Column(modifier = Modifier.padding(vertical = 8.dp)) {
+        Text(stringResource(R.string.app_language_label), style = MaterialTheme.typography.bodyLarge)
+        Spacer(modifier = Modifier.height(4.dp))
+        Box(modifier = Modifier.fillMaxWidth()) {
+            OutlinedTextField(
+                value = languages.find { it.first == currentLanguage }?.second ?: currentLanguage,
+                onValueChange = { },
+                readOnly = true,
+                label = { Text(stringResource(R.string.selected_language_label)) },
+                trailingIcon = { Icon(Icons.Filled.ArrowDropDown, "dropdown") },
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .clickable { expanded = true }
+            )
+            DropdownMenu(
+                expanded = expanded,
+                onDismissRequest = { expanded = false },
+                modifier = Modifier.fillMaxWidth()
+            ) {
+                languages.forEach { (langCode, langName) ->
+                    DropdownMenuItem(
+                        text = { Text(langName) },
+                        onClick = {
+                            onLanguageSelected(langCode)
                             expanded = false
                         }
                     )

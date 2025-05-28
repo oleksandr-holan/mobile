@@ -52,7 +52,7 @@ class SettingsViewModel @Inject constructor(
         }
     }
 
-    fun onAppLanguageChange(language: String) {
+    fun onAppLanguageChanged(language: String) {
         viewModelScope.launch {
             settingsRepository.setAppLanguage(language)
         }
