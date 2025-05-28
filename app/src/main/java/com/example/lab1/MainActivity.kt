@@ -13,7 +13,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.core.view.WindowCompat
-import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -51,7 +50,6 @@ class MainActivity : ComponentActivity() {
             var startDestination by remember { mutableStateOf<String?>(null) }
 
             val navController: NavHostController = rememberNavController()
-            val innerNavController: NavHostController = rememberNavController()
 
             LaunchedEffect(key1 = Unit) {
                 val loggedInUser = settingsRepository.loggedInUserUsernameFlow.first()
@@ -112,7 +110,7 @@ class MainActivity : ComponentActivity() {
                             color = MaterialTheme.colorScheme.background
                         ) {
                             Log.d(tag, "[[SURFACE_IN_KEY_BLOCK]] AppNavigationHost to be composed. Start: $startDestination, Language: $languageToApplyForUI. Locale.getDefault(): ${Locale.getDefault().language}")
-                            AppNavigationHost(outerNavController = navController, innerNavController = innerNavController, startDestination = startDestination!!)
+                            AppNavigationHost(navController = navController, startDestination = startDestination!!)
                         }
                     }
                 }
@@ -155,24 +153,24 @@ class MainActivity : ComponentActivity() {
 }
 
 @Composable
-fun AppNavigationHost(outerNavController: NavHostController, innerNavController: NavHostController, startDestination: String) {
+fun AppNavigationHost(navController: NavHostController, startDestination: String) {
     Log.d("AppNavigationHost", "Composing with startDestination: $startDestination. Current Locale.getDefault(): ${Locale.getDefault().language}. LoginScreen title res ID: ${R.string.login_title}")
     NavHost(
-        navController = outerNavController,
+        navController = navController,
         startDestination = startDestination
     ) {
         composable(route = AppDestinations.LOGIN_ROUTE) {
             LoginScreen(
                 onLoginSuccess = {
-                    outerNavController.navigate(AppDestinations.MAIN_APP_ROUTE) {
-                        popUpTo(outerNavController.graph.findStartDestination().id) {
+                    navController.navigate(AppDestinations.MAIN_APP_ROUTE) {
+                        popUpTo(AppDestinations.LOGIN_ROUTE) {
                             inclusive = true
                         }
                         launchSingleTop = true
                     }
                 },
                 onNavigateToRegister = {
-                    outerNavController.navigate(AppDestinations.REGISTRATION_ROUTE)
+                    navController.navigate(AppDestinations.REGISTRATION_ROUTE)
                 }
             )
         }
@@ -180,21 +178,21 @@ fun AppNavigationHost(outerNavController: NavHostController, innerNavController:
         composable(route = AppDestinations.REGISTRATION_ROUTE) {
             RegistrationScreen(
                 onRegistrationSuccess = {
-                    outerNavController.navigate(AppDestinations.MAIN_APP_ROUTE) {
-                        popUpTo(outerNavController.graph.findStartDestination().id) {
+                    navController.navigate(AppDestinations.MAIN_APP_ROUTE) {
+                        popUpTo(AppDestinations.LOGIN_ROUTE) {
                             inclusive = true
                         }
                         launchSingleTop = true
                     }
                 },
                 onNavigateBackToLogin = {
-                    outerNavController.popBackStack()
+                    navController.popBackStack()
                 }
             )
         }
 
         composable(route = AppDestinations.MAIN_APP_ROUTE) {
-            MainAppScreen(outerNavController = outerNavController, innerNavController = innerNavController)
+            MainAppScreen(outerNavController = navController)
         }
     }
 }
