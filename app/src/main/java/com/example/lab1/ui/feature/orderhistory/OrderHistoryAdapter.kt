@@ -19,10 +19,12 @@ class OrderHistoryAdapter(
 
     override fun onBindViewHolder(holder: OrderHistoryViewHolder, position: Int) {
         val currentItem = orderHistoryList[position]
-        holder.orderIdTextView.text = "Order ID: ${currentItem.orderId}" // Consider using string resources for labels
-        holder.orderDateTextView.text = "Date: ${currentItem.date}"
-        holder.orderTotalTextView.text = "Total: ${currentItem.totalAmount}"
-        holder.orderStatusTextView.text = "Status: ${currentItem.status}"
+        val context = holder.itemView.context
+
+        holder.orderIdTextView.text = context.getString(R.string.order_history_item_id_label, currentItem.orderId)
+        holder.orderDateTextView.text = context.getString(R.string.order_history_item_date_label, currentItem.date)
+        holder.orderTotalTextView.text = context.getString(R.string.order_history_item_total_label, currentItem.totalAmount)
+        holder.orderStatusTextView.text = context.getString(R.string.order_history_item_status_label, currentItem.status)
     }
 
     override fun getItemCount() = orderHistoryList.size

@@ -113,4 +113,8 @@
 
     <!-- Order History Screen -->
     <string name="order_history_title">Order History</string>
+    <string name="order_history_item_id_label">Order ID: %1$s</string>
+    <string name="order_history_item_date_label">Date: %1$s</string>
+    <string name="order_history_item_total_label">Total: %1$s</string>
+    <string name="order_history_item_status_label">Status: %1$s</string>
 </resources>

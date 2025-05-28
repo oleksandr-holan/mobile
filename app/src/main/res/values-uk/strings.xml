@@ -113,4 +113,8 @@
 
     <!-- Order History Screen (Ukrainian) -->
     <string name="order_history_title">Історія Замовлень</string>
+    <string name="order_history_item_id_label">ID Замовлення: %1$s</string>
+    <string name="order_history_item_date_label">Дата: %1$s</string>
+    <string name="order_history_item_total_label">Сума: %1$s</string>
+    <string name="order_history_item_status_label">Статус: %1$s</string>
 </resources> 

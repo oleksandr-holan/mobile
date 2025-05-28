@@ -11,29 +11,25 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textSize="18sp"
-        android:textStyle="bold"
-        android:text="Order ID: 12345" />
+        android:textStyle="bold" />
 
     <TextView
         android:id="@+id/textViewOrderDate"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textSize="14sp"
-        android:text="Date: 2023-10-26" />
+        android:textSize="14sp" />
 
     <TextView
         android:id="@+id/textViewOrderTotal"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textSize="14sp"
-        android:text="Total: $55.00" />
+        android:textSize="14sp" />
 
     <TextView
         android:id="@+id/textViewOrderStatus"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textSize="14sp"
-        android:textStyle="italic"
-        android:text="Status: Paid" />
+        android:textStyle="italic" />
 
 </LinearLayout> 
