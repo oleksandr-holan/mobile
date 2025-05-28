@@ -70,4 +70,20 @@ class SettingsRepositoryImpl @Inject constructor(
             preferences[AppSettingsKeys.APP_LANGUAGE] = language
         }
     }
+
+    override val loggedInUserUsernameFlow: Flow<String?> = dataStore.data
+        .catch { if (it is IOException) emit(emptyPreferences()) else throw it }
+        .map { preferences ->
+            preferences[AppSettingsKeys.LOGGED_IN_USER_USERNAME]
+        }
+
+    override suspend fun setLoggedInUserUsername(username: String?) {
+        dataStore.edit { preferences ->
+            if (username != null) {
+                preferences[AppSettingsKeys.LOGGED_IN_USER_USERNAME] = username
+            } else {
+                preferences.remove(AppSettingsKeys.LOGGED_IN_USER_USERNAME)
+            }
+        }
+    }
 }

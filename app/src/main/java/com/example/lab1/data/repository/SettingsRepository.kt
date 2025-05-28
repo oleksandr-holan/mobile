@@ -15,6 +15,9 @@ interface SettingsRepository {
     val appLanguageFlow: Flow<String>
     suspend fun setAppLanguage(language: String)
 
+    val loggedInUserUsernameFlow: Flow<String?>
+    suspend fun setLoggedInUserUsername(username: String?)
+
     companion object {
         const val DEFAULT_THEME = "System"
         const val DEFAULT_LANGUAGE = "eng"

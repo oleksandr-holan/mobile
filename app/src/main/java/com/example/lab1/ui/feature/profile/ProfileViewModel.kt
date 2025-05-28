@@ -2,6 +2,7 @@ package com.example.lab1.ui.feature.profile
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.lab1.data.repository.AuthRepository
 import com.example.lab1.util.DataResult
 import com.example.lab1.data.repository.ProfileRepository
 import com.example.lab1.data.repository.UserProfile
@@ -31,7 +32,8 @@ sealed class ProfileScreenSideEffect {
 
 @HiltViewModel
 class ProfileViewModel @Inject constructor(
-    private val profileRepository: ProfileRepository
+    private val profileRepository: ProfileRepository,
+    private val authRepository: AuthRepository
 ) : ViewModel() {
     private val _uiState = MutableStateFlow(ProfileScreenState())
     val uiState: StateFlow<ProfileScreenState> = _uiState.asStateFlow()
@@ -52,6 +54,7 @@ class ProfileViewModel @Inject constructor(
 
             ProfileScreenAction.LogoutClicked -> {
                 viewModelScope.launch {
+                    authRepository.logout()
                     _sideEffect.emit(ProfileScreenSideEffect.NavigateToLogin)
                 }
             }

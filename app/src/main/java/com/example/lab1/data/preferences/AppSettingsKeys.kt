@@ -8,4 +8,5 @@ object AppSettingsKeys {
     val SOUNDS_ENABLED = booleanPreferencesKey("sounds_enabled")
     val APP_THEME = stringPreferencesKey("app_theme")
     val APP_LANGUAGE = stringPreferencesKey("app_language")
+    val LOGGED_IN_USER_USERNAME = stringPreferencesKey("logged_in_user_username")
 }

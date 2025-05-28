@@ -16,11 +16,13 @@ sealed class AuthResult {
 interface AuthRepository {
     suspend fun login(username: String, passwordHash: String): AuthResult
     suspend fun register(username: String, passwordHash: String, dateOfBirth: String?): AuthResult
+    suspend fun logout()
 }
 
 @Singleton
 class AuthRepositoryImpl @Inject constructor(
-    private val userDao: UserDao
+    private val userDao: UserDao,
+    private val settingsRepository: SettingsRepository
 ) : AuthRepository {
     private val tag = "AuthRepositoryImpl"
 
@@ -29,6 +31,7 @@ class AuthRepositoryImpl @Inject constructor(
         val user = userDao.getUserByUsername(username)
         return if (user != null && user.passwordHash == passwordHash) {
             Log.d(tag, "Login successful for user '$username'")
+            settingsRepository.setLoggedInUserUsername(username)
             AuthResult.Success
         } else {
             Log.d(tag, "Login failed for user '$username'. User found: ${user != null}")
@@ -61,7 +64,12 @@ class AuthRepositoryImpl @Inject constructor(
             return AuthResult.Error("username_already_exists_error")
         } catch (e: Exception) {
             Log.e(tag, "Registration failed for user '$username'. Exception: ${e.message}", e)
-            return AuthResult.Error("registration_failed_unknown_error") // Generic error
+            return AuthResult.Error("registration_failed_unknown_error")
         }
+    }
+
+    override suspend fun logout() {
+        Log.d(tag, "Logging out user")
+        settingsRepository.setLoggedInUserUsername(null)
     }
 }

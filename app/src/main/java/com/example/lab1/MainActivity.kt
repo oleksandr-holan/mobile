@@ -26,6 +26,7 @@ import com.example.lab1.ui.theme.Lab1Theme
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
 import java.util.Locale
+import kotlinx.coroutines.flow.first
 
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
@@ -46,10 +47,22 @@ class MainActivity : ComponentActivity() {
                 .collectAsState(initial = null)
 
             var languageToApplyForUI by remember { mutableStateOf<String?>(null) }
+            var startDestination by remember { mutableStateOf<String?>(null) }
+
+            LaunchedEffect(key1 = Unit) {
+                val loggedInUser = settingsRepository.loggedInUserUsernameFlow.first()
+                startDestination = if (loggedInUser != null && loggedInUser.isNotBlank()) {
+                    Log.d(tag, "User '$loggedInUser' is logged in. Navigating to Main App.")
+                    AppDestinations.MAIN_APP_ROUTE
+                } else {
+                    Log.d(tag, "No user logged in. Navigating to Login.")
+                    AppDestinations.LOGIN_ROUTE
+                }
+            }
 
             LaunchedEffect(persistedLanguageSetting) {
                 if (persistedLanguageSetting == null) {
-                    Log.d(tag, "[[LAUNCHED_EFFECT]] Waiting for DataStore to emit a language setting...")
+                    Log.d(tag, "[[LAUNCHED_EFFECT_LANG]] Waiting for DataStore to emit a language setting...")
                     return@LaunchedEffect
                 }
 
@@ -58,7 +71,7 @@ class MainActivity : ComponentActivity() {
                 } else {
                     SettingsRepository.DEFAULT_LANGUAGE
                 }
-                Log.d(tag, "[[LAUNCHED_EFFECT]] Target language determined: $targetLanguage (from persisted: '$persistedLanguageSetting')")
+                Log.d(tag, "[[LAUNCHED_EFFECT_LANG]] Target language determined: $targetLanguage (from persisted: '$persistedLanguageSetting')")
 
                 val locale = Locale(targetLanguage)
                 val config = resources.configuration
@@ -69,21 +82,21 @@ class MainActivity : ComponentActivity() {
                     config.setLocale(locale)
                     @Suppress("DEPRECATION")
                     resources.updateConfiguration(config, resources.displayMetrics)
-                    Log.d(tag, "[[LAUNCHED_EFFECT]] Locale updated. Default: ${Locale.getDefault()}, Resources: $locale. From old: $currentActivityLocale")
+                    Log.d(tag, "[[LAUNCHED_EFFECT_LANG]] Locale updated. Default: ${Locale.getDefault()}, Resources: $locale. From old: $currentActivityLocale")
                 } else {
-                    Log.d(tag, "[[LAUNCHED_EFFECT]] Locale $locale already effectively set.")
+                    Log.d(tag, "[[LAUNCHED_EFFECT_LANG]] Locale $locale already effectively set.")
                 }
                 languageToApplyForUI = targetLanguage
             }
 
-            if (languageToApplyForUI == null) {
+            if (languageToApplyForUI == null || startDestination == null) {
                 Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-                    Log.d(tag, "languageToApplyForUI is null, showing loading indicator.")
+                    Log.d(tag, "Waiting for language ($languageToApplyForUI) or start destination ($startDestination), showing loading indicator.")
                     CircularProgressIndicator()
                 }
             } else {
                 key(languageToApplyForUI) { 
-                    Log.d(tag, "[[KEY_BLOCK]] Recomposing with language: $languageToApplyForUI. Current Locale.getDefault(): ${Locale.getDefault().language}")
+                    Log.d(tag, "[[KEY_BLOCK_LANG]] Recomposing with language: $languageToApplyForUI. Current Locale.getDefault(): ${Locale.getDefault().language}")
                     val useDarkTheme = when (currentThemeSetting) {
                         "Dark" -> true
                         "Light" -> false
@@ -95,8 +108,8 @@ class MainActivity : ComponentActivity() {
                             modifier = Modifier.fillMaxSize(),
                             color = MaterialTheme.colorScheme.background
                         ) {
-                            Log.d(tag, "[[SURFACE_IN_KEY_BLOCK]] AppNavigationHost to be composed. Language: $languageToApplyForUI. Locale.getDefault(): ${Locale.getDefault().language}")
-                            AppNavigationHost(navController = navController)
+                            Log.d(tag, "[[SURFACE_IN_KEY_BLOCK]] AppNavigationHost to be composed. Start: $startDestination, Language: $languageToApplyForUI. Locale.getDefault(): ${Locale.getDefault().language}")
+                            AppNavigationHost(navController = navController, startDestination = startDestination!!)
                         }
                     }
                 }
@@ -139,17 +152,17 @@ class MainActivity : ComponentActivity() {
 }
 
 @Composable
-fun AppNavigationHost(navController: NavHostController) {
-    Log.d("AppNavigationHost", "Composing. Current Locale.getDefault(): ${Locale.getDefault().language}. LoginScreen title res ID: ${R.string.login_title}")
+fun AppNavigationHost(navController: NavHostController, startDestination: String) {
+    Log.d("AppNavigationHost", "Composing with startDestination: $startDestination. Current Locale.getDefault(): ${Locale.getDefault().language}. LoginScreen title res ID: ${R.string.login_title}")
     NavHost(
         navController = navController,
-        startDestination = AppDestinations.LOGIN_ROUTE
+        startDestination = startDestination
     ) {
         composable(route = AppDestinations.LOGIN_ROUTE) {
             LoginScreen(
                 onLoginSuccess = {
                     navController.navigate(AppDestinations.MAIN_APP_ROUTE) {
-                        popUpTo(navController.graph.startDestinationRoute!!) {
+                        popUpTo(AppDestinations.LOGIN_ROUTE) {
                             inclusive = true
                         }
                         launchSingleTop = true
@@ -165,7 +178,7 @@ fun AppNavigationHost(navController: NavHostController) {
             RegistrationScreen(
                 onRegistrationSuccess = {
                     navController.navigate(AppDestinations.MAIN_APP_ROUTE) {
-                        popUpTo(navController.graph.startDestinationRoute!!) {
+                        popUpTo(AppDestinations.LOGIN_ROUTE) {
                             inclusive = true
                         }
                         launchSingleTop = true
