@@ -11,6 +11,7 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.core.view.WindowCompat
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
@@ -41,47 +42,61 @@ class MainActivity : ComponentActivity() {
         setContent {
             val currentThemeSetting by settingsRepository.appThemeFlow
                 .collectAsState(initial = SettingsRepository.DEFAULT_THEME)
-            val currentLanguageSetting by settingsRepository.appLanguageFlow
-                .collectAsState(initial = SettingsRepository.DEFAULT_LANGUAGE)
+            val persistedLanguageSetting by settingsRepository.appLanguageFlow
+                .collectAsState(initial = null)
 
-            var localeApplied by remember { mutableStateOf(false) }
+            var languageToApplyForUI by remember { mutableStateOf<String?>(null) }
 
-            LaunchedEffect(currentLanguageSetting) {
-                if (currentLanguageSetting.isNotEmpty()) {
-                    val locale = Locale(currentLanguageSetting)
-                    Locale.setDefault(locale)
-                    val config = resources.configuration
-                    config.setLocale(locale)
-                    @Suppress("DEPRECATION") // resources.updateConfiguration is deprecated but necessary here for immediate effect
-                    resources.updateConfiguration(config, resources.displayMetrics)
-                    Log.d(tag, "Locale updated to: $currentLanguageSetting, applying to resources.")
-                } else {
-                    Log.d(tag, "Language setting is empty, using default.")
+            LaunchedEffect(persistedLanguageSetting) {
+                if (persistedLanguageSetting == null) {
+                    Log.d(tag, "[[LAUNCHED_EFFECT]] Waiting for DataStore to emit a language setting...")
+                    return@LaunchedEffect
                 }
-                localeApplied = true // Signal that locale setup is done
+
+                val targetLanguage = if (persistedLanguageSetting!!.isNotEmpty()) {
+                    persistedLanguageSetting
+                } else {
+                    SettingsRepository.DEFAULT_LANGUAGE
+                }
+                Log.d(tag, "[[LAUNCHED_EFFECT]] Target language determined: $targetLanguage (from persisted: '$persistedLanguageSetting')")
+
+                val locale = Locale(targetLanguage)
+                val config = resources.configuration
+                val currentActivityLocale = Locale(config.locales[0].toLanguageTag())
+
+                if (currentActivityLocale != locale || Locale.getDefault() != locale) {
+                    Locale.setDefault(locale)
+                    config.setLocale(locale)
+                    @Suppress("DEPRECATION")
+                    resources.updateConfiguration(config, resources.displayMetrics)
+                    Log.d(tag, "[[LAUNCHED_EFFECT]] Locale updated. Default: ${Locale.getDefault()}, Resources: $locale. From old: $currentActivityLocale")
+                } else {
+                    Log.d(tag, "[[LAUNCHED_EFFECT]] Locale $locale already effectively set.")
+                }
+                languageToApplyForUI = targetLanguage
             }
 
-            val useDarkTheme = when (currentThemeSetting) {
-                "Dark" -> true
-                "Light" -> false
-                else -> isSystemInDarkTheme()
-            }
-
-            Lab1Theme(darkTheme = useDarkTheme) {
-                val navController: NavHostController = rememberNavController()
-                Surface(
-                    modifier = Modifier.fillMaxSize(),
-                    color = MaterialTheme.colorScheme.background
-                ) {
-                    if (localeApplied) {
-                        Log.d(tag, "Locale applied, composing AppNavigationHost")
-                        AppNavigationHost(navController = navController)
-                    } else {
-                        // Optional: Show a loading indicator while locale is being applied
-                        // This will be very brief, might not even be visible.
-                        Log.d(tag, "Locale not yet applied, showing loading indicator (or nothing)")
-                        Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-                            CircularProgressIndicator()
+            if (languageToApplyForUI == null) {
+                Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+                    Log.d(tag, "languageToApplyForUI is null, showing loading indicator.")
+                    CircularProgressIndicator()
+                }
+            } else {
+                key(languageToApplyForUI) { 
+                    Log.d(tag, "[[KEY_BLOCK]] Recomposing with language: $languageToApplyForUI. Current Locale.getDefault(): ${Locale.getDefault().language}")
+                    val useDarkTheme = when (currentThemeSetting) {
+                        "Dark" -> true
+                        "Light" -> false
+                        else -> isSystemInDarkTheme()
+                    }
+                    Lab1Theme(darkTheme = useDarkTheme) {
+                        val navController: NavHostController = rememberNavController()
+                        Surface(
+                            modifier = Modifier.fillMaxSize(),
+                            color = MaterialTheme.colorScheme.background
+                        ) {
+                            Log.d(tag, "[[SURFACE_IN_KEY_BLOCK]] AppNavigationHost to be composed. Language: $languageToApplyForUI. Locale.getDefault(): ${Locale.getDefault().language}")
+                            AppNavigationHost(navController = navController)
                         }
                     }
                 }
@@ -125,6 +140,7 @@ class MainActivity : ComponentActivity() {
 
 @Composable
 fun AppNavigationHost(navController: NavHostController) {
+    Log.d("AppNavigationHost", "Composing. Current Locale.getDefault(): ${Locale.getDefault().language}. LoginScreen title res ID: ${R.string.login_title}")
     NavHost(
         navController = navController,
         startDestination = AppDestinations.LOGIN_ROUTE
@@ -132,9 +148,7 @@ fun AppNavigationHost(navController: NavHostController) {
         composable(route = AppDestinations.LOGIN_ROUTE) {
             LoginScreen(
                 onLoginSuccess = {
-
                     navController.navigate(AppDestinations.MAIN_APP_ROUTE) {
-
                         popUpTo(navController.graph.startDestinationRoute!!) {
                             inclusive = true
                         }
@@ -150,7 +164,6 @@ fun AppNavigationHost(navController: NavHostController) {
         composable(route = AppDestinations.REGISTRATION_ROUTE) {
             RegistrationScreen(
                 onRegistrationSuccess = {
-
                     navController.navigate(AppDestinations.MAIN_APP_ROUTE) {
                         popUpTo(navController.graph.startDestinationRoute!!) {
                             inclusive = true

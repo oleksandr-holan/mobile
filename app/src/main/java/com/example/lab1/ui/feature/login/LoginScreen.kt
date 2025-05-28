@@ -21,6 +21,7 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.lab1.data.repository.MockAuthRepository
 import androidx.compose.ui.res.stringResource
 import com.example.lab1.R
+import java.util.Locale
 
 @Composable
 fun LoginScreen(
@@ -30,6 +31,10 @@ fun LoginScreen(
         factory = LoginViewModelFactory(MockAuthRepository())
     )
 ) {
+    val currentLanguage = Locale.getDefault().language
+    val loginTitleString = stringResource(R.string.login_title)
+    Log.d("LoginScreen", "Composing. Current Locale.getDefault(): $currentLanguage. Login title: $loginTitleString")
+
     val uiState by loginViewModel.uiState.collectAsState()
     val lifecycleOwner = LocalLifecycleOwner.current
 
@@ -57,7 +62,7 @@ fun LoginScreen(
             verticalArrangement = Arrangement.Center,
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            Text(stringResource(R.string.login_title), style = MaterialTheme.typography.headlineMedium)
+            Text(loginTitleString, style = MaterialTheme.typography.headlineMedium)
             Spacer(modifier = Modifier.height(16.dp))
 
             if (uiState.errorMessage != null) {
