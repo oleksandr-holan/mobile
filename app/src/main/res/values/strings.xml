@@ -19,7 +19,7 @@
     <string name="settings_title">Settings</string>
     <string name="select_menu_items_title">Select Menu Items</string>
     <string name="item_details_title">Item Details</string>
-    <string name="order_app_title">Order App</string>
+    <string name="order_app_title">Menu</string>
     <string name="error_active_order_id_missing">Error: Active order ID is missing for Menu Screen.</string>
     <string name="add_item_details_loading">Loading item details…</string>
     <string name="add_item_details_edit_title">Edit Details for:</string>
@@ -117,4 +117,5 @@
     <string name="order_history_item_date_label">Date: %1$s</string>
     <string name="order_history_item_total_label">Total: %1$s</string>
     <string name="order_history_item_status_label">Status: %1$s</string>
+    <string name="view_daily_specials_button">View Daily Specials</string>
 </resources>

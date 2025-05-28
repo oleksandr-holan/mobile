@@ -55,7 +55,7 @@ fun MenuScreen(
                 .fillMaxWidth()
                 .padding(bottom = 16.dp)
         ) {
-            Text("View Daily Specials")
+            Text(stringResource(R.string.view_daily_specials_button))
         }
 
         if (uiState.isLoading) {

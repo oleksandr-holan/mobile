@@ -19,7 +19,7 @@
     <string name="settings_title">Налаштування</string>
     <string name="select_menu_items_title">Виберіть позиції з меню</string>
     <string name="item_details_title">Деталі позиції</string>
-    <string name="order_app_title">Додаток для замовлень</string>
+    <string name="order_app_title">Меню</string>
     <string name="error_active_order_id_missing">Помилка: Відсутній ID активного замовлення для екрану меню.</string>
     <string name="add_item_details_loading">Завантаження деталей позиції…</string>
     <string name="add_item_details_edit_title">Редагувати деталі для:</string>
@@ -117,4 +117,5 @@
     <string name="order_history_item_date_label">Дата: %1$s</string>
     <string name="order_history_item_total_label">Сума: %1$s</string>
     <string name="order_history_item_status_label">Статус: %1$s</string>
+    <string name="view_daily_specials_button">Переглянути щоденні акції</string>
 </resources> 
