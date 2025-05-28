@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">Lab 1</string>
+    <string name="app_name">Lab1</string>
     <string name="login_button_text">Log In</string>
     <string name="register_button_text">Register</string>
     <string name="notifications_enabled_label">Enable Notifications</string>
@@ -39,15 +39,15 @@
     <string name="loading_menu_text">Loading menu…</string>
     <string name="no_menu_items_text">No menu items available.</string>
     <string name="add_items_to_order_fab_desc">Add items to order</string>
-    <string name="order_id_table_text">Order: (Table )</string>
+    <string name="order_id_table_text">Order #%1$d (Table %2$d)</string>
     <string name="no_active_order_text">No Active Order</string>
     <string name="new_order_button">New Order</string>
-    <string name="loading_order_text">Loading order…</string>
-    <string name="loading_items_text">Loading items…</string>
-    <string name="create_new_order_prompt">Please create a new order to add items.</string>
-    <string name="empty_order_prompt">This order is empty. Click \'+\' to add items.</string>
-    <string name="delete_item_desc">Delete item</string>
-    <string name="notes_label">Notes: %s</string>
+    <string name="loading_order_text">Loading Order...</string>
+    <string name="loading_items_text">Loading Items...</string>
+    <string name="create_new_order_prompt">Create a new order to get started!</string>
+    <string name="empty_order_prompt">This order is empty. Add items using the + button.</string>
+    <string name="delete_item_desc">Delete Item</string>
+    <string name="notes_label">Notes: %1$s</string>
     <string name="logout_button">Log Out</string>
     <string name="profile_picture_desc">Profile Picture</string>
     <string name="email_label">Email:</string>
@@ -58,11 +58,29 @@
     <string name="dob_hint">Date of Birth (e.g., YYYY-MM-DD)</string>
     <string name="privacy_policy_accept">I accept the Privacy Policy</string>
     <string name="login_prompt">Already have an account? Log In</string>
-    <string name="generic_error_text">Error: </string>
-    <string name="order_item_details_text">Qty: Price: </string>
+    <string name="generic_error_text">Error: %1$s</string>
+    <string name="order_item_details_text">Quantity: %1$d · Price: %2$s</string>
     <string name="select_order_first_prompt">Please create or select an order first.</string>
     <string name="restart_app_dialog_title">Restart Required</string>
-    <string name="restart_app_dialog_text">Changing the language requires an app restart to take full effect. Do you want to restart now?</string>
+    <string name="restart_app_dialog_text">To apply language changes, the application needs to restart. Do you want to restart now?</string>
     <string name="restart_now_button">Restart Now</string>
     <string name="restart_later_button">Later</string>
+
+    <!-- Keys from ViewModels/Repositories that were causing Unresolved Reference -->
+    <string name="invalid_item_or_order_error">Invalid item or order information provided.</string>
+    <string name="menu_item_not_found_error">Menu item not found.</string>
+    <string name="order_item_details_not_found_error">Order item details not found.</string>
+    <string name="missing_item_base_info_error">Cannot save, item base information missing.</string>
+    <string name="failed_to_find_item_to_update_error">Failed to find item to update.</string>
+    <string name="order_info_missing_error">Order information missing.</string>
+    <string name="error_saving_item_error">Error saving item. Please try again.</string>
+    <string name="username_password_required_error">Username and password are required.</string>
+    <string name="invalid_username_or_password_error">Invalid username or password.</string>
+    <string name="error_fetching_menu_error">Error fetching menu. Please check your connection.</string>
+    <string name="user_profile_not_found_error">User profile not found.</string>
+    <string name="fill_all_fields_and_accept_policy_error">Please fill all required fields and accept the privacy policy.</string>
+    <string name="username_too_short_error">Username must be at least 4 characters long.</string>
+    <string name="password_too_short_error">Password must be at least 6 characters long.</string>
+    <string name="username_already_exists_error">Username already exists. Please choose another.</string>
+    <string name="date_of_birth_error_substring">Date of Birth</string>
 </resources>

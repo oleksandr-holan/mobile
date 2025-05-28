@@ -56,7 +56,7 @@ class MenuViewModel @Inject constructor(
                     _uiState.update {
                         it.copy(
                             isLoading = false,
-                            errorMessage = "Error fetching menu: ${e.localizedMessage}"
+                            errorMessage = "error_fetching_menu_error"
                         )
                     }
                 }

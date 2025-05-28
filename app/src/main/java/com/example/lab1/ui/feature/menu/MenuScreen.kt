@@ -14,6 +14,8 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.compose.LocalLifecycleOwner
 import androidx.lifecycle.flowWithLifecycle
 import com.example.lab1.ui.components.MenuItemCard 
+import androidx.compose.ui.res.stringResource
+import com.example.lab1.R
 
 @Composable
 fun MenuScreen(
@@ -44,19 +46,22 @@ fun MenuScreen(
         if (uiState.isLoading) {
             Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
                 CircularProgressIndicator()
-                Text("Loading menu...", modifier = Modifier.padding(start = 8.dp))
+                Text(stringResource(R.string.loading_menu_text), modifier = Modifier.padding(start = 8.dp))
             }
         } else if (uiState.errorMessage != null) {
             Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
                 Text(
-                    text = uiState.errorMessage!!,
+                    text = when (uiState.errorMessage) {
+                        "error_fetching_menu_error" -> stringResource(R.string.error_fetching_menu_error)
+                        else -> stringResource(R.string.generic_error_text, uiState.errorMessage!!) // Fallback
+                    },
                     color = MaterialTheme.colorScheme.error,
                     modifier = Modifier.padding(16.dp)
                 )
             }
         } else if (uiState.menuItems.isEmpty()) {
             Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-                Text("No menu items available.", modifier = Modifier.padding(16.dp))
+                Text(stringResource(R.string.no_menu_items_text), modifier = Modifier.padding(16.dp))
             }
         } else {
             LazyColumn(

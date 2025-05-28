@@ -20,6 +20,8 @@ import androidx.lifecycle.flowWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.lab1.data.repository.MockAuthRepository
 import com.example.lab1.ui.components.AppTopAppBar 
+import androidx.compose.ui.res.stringResource
+import com.example.lab1.R
 
 @Composable
 fun RegistrationScreen(
@@ -49,7 +51,7 @@ fun RegistrationScreen(
     Scaffold(
         topBar = {
             AppTopAppBar(
-                title = "Register",
+                title = stringResource(R.string.register_title),
                 canNavigateBack = true,
                 onNavigateBack = onNavigateBackToLogin
             )
@@ -65,7 +67,13 @@ fun RegistrationScreen(
         ) {
             if (uiState.errorMessage != null) {
                 Text(
-                    text = uiState.errorMessage!!,
+                    text = when (uiState.errorMessage) {
+                        "fill_all_fields_and_accept_policy_error" -> stringResource(R.string.fill_all_fields_and_accept_policy_error)
+                        "username_too_short_error" -> stringResource(R.string.username_too_short_error)
+                        "password_too_short_error" -> stringResource(R.string.password_too_short_error)
+                        "username_already_exists_error" -> stringResource(R.string.username_already_exists_error)
+                        else -> uiState.errorMessage!!
+                    },
                     color = MaterialTheme.colorScheme.error,
                     style = MaterialTheme.typography.bodySmall,
                     modifier = Modifier.padding(bottom = 8.dp)
@@ -82,10 +90,10 @@ fun RegistrationScreen(
                         )
                     )
                 },
-                label = { Text("Username/Login") },
+                label = { Text(stringResource(R.string.username_label)) },
                 singleLine = true,
                 modifier = Modifier.fillMaxWidth(),
-                isError = uiState.errorMessage?.contains("Username", ignoreCase = true) == true,
+                isError = uiState.errorMessage?.let { it == "username_too_short_error" || it == "username_already_exists_error" } == true,
                 enabled = !uiState.isLoading
             )
             Spacer(modifier = Modifier.height(16.dp))
@@ -99,7 +107,7 @@ fun RegistrationScreen(
                         )
                     )
                 },
-                label = { Text("Password") },
+                label = { Text(stringResource(R.string.password_label)) },
                 singleLine = true,
                 visualTransformation = if (uiState.isPasswordVisible) VisualTransformation.None else PasswordVisualTransformation(),
                 keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
@@ -107,7 +115,7 @@ fun RegistrationScreen(
                     val image =
                         if (uiState.isPasswordVisible) Icons.Filled.Visibility else Icons.Filled.VisibilityOff
                     val description =
-                        if (uiState.isPasswordVisible) "Hide password" else "Show password"
+                        if (uiState.isPasswordVisible) stringResource(R.string.hide_password_desc) else stringResource(R.string.show_password_desc)
                     IconButton(
                         onClick = { registrationViewModel.onAction(RegistrationUiAction.TogglePasswordVisibility) },
                         enabled = !uiState.isLoading
@@ -116,7 +124,7 @@ fun RegistrationScreen(
                     }
                 },
                 modifier = Modifier.fillMaxWidth(),
-                isError = uiState.errorMessage?.contains("Password", ignoreCase = true) == true,
+                isError = uiState.errorMessage == "password_too_short_error",
                 enabled = !uiState.isLoading
             )
             Spacer(modifier = Modifier.height(16.dp))
@@ -130,12 +138,11 @@ fun RegistrationScreen(
                         )
                     )
                 },
-                label = { Text("Date of Birth (e.g., YYYY-MM-DD)") },
+                label = { Text(stringResource(R.string.dob_hint)) },
                 singleLine = true,
                 modifier = Modifier.fillMaxWidth(),
                 isError = uiState.errorMessage?.contains(
-                    "Date of Birth",
-                    ignoreCase = true
+                    stringResource(R.string.dob_hint)
                 ) == true,
                 enabled = !uiState.isLoading
             )
@@ -157,7 +164,7 @@ fun RegistrationScreen(
                     enabled = !uiState.isLoading
                 )
                 Text(
-                    text = "I accept the Privacy Policy",
+                    text = stringResource(R.string.privacy_policy_accept),
                     style = MaterialTheme.typography.bodyMedium,
                     modifier = Modifier.padding(start = 8.dp)
                 )
@@ -181,7 +188,7 @@ fun RegistrationScreen(
                         color = MaterialTheme.colorScheme.onPrimary
                     )
                 } else {
-                    Text("Register")
+                    Text(stringResource(R.string.register_button_text))
                 }
             }
             Spacer(modifier = Modifier.height(16.dp))
@@ -190,7 +197,7 @@ fun RegistrationScreen(
                 onClick = onNavigateBackToLogin,
                 enabled = !uiState.isLoading
             ) {
-                Text("Already have an account? Log In")
+                Text(stringResource(R.string.login_prompt))
             }
         }
     }

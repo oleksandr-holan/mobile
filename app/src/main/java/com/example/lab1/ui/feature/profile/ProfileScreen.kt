@@ -20,6 +20,7 @@ import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import com.example.lab1.R
 import com.example.lab1.data.repository.MockProfileRepository
+import androidx.compose.ui.res.stringResource
 
 @Composable
 fun ProfileScreen(
@@ -52,7 +53,10 @@ fun ProfileScreen(
         } else if (uiState.errorMessage != null) {
             Box(contentAlignment = Alignment.Center, modifier = Modifier.fillMaxSize()) {
                 Text(
-                    text = "Error: ${uiState.errorMessage}",
+                    text = when (uiState.errorMessage) {
+                        "user_profile_not_found_error" -> stringResource(R.string.user_profile_not_found_error)
+                        else -> stringResource(R.string.generic_error_text, uiState.errorMessage!!) // Fallback generic error
+                    },
                     color = MaterialTheme.colorScheme.error,
                     modifier = Modifier.padding(16.dp)
                 )
@@ -73,7 +77,7 @@ fun ProfileScreen(
                         .error(R.drawable.ic_launcher_foreground)
                         .placeholder(R.drawable.ic_launcher_foreground)
                         .build(),
-                    contentDescription = "Profile Picture",
+                    contentDescription = stringResource(R.string.profile_picture_desc),
                     modifier = Modifier
                         .size(120.dp)
                         .clip(CircleShape),
@@ -84,25 +88,25 @@ fun ProfileScreen(
                     style = MaterialTheme.typography.headlineSmall,
                     fontWeight = FontWeight.Bold
                 )
-                ProfileInfoRow(label = "Email:", value = userProfile.email)
+                ProfileInfoRow(label = stringResource(R.string.email_label), value = userProfile.email)
                 userProfile.dateOfBirth?.let {
                     ProfileInfoRow(
-                        label = "Date of Birth:",
+                        label = stringResource(R.string.dob_label),
                         value = it
                     )
                 }
-                ProfileInfoRow(label = "Member Since:", value = userProfile.memberSince)
+                ProfileInfoRow(label = stringResource(R.string.member_since_label), value = userProfile.memberSince)
                 Spacer(modifier = Modifier.weight(1f))
                 Button(
                     onClick = { profileViewModel.onAction(ProfileScreenAction.LogoutClicked) },
                     modifier = Modifier.fillMaxWidth()
                 ) {
-                    Text("Log Out")
+                    Text(stringResource(R.string.logout_button))
                 }
             }
         } else {
             Box(contentAlignment = Alignment.Center, modifier = Modifier.fillMaxSize()) {
-                Text("No profile data available. Please try again.")
+                Text(stringResource(R.string.no_profile_data_text))
             }
         }
     }

@@ -116,7 +116,7 @@ class RegistrationViewModel(
     private fun attemptRegistration() {
         val currentState = _uiState.value
         if (!currentState.isRegisterEnabled) {
-            _uiState.update { it.copy(errorMessage = "Please fill all required fields and accept the privacy policy.") }
+            _uiState.update { it.copy(errorMessage = "fill_all_fields_and_accept_policy_error") }
             return
         }
         viewModelScope.launch {

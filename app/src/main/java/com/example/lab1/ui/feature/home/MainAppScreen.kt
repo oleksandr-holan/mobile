@@ -17,6 +17,8 @@ import androidx.navigation.navArgument
 import com.example.lab1.ui.navigation.AppDestinations
 import com.example.lab1.ui.navigation.BottomNavItem
 import com.example.lab1.ui.navigation.bottomNavItems
+import androidx.compose.ui.res.stringResource
+import com.example.lab1.R
 
 import com.example.lab1.ui.components.AppBottomNavigationBar
 import com.example.lab1.ui.components.AppTopAppBar
@@ -32,16 +34,17 @@ fun MainAppScreen(outerNavController: NavHostController) {
     val navBackStackEntry by innerNavController.currentBackStackEntryAsState()
     val currentRoute = navBackStackEntry?.destination?.route
 
-    val currentScreenTitle = remember(currentRoute) {
+    val currentScreenTitle = currentRoute?.let {
         when {
-            currentRoute == BottomNavItem.Orders.route -> BottomNavItem.Orders.title
-            currentRoute == BottomNavItem.Profile.route -> BottomNavItem.Profile.title
-            currentRoute == AppDestinations.MENU_SCREEN_ROUTE -> "Select Menu Items"
-            currentRoute?.startsWith(AppDestinations.ADD_ITEM_DETAILS_ROUTE) == true -> "Item Details" 
-            currentRoute == BottomNavItem.Settings.route -> BottomNavItem.Settings.title
-            else -> "Order App"
+            it == BottomNavItem.Orders.route -> stringResource(BottomNavItem.Orders.titleResId)
+            it == BottomNavItem.Profile.route -> stringResource(BottomNavItem.Profile.titleResId)
+            it == AppDestinations.MENU_SCREEN_ROUTE -> stringResource(R.string.select_menu_items_title)
+            it.startsWith(AppDestinations.ADD_ITEM_DETAILS_ROUTE) -> stringResource(R.string.item_details_title)
+            it == BottomNavItem.Settings.route -> stringResource(BottomNavItem.Settings.titleResId)
+            else -> stringResource(R.string.order_app_title)
         }
-    }
+    } ?: stringResource(R.string.order_app_title)
+
     val canNavigateBack = remember(currentRoute) {
         bottomNavItems.none { it.route == currentRoute } &&
                 currentRoute != null &&
@@ -57,8 +60,8 @@ fun MainAppScreen(outerNavController: NavHostController) {
             )
         },
         bottomBar = {
-            
-            if (bottomNavItems.any { it.route == currentRoute}) {
+            val currentBottomNavRoute = navBackStackEntry?.destination?.route
+            if (bottomNavItems.any { it.route == currentBottomNavRoute}) {
                 AppBottomNavigationBar(navController = innerNavController)
             }
         }
@@ -103,7 +106,7 @@ fun MainAppScreen(outerNavController: NavHostController) {
                     )
                 } else {
                     Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-                        Text("Error: Active order ID is missing for Menu Screen.")
+                        Text(stringResource(R.string.error_active_order_id_missing))
                     }
                 }
             }

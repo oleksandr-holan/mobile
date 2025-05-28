@@ -19,6 +19,8 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.flowWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.lab1.data.repository.MockAuthRepository
+import androidx.compose.ui.res.stringResource
+import com.example.lab1.R
 
 @Composable
 fun LoginScreen(
@@ -55,12 +57,16 @@ fun LoginScreen(
             verticalArrangement = Arrangement.Center,
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            Text("Login", style = MaterialTheme.typography.headlineMedium)
+            Text(stringResource(R.string.login_title), style = MaterialTheme.typography.headlineMedium)
             Spacer(modifier = Modifier.height(16.dp))
 
             if (uiState.errorMessage != null) {
                 Text(
-                    text = uiState.errorMessage!!,
+                    text = when (uiState.errorMessage) {
+                        "username_password_required_error" -> stringResource(R.string.username_password_required_error)
+                        "invalid_username_or_password_error" -> stringResource(R.string.invalid_username_or_password_error)
+                        else -> uiState.errorMessage!!
+                    },
                     color = MaterialTheme.colorScheme.error,
                     style = MaterialTheme.typography.bodySmall,
                     modifier = Modifier.padding(bottom = 8.dp)
@@ -72,7 +78,7 @@ fun LoginScreen(
             OutlinedTextField(
                 value = uiState.username,
                 onValueChange = { loginViewModel.onAction(LoginUiAction.UsernameChanged(it)) },
-                label = { Text("Username/Login") },
+                label = { Text(stringResource(R.string.username_label)) },
                 singleLine = true,
                 modifier = Modifier.fillMaxWidth(),
                 isError = uiState.errorMessage != null,
@@ -83,7 +89,7 @@ fun LoginScreen(
             OutlinedTextField(
                 value = uiState.password,
                 onValueChange = { loginViewModel.onAction(LoginUiAction.PasswordChanged(it)) },
-                label = { Text("Password") },
+                label = { Text(stringResource(R.string.password_label)) },
                 singleLine = true,
                 visualTransformation = if (uiState.isPasswordVisible) VisualTransformation.None else PasswordVisualTransformation(),
                 keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
@@ -92,7 +98,7 @@ fun LoginScreen(
                         Icons.Filled.Visibility
                     else Icons.Filled.VisibilityOff
                     val description =
-                        if (uiState.isPasswordVisible) "Hide password" else "Show password"
+                        if (uiState.isPasswordVisible) stringResource(R.string.hide_password_desc) else stringResource(R.string.show_password_desc)
 
                     IconButton(
                         onClick = { loginViewModel.onAction(LoginUiAction.TogglePasswordVisibility) },
@@ -121,7 +127,7 @@ fun LoginScreen(
                         color = MaterialTheme.colorScheme.onPrimary
                     )
                 } else {
-                    Text("Log In")
+                    Text(stringResource(R.string.login_button_text))
                 }
             }
             Spacer(modifier = Modifier.height(16.dp))
@@ -130,7 +136,7 @@ fun LoginScreen(
                 onClick = onNavigateToRegister,
                 enabled = !uiState.isLoading
             ) {
-                Text("Don't have an account? Register")
+                Text(stringResource(R.string.register_prompt))
             }
         }
     }

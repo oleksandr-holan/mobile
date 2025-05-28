@@ -33,7 +33,7 @@ data class AddItemDetailsScreenState(
     val isLoading: Boolean = true,
     val isSaving: Boolean = false,
     val errorMessage: String? = null,
-    val buttonText: String = "Add to Order"
+    val buttonText: String = "add_to_order_button"
 ) {
     val roundedQuantity: Int get() = quantity.roundToInt()
     val isEditMode: Boolean get() = currentOrderItemId != null
@@ -67,7 +67,7 @@ class AddItemDetailsViewModel @Inject constructor(
         val newFromMenuItemId: String? = savedStateHandle[AppDestinations.ARG_MENU_ITEM_ID]
         val activeOrderIdForNew: Long? = savedStateHandle[AppDestinations.ARG_ACTIVE_ORDER_ID]
 
-        _uiState.update { it.copy(buttonText = if (editingOrderItemId != null) "Update Item" else "Add to Order") }
+        _uiState.update { it.copy(buttonText = if (editingOrderItemId != null) "update_item_button" else "add_to_order_button") }
 
         if (editingOrderItemId != null && editingOrderItemId != 0L) {
             _uiState.update { it.copy(currentOrderItemId = editingOrderItemId) }
@@ -79,7 +79,7 @@ class AddItemDetailsViewModel @Inject constructor(
             _uiState.update {
                 it.copy(
                     isLoading = false,
-                    errorMessage = "Invalid item or order information provided.",
+                    errorMessage = "invalid_item_or_order_error",
                     itemName = "Error"
                 )
             }
@@ -103,7 +103,7 @@ class AddItemDetailsViewModel @Inject constructor(
                     _uiState.update {
                         it.copy(
                             isLoading = false,
-                            errorMessage = "Menu item not found.",
+                            errorMessage = "menu_item_not_found_error",
                             itemName = "Unknown Item"
                         )
                     }
@@ -131,7 +131,7 @@ class AddItemDetailsViewModel @Inject constructor(
                     _uiState.update {
                         it.copy(
                             isLoading = false,
-                            errorMessage = "Order item details not found.",
+                            errorMessage = "order_item_details_not_found_error",
                             itemName = "Unknown Item"
                         )
                     }
@@ -160,7 +160,7 @@ class AddItemDetailsViewModel @Inject constructor(
         val currentState = _uiState.value
         if (currentState.isLoading || currentState.isSaving) return
         if (currentState.menuItemOriginalId == null) {
-            _uiState.update { it.copy(errorMessage = "Cannot save, item base information missing.") }
+            _uiState.update { it.copy(errorMessage = "missing_item_base_info_error") }
             return
         }
 
@@ -180,7 +180,7 @@ class AddItemDetailsViewModel @Inject constructor(
                         orderRepository.updateOrderItem(itemToUpdate)
                         _sideEffect.emit(AddItemDetailsSideEffect.NavigateBack)
                     } else {
-                        _uiState.update { it.copy(errorMessage = "Failed to find item to update.") }
+                        _uiState.update { it.copy(errorMessage = "failed_to_find_item_to_update_error") }
                     }
 
                 } else if (currentState.activeOrderIdForNewItem != null) {
@@ -195,10 +195,10 @@ class AddItemDetailsViewModel @Inject constructor(
                     orderRepository.addOrderItemToOrder(newOrderItem)
                     _sideEffect.emit(AddItemDetailsSideEffect.NavigateBack)
                 } else {
-                    _uiState.update { it.copy(errorMessage = "Order information missing.") }
+                    _uiState.update { it.copy(errorMessage = "order_info_missing_error") }
                 }
             } catch (e: Exception) {
-                _uiState.update { it.copy(errorMessage = "Error saving item: ${e.localizedMessage}") }
+                _uiState.update { it.copy(errorMessage = "error_saving_item_error") }
                 Log.e("AddItemDetailsVM", "Error saving item", e)
             } finally {
                 _uiState.update { it.copy(isSaving = false) }

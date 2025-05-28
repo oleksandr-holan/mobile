@@ -88,7 +88,7 @@ class LoginViewModel(
         val currentState = _uiState.value
 
         if (!currentState.isLoginEnabled) {
-            _uiState.update { it.copy(errorMessage = "Username and password are required.") }
+            _uiState.update { it.copy(errorMessage = "username_password_required_error") }
             return
         }
 

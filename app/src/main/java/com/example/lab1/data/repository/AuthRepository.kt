@@ -36,7 +36,7 @@ class MockAuthRepository : AuthRepository {
             AuthResult.Success
         } else {
             println("MockAuthRepository: Login failed for user '$username'. User found: ${user != null}")
-            AuthResult.Error("Invalid username or password.")
+            AuthResult.Error("invalid_username_or_password_error")
         }
     }
 
@@ -48,15 +48,15 @@ class MockAuthRepository : AuthRepository {
         delay(1500)
         if (username.length < 4) {
             println("MockAuthRepository: Registration failed for user '$username'. Username too short.")
-            return AuthResult.Error("Username must be at least 4 characters long.")
+            return AuthResult.Error("username_too_short_error")
         }
         if (passwordHash.length < 6) {
             println("MockAuthRepository: Registration failed for user '$username'. Password too short.")
-            return AuthResult.Error("Password must be at least 6 characters long.")
+            return AuthResult.Error("password_too_short_error")
         }
         if (registeredUsers.containsKey(username)) {
             println("MockAuthRepository: Registration failed for user '$username'. Username already exists.")
-            return AuthResult.Error("Username already exists. Please choose another.")
+            return AuthResult.Error("username_already_exists_error")
         }
         
         val newUser = User(username = username, passwordHash = passwordHash, dateOfBirth = dateOfBirth)

@@ -40,7 +40,7 @@ class MockProfileRepository : ProfileRepository {
         delay(500) 
         return userProfiles[userId]?.let {
             DataResult.Success(it)
-        } ?: DataResult.Error("User profile not found for ID: $userId")
+        } ?: DataResult.Error("user_profile_not_found_error")
     }
     
     suspend fun getCurrentUserProfile(): DataResult<UserProfile> {

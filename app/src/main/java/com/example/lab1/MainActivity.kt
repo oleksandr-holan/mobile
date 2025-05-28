@@ -5,12 +5,11 @@ import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.isSystemInDarkTheme
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.*
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
+import androidx.compose.runtime.*
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.core.view.WindowCompat
 import androidx.navigation.NavHostController
@@ -45,14 +44,21 @@ class MainActivity : ComponentActivity() {
             val currentLanguageSetting by settingsRepository.appLanguageFlow
                 .collectAsState(initial = SettingsRepository.DEFAULT_LANGUAGE)
 
+            var localeApplied by remember { mutableStateOf(false) }
+
             LaunchedEffect(currentLanguageSetting) {
                 if (currentLanguageSetting.isNotEmpty()) {
                     val locale = Locale(currentLanguageSetting)
                     Locale.setDefault(locale)
                     val config = resources.configuration
                     config.setLocale(locale)
+                    @Suppress("DEPRECATION") // resources.updateConfiguration is deprecated but necessary here for immediate effect
                     resources.updateConfiguration(config, resources.displayMetrics)
+                    Log.d(tag, "Locale updated to: $currentLanguageSetting, applying to resources.")
+                } else {
+                    Log.d(tag, "Language setting is empty, using default.")
                 }
+                localeApplied = true // Signal that locale setup is done
             }
 
             val useDarkTheme = when (currentThemeSetting) {
@@ -67,8 +73,17 @@ class MainActivity : ComponentActivity() {
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colorScheme.background
                 ) {
-
-                    AppNavigationHost(navController = navController)
+                    if (localeApplied) {
+                        Log.d(tag, "Locale applied, composing AppNavigationHost")
+                        AppNavigationHost(navController = navController)
+                    } else {
+                        // Optional: Show a loading indicator while locale is being applied
+                        // This will be very brief, might not even be visible.
+                        Log.d(tag, "Locale not yet applied, showing loading indicator (or nothing)")
+                        Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+                            CircularProgressIndicator()
+                        }
+                    }
                 }
             }
         }
