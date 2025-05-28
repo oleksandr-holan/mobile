@@ -29,6 +29,11 @@
             android:exported="false" 
             android:label="Daily Specials"
             android:theme="@style/Theme.Lab1" />
+        <activity
+            android:name=".ui.feature.orderhistory.OrderHistoryActivity"
+            android:exported="false"
+            android:label="@string/order_history_title"
+            android:theme="@style/Theme.Lab1" />
     </application>
 
 </manifest>

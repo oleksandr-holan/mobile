@@ -110,4 +110,7 @@
     <string name="daily_specials_image_desc">Image of the daily special</string>
     <string name="daily_specials_description">This is a very delicious dish prepared by our finest chefs. It includes fresh ingredients and a secret sauce. You will absolutely love it! Available for a limited time only.</string>
     <string name="daily_specials_close_button">Close</string>
+
+    <!-- Order History Screen -->
+    <string name="order_history_title">Order History</string>
 </resources>
