@@ -21,7 +21,7 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 import kotlin.math.roundToInt
 import android.content.Context
-import com.example.lab1.util.getStringResourceByName
+import com.example.lab1.util.getStringResourceForKey
 import dagger.hilt.android.qualifiers.ApplicationContext
 
 data class AddItemDetailsScreenState(
@@ -98,7 +98,7 @@ class AddItemDetailsViewModel @Inject constructor(
                     _uiState.update {
                         it.copy(
                             menuItemOriginalId = menuItem.id,
-                            itemName = getStringResourceByName(applicationContext, menuItem.nameKey),
+                            itemName = getStringResourceForKey(applicationContext, menuItem.nameKey),
                             itemPrice = menuItem.price,
                             isLoading = false
                         )
@@ -196,7 +196,7 @@ class AddItemDetailsViewModel @Inject constructor(
                     val newOrderItem = OrderItemEntity(
                         orderIdFk = currentState.activeOrderIdForNewItem,
                         menuOriginalId = currentState.menuItemOriginalId,
-                        itemName = getStringResourceByName(applicationContext, baseMenuItem.nameKey),
+                        itemName = getStringResourceForKey(applicationContext, baseMenuItem.nameKey),
                         itemPrice = baseMenuItem.price,
                         quantity = currentState.roundedQuantity,
                         specialRequests = currentState.specialRequests.takeIf { it.isNotBlank() }

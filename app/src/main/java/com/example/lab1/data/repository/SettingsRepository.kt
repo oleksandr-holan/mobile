@@ -20,6 +20,6 @@ interface SettingsRepository {
 
     companion object {
         const val DEFAULT_THEME = "System"
-        const val DEFAULT_LANGUAGE = "eng"
+        const val DEFAULT_LANGUAGE = "English"
     }
 }

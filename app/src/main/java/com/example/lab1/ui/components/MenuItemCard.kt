@@ -24,7 +24,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.example.lab1.util.getStringResourceByName
+import com.example.lab1.util.getStringResourceForKey
 
 @Composable
 fun MenuItemCard(
@@ -33,8 +33,8 @@ fun MenuItemCard(
     price: String
 ) {
     val context = LocalContext.current
-    val itemName = getStringResourceByName(context, itemNameKey)
-    val itemDescription = getStringResourceByName(context, itemDescriptionKey)
+    val itemName = getStringResourceForKey(context, itemNameKey)
+    val itemDescription = getStringResourceForKey(context, itemDescriptionKey)
 
     Row(
         modifier = Modifier
