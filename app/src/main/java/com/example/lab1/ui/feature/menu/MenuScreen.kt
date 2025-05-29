@@ -66,10 +66,7 @@ fun MenuScreen(
         } else if (uiState.errorMessage != null) {
             Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
                 Text(
-                    text = when (uiState.errorMessage) {
-                        "error_fetching_menu_error" -> stringResource(R.string.error_fetching_menu_error)
-                        else -> stringResource(R.string.generic_error_text, uiState.errorMessage!!) // Fallback
-                    },
+                    text = stringResource(R.string.generic_error_api_text, uiState.errorMessage!!),
                     color = MaterialTheme.colorScheme.error,
                     modifier = Modifier.padding(16.dp)
                 )

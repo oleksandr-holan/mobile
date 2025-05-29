@@ -2,8 +2,9 @@ package com.example.lab1.ui.feature.menu
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.lab1.data.model.MenuItem 
+import com.example.lab1.data.model.MenuItem
 import com.example.lab1.data.repository.OrderRepository
+import com.example.lab1.util.DataResult
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -45,32 +46,40 @@ class MenuViewModel @Inject constructor(
     val sideEffect: SharedFlow<MenuScreenSideEffect> = _sideEffect.asSharedFlow()
 
     init {
-        fetchMenuItems()
+        fetchMenuItemsFromApi()
     }
 
-    private fun fetchMenuItems(category: String? = null) {
+    private fun fetchMenuItemsFromApi(category: String? = null) {
         viewModelScope.launch {
             _uiState.update { it.copy(isLoading = true, errorMessage = null, selectedCategory = category) }
-            orderRepository.getAllMenuItems()
-                .catch { e ->
-                    _uiState.update {
-                        it.copy(
-                            isLoading = false,
-                            errorMessage = "error_fetching_menu_error"
-                        )
-                    }
-                }
-                .collectLatest { items ->
-                    val filteredItems = if (category == null) {
-                        items
-                    } else {
-                        items.filter { it.category.equals(category, ignoreCase = true) }
-                    }
-                    _uiState.update {
-                        it.copy(
-                            menuItems = filteredItems,
-                            isLoading = false
-                        )
+            orderRepository.observeMenuItemsFromApi()
+                .collectLatest { result ->
+                    when (result) {
+                        is DataResult.Loading -> {
+                            _uiState.update { it.copy(isLoading = true) }
+                        }
+                        is DataResult.Success -> {
+                            val filteredItems = if (category == null) {
+                                result.data
+                            } else {
+                                result.data.filter { it.category.equals(category, ignoreCase = true) }
+                            }
+                            _uiState.update {
+                                it.copy(
+                                    menuItems = filteredItems,
+                                    isLoading = false,
+                                    errorMessage = null
+                                )
+                            }
+                        }
+                        is DataResult.Error -> {
+                            _uiState.update {
+                                it.copy(
+                                    isLoading = false,
+                                    errorMessage = result.message
+                                )
+                            }
+                        }
                     }
                 }
         }
@@ -84,7 +93,7 @@ class MenuViewModel @Inject constructor(
                 }
             }
             is MenuScreenAction.FilterByCategory -> {
-                fetchMenuItems(action.category)
+                fetchMenuItemsFromApi(action.category)
             }
         }
     }

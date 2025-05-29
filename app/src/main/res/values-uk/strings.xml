@@ -58,6 +58,7 @@
     <string name="privacy_policy_accept">Я приймаю Політику конфіденційності</string>
     <string name="login_prompt">Вже є обліковий запис? Увійти</string>
     <string name="generic_error_text">Помилка: %1$s</string>
+    <string name="generic_error_api_text">Помилка: %1$s</string>
     <string name="order_item_details_text">Кількість: %1$d · Ціна: %2$s</string>
     <string name="select_order_first_prompt">Будь ласка, спочатку створіть або виберіть замовлення.</string>
     <string name="restart_app_dialog_title">Потрібне перезавантаження</string>

@@ -7,6 +7,7 @@ import androidx.lifecycle.viewModelScope
 import com.example.lab1.data.model.OrderItemEntity
 import com.example.lab1.data.repository.OrderRepository
 import com.example.lab1.ui.navigation.AppDestinations
+import com.example.lab1.util.DataResult
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -93,24 +94,41 @@ class AddItemDetailsViewModel @Inject constructor(
     private fun fetchMenuItemDetailsForNewOrder(menuItemId: String) {
         viewModelScope.launch {
             _uiState.update { it.copy(isLoading = true, errorMessage = null) }
-            orderRepository.getMenuItemById(menuItemId).collectLatest { menuItem ->
-                if (menuItem != null) {
-                    Log.d("AddItemDetailsVM", "Context locale in fetchMenuItemDetailsForNewOrder: ${applicationContext.resources.configuration.locales[0].toLanguageTag()}")
-                    _uiState.update {
-                        it.copy(
-                            menuItemOriginalId = menuItem.id,
-                            itemName = getStringResourceForKey(applicationContext, menuItem.nameKey),
-                            itemPrice = menuItem.price,
-                            isLoading = false
-                        )
+            orderRepository.getMenuItemByIdFromApi(menuItemId).collectLatest { result ->
+                when(result) {
+                    is DataResult.Success -> {
+                        val menuItem = result.data
+                        if (menuItem != null) {
+                            Log.d("AddItemDetailsVM", "Context locale in fetchMenuItemDetailsForNewOrder: ${applicationContext.resources.configuration.locales[0].toLanguageTag()}")
+                            _uiState.update {
+                                it.copy(
+                                    menuItemOriginalId = menuItem.id,
+                                    itemName = getStringResourceForKey(applicationContext, menuItem.nameKey),
+                                    itemPrice = menuItem.price,
+                                    isLoading = false
+                                )
+                            }
+                        } else {
+                            _uiState.update {
+                                it.copy(
+                                    isLoading = false,
+                                    errorMessage = "menu_item_not_found_error",
+                                    itemName = "Unknown Item"
+                                )
+                            }
+                        }
                     }
-                } else {
-                    _uiState.update {
-                        it.copy(
-                            isLoading = false,
-                            errorMessage = "menu_item_not_found_error",
-                            itemName = "Unknown Item"
-                        )
+                    is DataResult.Error -> {
+                        _uiState.update {
+                            it.copy(
+                                isLoading = false,
+                                errorMessage = result.message,
+                                itemName = "Error"
+                            )
+                        }
+                    }
+                    is DataResult.Loading -> {
+                        // Handled by the initial isLoading = true
                     }
                 }
             }
@@ -189,7 +207,14 @@ class AddItemDetailsViewModel @Inject constructor(
                     }
 
                 } else if (currentState.activeOrderIdForNewItem != null) {
-                    val baseMenuItem = orderRepository.getMenuItemById(currentState.menuItemOriginalId).first()
+                    var baseMenuItem: com.example.lab1.data.model.MenuItem? = null
+                    orderRepository.getMenuItemByIdFromApi(currentState.menuItemOriginalId).first { result ->
+                        if (result is DataResult.Success) {
+                            baseMenuItem = result.data
+                        }
+                        true // Stop collecting after first emission
+                    }
+
                     if (baseMenuItem == null) {
                         _uiState.update { it.copy(errorMessage = "menu_item_not_found_error") }
                         return@launch
@@ -197,8 +222,8 @@ class AddItemDetailsViewModel @Inject constructor(
                     val newOrderItem = OrderItemEntity(
                         orderIdFk = currentState.activeOrderIdForNewItem,
                         menuOriginalId = currentState.menuItemOriginalId,
-                        itemName = getStringResourceForKey(applicationContext, baseMenuItem.nameKey),
-                        itemPrice = baseMenuItem.price,
+                        itemName = getStringResourceForKey(applicationContext, baseMenuItem!!.nameKey),
+                        itemPrice = baseMenuItem!!.price,
                         quantity = currentState.roundedQuantity,
                         specialRequests = currentState.specialRequests.takeIf { it.isNotBlank() }
                     )

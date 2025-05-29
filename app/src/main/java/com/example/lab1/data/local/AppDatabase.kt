@@ -6,26 +6,21 @@ import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
 import androidx.sqlite.db.SupportSQLiteDatabase
-import com.example.lab1.data.local.dao.MenuItemDao
 import com.example.lab1.data.local.dao.OrderDao
 import com.example.lab1.data.local.dao.OrderItemDao
 import com.example.lab1.data.local.dao.UserDao
-import com.example.lab1.data.model.MenuItem
 import com.example.lab1.data.model.OrderEntity
 import com.example.lab1.data.model.OrderItemEntity
 import com.example.lab1.data.model.User
 import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
 
 @Database(
-    entities = [MenuItem::class, OrderEntity::class, OrderItemEntity::class, User::class],
-    version = 3,
+    entities = [OrderEntity::class, OrderItemEntity::class, User::class],
+    version = 4,
     exportSchema = false
 )
 abstract class AppDatabase : RoomDatabase() {
 
-    abstract fun menuItemDao(): MenuItemDao
     abstract fun orderDao(): OrderDao
     abstract fun orderItemDao(): OrderItemDao
     abstract fun userDao(): UserDao
@@ -42,24 +37,6 @@ abstract class AppDatabase : RoomDatabase() {
             override fun onCreate(db: SupportSQLiteDatabase) {
                 super.onCreate(db)
                 Log.d(TAG, "Database onCreate called.")
-                scope.launch(Dispatchers.IO) {
-                    val databaseInstance = getDatabase(applicationContext, scope)
-                    Log.d(TAG, "Coroutine in onCreate: Populating initial menu.")
-                    populateInitialMenu(databaseInstance.menuItemDao())
-                }
-            }
-
-            suspend fun populateInitialMenu(menuItemDao: MenuItemDao) {
-                val currentCount = menuItemDao.getMenuItemsCount()
-                Log.d(TAG, "populateInitialMenu called. Current menu items count: $currentCount")
-                if (currentCount == 0) {
-                    Log.d(TAG, "Populating initial menu items as count is 0.")
-                    val initialMenuItems = MockMenuItemDataProvider.getMockMenuItems()
-                    menuItemDao.insertAll(initialMenuItems)
-                    Log.d(TAG, "Finished populating ${initialMenuItems.size} initial menu items. New count: ${menuItemDao.getMenuItemsCount()}")
-                } else {
-                    Log.d(TAG, "Menu items already exist (count: $currentCount). Skipping population.")
-                }
             }
         }
 
