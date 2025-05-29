@@ -12,7 +12,6 @@ import com.example.lab1.data.local.dao.UserDao
 import com.example.lab1.data.model.OrderEntity
 import com.example.lab1.data.model.OrderItemEntity
 import com.example.lab1.data.model.User
-import kotlinx.coroutines.CoroutineScope
 
 @Database(
     entities = [OrderEntity::class, OrderItemEntity::class, User::class],
@@ -30,17 +29,14 @@ abstract class AppDatabase : RoomDatabase() {
         private var INSTANCE: AppDatabase? = null
         private const val TAG = "AppDatabase"
 
-        private class AppDatabaseCallback(
-            private val applicationContext: Context,
-            private val scope: CoroutineScope
-        ) : Callback() {
+        private class AppDatabaseCallback: Callback() {
             override fun onCreate(db: SupportSQLiteDatabase) {
                 super.onCreate(db)
                 Log.d(TAG, "Database onCreate called.")
             }
         }
 
-        fun getDatabase(context: Context, coroutineScope: CoroutineScope): AppDatabase {
+        fun getDatabase(context: Context): AppDatabase {
             return INSTANCE ?: synchronized(this) {
                 INSTANCE ?: run {
                     Log.d(TAG, "Creating new database instance. Version: 3")
@@ -49,7 +45,7 @@ abstract class AppDatabase : RoomDatabase() {
                         AppDatabase::class.java,
                         "waiter_app_database"
                     )
-                        .addCallback(AppDatabaseCallback(context.applicationContext, coroutineScope))
+                        .addCallback(AppDatabaseCallback())
                         .fallbackToDestructiveMigration(true)
                         .build()
                     INSTANCE = instance

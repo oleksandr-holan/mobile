@@ -2,7 +2,6 @@ package com.example.lab1.di
 
 import android.content.Context
 import com.example.lab1.data.local.AppDatabase
-// import com.example.lab1.data.local.dao.MenuItemDao // Removed
 import com.example.lab1.data.local.dao.OrderDao
 import com.example.lab1.data.local.dao.OrderItemDao
 import com.example.lab1.data.local.dao.UserDao
@@ -30,17 +29,9 @@ object DatabaseModule {
     @Singleton
     fun provideAppDatabase(
         @ApplicationContext context: Context,
-        applicationScope: CoroutineScope
     ): AppDatabase {
-        return AppDatabase.getDatabase(context, applicationScope)
+        return AppDatabase.getDatabase(context)
     }
-
-    // Removed provideMenuItemDao
-    // @Provides
-    // @Singleton
-    // fun provideMenuItemDao(appDatabase: AppDatabase): MenuItemDao {
-    //     return appDatabase.menuItemDao()
-    // }
 
     @Provides
     @Singleton

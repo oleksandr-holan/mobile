@@ -1,5 +1,6 @@
 package com.example.lab1.ui.feature.menu
 
+import android.annotation.SuppressLint
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
@@ -19,6 +20,38 @@ import com.example.lab1.R
 import android.content.Intent
 import androidx.compose.ui.platform.LocalContext
 import com.example.lab1.ui.feature.dailyspecials.DailySpecialsActivity
+import android.content.Context
+import android.util.Log
+import kotlinx.serialization.json.Json
+import kotlinx.serialization.json.jsonObject
+import kotlinx.serialization.json.jsonPrimitive
+
+// Helper function to get user-friendly error message
+@SuppressLint("DiscouragedApi")
+@Composable
+private fun getDisplayErrorMessage(context: Context, errorMessage: String?): String {
+    if (errorMessage == null) return stringResource(R.string.server_error_fallback) // Default to server error if message is null
+
+    val jsonErrorPrefix = "api_call_failed_error: "
+    if (errorMessage.startsWith(jsonErrorPrefix)) {
+        val jsonString = errorMessage.substring(jsonErrorPrefix.length)
+        try {
+            val jsonElement = Json.parseToJsonElement(jsonString)
+            val errorKey = jsonElement.jsonObject["errorKey"]?.jsonPrimitive?.content
+            if (errorKey != null) {
+                val resourceId = context.resources.getIdentifier(errorKey, "string", context.packageName)
+                if (resourceId != 0) {
+                    return context.getString(resourceId) // Specific error message found
+                }
+            }
+        } catch (e: Exception) {
+            Log.e("MenuScreen", "Failed to parse errorKey from errorMessage: $errorMessage", e)
+            // Fall through to the server_error_fallback if parsing fails
+        }
+    }
+    // If not a parsable api_call_failed_error, or if parsing/lookup failed, use the server_error_fallback
+    return stringResource(R.string.server_error_fallback)
+}
 
 @Composable
 fun MenuScreen(
@@ -66,7 +99,7 @@ fun MenuScreen(
         } else if (uiState.errorMessage != null) {
             Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
                 Text(
-                    text = stringResource(R.string.generic_error_api_text, uiState.errorMessage!!),
+                    text = getDisplayErrorMessage(context, uiState.errorMessage),
                     color = MaterialTheme.colorScheme.error,
                     modifier = Modifier.padding(16.dp)
                 )

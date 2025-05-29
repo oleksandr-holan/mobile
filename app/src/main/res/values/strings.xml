@@ -59,7 +59,6 @@
     <string name="privacy_policy_accept">I accept the Privacy Policy</string>
     <string name="login_prompt">Already have an account? Log In</string>
     <string name="generic_error_text">Error: %1$s</string>
-    <string name="generic_error_api_text">Error: %1$s</string>
     <string name="order_item_details_text">Quantity: %1$d · Price: %2$s</string>
     <string name="select_order_first_prompt">Please create or select an order first.</string>
     <string name="restart_app_dialog_title">Restart Required</string>
@@ -119,4 +118,6 @@
     <string name="order_history_item_total_label">Total: %1$s</string>
     <string name="order_history_item_status_label">Status: %1$s</string>
     <string name="view_daily_specials_button">View Daily Specials</string>
+
+    <string name="server_error_fallback">Server error. We are already working on it, please, wait a bit.</string>
 </resources>

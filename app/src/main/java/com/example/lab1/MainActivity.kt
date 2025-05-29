@@ -25,7 +25,6 @@ import com.example.lab1.ui.theme.Lab1Theme
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
 import java.util.Locale
-import androidx.lifecycle.lifecycleScope
 import kotlinx.coroutines.flow.first
 
 @AndroidEntryPoint
