@@ -1,5 +1,4 @@
 <resources>
-    <string name="app_name">Лаб1</string>
     <string name="login_button_text">Увійти</string>
     <string name="register_button_text">Зареєструватися</string>
     <string name="notifications_enabled_label">Увімкнути сповіщення</string>

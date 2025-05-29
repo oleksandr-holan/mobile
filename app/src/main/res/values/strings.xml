@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">Lab1</string>
+    <string name="app_name" translatable="false">Waiter</string>
     <string name="login_button_text">Log In</string>
     <string name="register_button_text">Register</string>
     <string name="notifications_enabled_label">Enable Notifications</string>
