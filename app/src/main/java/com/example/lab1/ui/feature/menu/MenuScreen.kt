@@ -14,7 +14,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.compose.LocalLifecycleOwner
 import androidx.lifecycle.flowWithLifecycle
-import com.example.lab1.ui.components.MenuItemCard 
+import com.example.lab1.ui.components.MenuItemCard
 import androidx.compose.ui.res.stringResource
 import com.example.lab1.R
 import android.content.Intent
@@ -26,11 +26,11 @@ import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.jsonObject
 import kotlinx.serialization.json.jsonPrimitive
 
-// Helper function to get user-friendly error message
+
 @SuppressLint("DiscouragedApi")
 @Composable
 private fun getDisplayErrorMessage(context: Context, errorMessage: String?): String {
-    if (errorMessage == null) return stringResource(R.string.server_error_fallback) // Default to server error if message is null
+    if (errorMessage == null) return stringResource(R.string.server_error_fallback)
 
     val jsonErrorPrefix = "api_call_failed_error: "
     if (errorMessage.startsWith(jsonErrorPrefix)) {
@@ -39,17 +39,16 @@ private fun getDisplayErrorMessage(context: Context, errorMessage: String?): Str
             val jsonElement = Json.parseToJsonElement(jsonString)
             val errorKey = jsonElement.jsonObject["errorKey"]?.jsonPrimitive?.content
             if (errorKey != null) {
-                val resourceId = context.resources.getIdentifier(errorKey, "string", context.packageName)
+                val resourceId =
+                    context.resources.getIdentifier(errorKey, "string", context.packageName)
                 if (resourceId != 0) {
-                    return context.getString(resourceId) // Specific error message found
+                    return context.getString(resourceId)
                 }
             }
         } catch (e: Exception) {
             Log.e("MenuScreen", "Failed to parse errorKey from errorMessage: $errorMessage", e)
-            // Fall through to the server_error_fallback if parsing fails
         }
     }
-    // If not a parsable api_call_failed_error, or if parsing/lookup failed, use the server_error_fallback
     return stringResource(R.string.server_error_fallback)
 }
 
@@ -78,7 +77,7 @@ fun MenuScreen(
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .padding(16.dp) 
+            .padding(16.dp)
     ) {
         Button(
             onClick = {
@@ -94,7 +93,10 @@ fun MenuScreen(
         if (uiState.isLoading) {
             Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
                 CircularProgressIndicator()
-                Text(stringResource(R.string.loading_menu_text), modifier = Modifier.padding(start = 8.dp))
+                Text(
+                    stringResource(R.string.loading_menu_text),
+                    modifier = Modifier.padding(start = 8.dp)
+                )
             }
         } else if (uiState.errorMessage != null) {
             Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
@@ -106,7 +108,10 @@ fun MenuScreen(
             }
         } else if (uiState.menuItems.isEmpty()) {
             Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-                Text(stringResource(R.string.no_menu_items_text), modifier = Modifier.padding(16.dp))
+                Text(
+                    stringResource(R.string.no_menu_items_text),
+                    modifier = Modifier.padding(16.dp)
+                )
             }
         } else {
             LazyColumn(
@@ -117,10 +122,10 @@ fun MenuScreen(
                     Box(modifier = Modifier.clickable {
                         menuViewModel.onAction(MenuScreenAction.MenuItemClicked(menuItem.id))
                     }) {
-                        MenuItemCard( 
+                        MenuItemCard(
                             itemNameKey = menuItem.nameKey,
                             itemDescriptionKey = menuItem.descriptionKey,
-                            price = menuItem.price 
+                            price = menuItem.price
                         )
                     }
                 }

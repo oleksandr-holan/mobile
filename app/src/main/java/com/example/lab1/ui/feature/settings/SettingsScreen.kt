@@ -81,7 +81,6 @@ fun ThemeSettingItem(
         stringResource(R.string.dark_theme),
         stringResource(R.string.system_theme)
     )
-    // Map display names back to keys for saving
     val themeKeys = listOf("Light", "Dark", "System")
 
 
@@ -134,7 +133,10 @@ fun LanguageSettingItem(
     )
 
     Column(modifier = Modifier.padding(vertical = 8.dp)) {
-        Text(stringResource(R.string.app_language_label), style = MaterialTheme.typography.bodyLarge)
+        Text(
+            stringResource(R.string.app_language_label),
+            style = MaterialTheme.typography.bodyLarge
+        )
         Spacer(modifier = Modifier.height(4.dp))
         Box(modifier = Modifier.fillMaxWidth()) {
             OutlinedTextField(

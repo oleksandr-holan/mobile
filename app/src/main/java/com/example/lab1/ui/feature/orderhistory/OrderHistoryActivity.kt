@@ -19,7 +19,6 @@ class OrderHistoryActivity : ComponentActivity() {
         val rootView = findViewById<View>(R.id.order_history_root_layout)
         val recyclerView = findViewById<RecyclerView>(R.id.recyclerViewOrderHistory)
 
-        // Store original padding values from XML for the root layout
         val originalRootPaddingLeft = rootView.paddingLeft
         val originalRootPaddingTop = rootView.paddingTop
         val originalRootPaddingRight = rootView.paddingRight
@@ -27,25 +26,21 @@ class OrderHistoryActivity : ComponentActivity() {
 
         ViewCompat.setOnApplyWindowInsetsListener(rootView) { v, insets ->
             val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
-            // Apply original XML padding + system bar insets to the root
             v.setPadding(
                 originalRootPaddingLeft + systemBars.left,
                 originalRootPaddingTop + systemBars.top,
                 originalRootPaddingRight + systemBars.right,
                 originalRootPaddingBottom + systemBars.bottom
             )
-            // Return a new WindowInsetsCompat that consumes only the system bars for child views
-            // This is important so that RecyclerView's own padding (set in XML) is respected relative to the new root padding
             WindowInsetsCompat.Builder(insets).setInsets(
                 WindowInsetsCompat.Type.systemBars(),
-                androidx.core.graphics.Insets.of(0,0,0,0) // Consume system bars
+                androidx.core.graphics.Insets.of(0, 0, 0, 0)
             ).build()
         }
 
-        // Setup RecyclerView
         recyclerView.adapter = OrderHistoryAdapter(getMockOrderHistoryData())
         recyclerView.layoutManager = LinearLayoutManager(this)
-        recyclerView.setHasFixedSize(true) // Optimization if item sizes don't change
+        recyclerView.setHasFixedSize(true)
     }
 
     private fun getMockOrderHistoryData(): List<OrderHistoryItem> {

@@ -54,7 +54,7 @@ fun ProfileScreen(
                 Text(
                     text = when (uiState.errorMessage) {
                         "user_profile_not_found_error" -> stringResource(R.string.user_profile_not_found_error)
-                        else -> stringResource(R.string.generic_error_text, uiState.errorMessage!!) // Fallback generic error
+                        else -> stringResource(R.string.generic_error_text, uiState.errorMessage!!)
                     },
                     color = MaterialTheme.colorScheme.error,
                     modifier = Modifier.padding(16.dp)
@@ -87,14 +87,20 @@ fun ProfileScreen(
                     style = MaterialTheme.typography.headlineSmall,
                     fontWeight = FontWeight.Bold
                 )
-                ProfileInfoRow(label = stringResource(R.string.email_label), value = userProfile.email)
+                ProfileInfoRow(
+                    label = stringResource(R.string.email_label),
+                    value = userProfile.email
+                )
                 userProfile.dateOfBirth?.let {
                     ProfileInfoRow(
                         label = stringResource(R.string.dob_label),
                         value = it
                     )
                 }
-                ProfileInfoRow(label = stringResource(R.string.member_since_label), value = userProfile.memberSince)
+                ProfileInfoRow(
+                    label = stringResource(R.string.member_since_label),
+                    value = userProfile.memberSince
+                )
                 Spacer(modifier = Modifier.weight(1f))
                 Button(
                     onClick = { profileViewModel.onAction(ProfileScreenAction.LogoutClicked) },

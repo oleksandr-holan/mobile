@@ -78,12 +78,11 @@ dependencies {
     implementation(libs.androidx.room.ktx)
     ksp(libs.androidx.room.compiler)
 
-    // Retrofit & Networking
-    implementation(libs.retrofit)
-    implementation(libs.retrofit2.kotlinx.serialization.converter) // For Kotlinx Serialization
-    implementation(libs.logging.interceptor) // For logging
-    implementation(libs.kotlinx.serialization.json) // Kotlinx Serialization JSON
 
-    //Coil for image loading
+    implementation(libs.retrofit)
+    implementation(libs.retrofit2.kotlinx.serialization.converter)
+    implementation(libs.logging.interceptor)
+    implementation(libs.kotlinx.serialization.json)
+
     implementation(libs.coil.compose)
 }

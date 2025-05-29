@@ -63,7 +63,10 @@ class MainActivity : ComponentActivity() {
 
             LaunchedEffect(persistedLanguageSetting) {
                 if (persistedLanguageSetting == null) {
-                    Log.d(tag, "[[LAUNCHED_EFFECT_LANG]] Waiting for DataStore to emit a language setting...")
+                    Log.d(
+                        tag,
+                        "[[LAUNCHED_EFFECT_LANG]] Waiting for DataStore to emit a language setting..."
+                    )
                     return@LaunchedEffect
                 }
 
@@ -72,7 +75,10 @@ class MainActivity : ComponentActivity() {
                 } else {
                     SettingsRepository.DEFAULT_LANGUAGE
                 }
-                Log.d(tag, "[[LAUNCHED_EFFECT_LANG]] Target language determined: $targetLanguage (from persisted: '$persistedLanguageSetting')")
+                Log.d(
+                    tag,
+                    "[[LAUNCHED_EFFECT_LANG]] Target language determined: $targetLanguage (from persisted: '$persistedLanguageSetting')"
+                )
 
                 val locale = Locale(targetLanguage!!)
                 val config = resources.configuration
@@ -83,7 +89,10 @@ class MainActivity : ComponentActivity() {
                     config.setLocale(locale)
                     @Suppress("DEPRECATION")
                     resources.updateConfiguration(config, resources.displayMetrics)
-                    Log.d(tag, "[[LAUNCHED_EFFECT_LANG]] Locale updated. Default: ${Locale.getDefault()}, Resources: $locale. From old: $currentActivityLocale")
+                    Log.d(
+                        tag,
+                        "[[LAUNCHED_EFFECT_LANG]] Locale updated. Default: ${Locale.getDefault()}, Resources: $locale. From old: $currentActivityLocale"
+                    )
                 } else {
                     Log.d(tag, "[[LAUNCHED_EFFECT_LANG]] Locale $locale already effectively set.")
                 }
@@ -92,12 +101,18 @@ class MainActivity : ComponentActivity() {
 
             if (languageToApplyForUI == null || startDestination == null) {
                 Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-                    Log.d(tag, "Waiting for language ($languageToApplyForUI) or start destination ($startDestination), showing loading indicator.")
+                    Log.d(
+                        tag,
+                        "Waiting for language ($languageToApplyForUI) or start destination ($startDestination), showing loading indicator."
+                    )
                     CircularProgressIndicator()
                 }
             } else {
-                key(languageToApplyForUI) { 
-                    Log.d(tag, "[[KEY_BLOCK_LANG]] Recomposing with language: $languageToApplyForUI. Current Locale.getDefault(): ${Locale.getDefault().language}")
+                key(languageToApplyForUI) {
+                    Log.d(
+                        tag,
+                        "[[KEY_BLOCK_LANG]] Recomposing with language: $languageToApplyForUI. Current Locale.getDefault(): ${Locale.getDefault().language}"
+                    )
                     val useDarkTheme = when (currentThemeSetting) {
                         "Dark" -> true
                         "Light" -> false
@@ -108,8 +123,14 @@ class MainActivity : ComponentActivity() {
                             modifier = Modifier.fillMaxSize(),
                             color = MaterialTheme.colorScheme.background
                         ) {
-                            Log.d(tag, "[[SURFACE_IN_KEY_BLOCK]] AppNavigationHost to be composed. Start: $startDestination, Language: $languageToApplyForUI. Locale.getDefault(): ${Locale.getDefault().language}")
-                            AppNavigationHost(navController = navController, startDestination = startDestination!!)
+                            Log.d(
+                                tag,
+                                "[[SURFACE_IN_KEY_BLOCK]] AppNavigationHost to be composed. Start: $startDestination, Language: $languageToApplyForUI. Locale.getDefault(): ${Locale.getDefault().language}"
+                            )
+                            AppNavigationHost(
+                                navController = navController,
+                                startDestination = startDestination!!
+                            )
                         }
                     }
                 }
@@ -125,9 +146,6 @@ class MainActivity : ComponentActivity() {
     override fun onResume() {
         super.onResume()
         Log.d(tag, "onResume called")
-        // It's a good practice to re-check language settings onResume 
-        // if you expect changes from other parts of the app or system settings
-        // For this basic implementation, we rely on app restart for full effect.
     }
 
     override fun onPause() {
@@ -142,7 +160,7 @@ class MainActivity : ComponentActivity() {
 
     override fun onRestart() {
         super.onRestart()
-        Log.d(tag, "onRestart called") 
+        Log.d(tag, "onRestart called")
     }
 
     override fun onDestroy() {
@@ -153,7 +171,10 @@ class MainActivity : ComponentActivity() {
 
 @Composable
 fun AppNavigationHost(navController: NavHostController, startDestination: String) {
-    Log.d("AppNavigationHost", "Composing with startDestination: $startDestination. Current Locale.getDefault(): ${Locale.getDefault().language}. LoginScreen title res ID: ${R.string.login_title}")
+    Log.d(
+        "AppNavigationHost",
+        "Composing with startDestination: $startDestination. Current Locale.getDefault(): ${Locale.getDefault().language}. LoginScreen title res ID: ${R.string.login_title}"
+    )
     NavHost(
         navController = navController,
         startDestination = startDestination

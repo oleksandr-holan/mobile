@@ -34,7 +34,7 @@ object NetworkModule {
     @Singleton
     fun provideRetrofit(okHttpClient: OkHttpClient): Retrofit {
         val contentType = "application/json".toMediaType()
-        val json = Json { ignoreUnknownKeys = true } // Configure Json for leniency
+        val json = Json { ignoreUnknownKeys = true } 
         return Retrofit.Builder()
             .baseUrl(BASE_URL)
             .client(okHttpClient)

@@ -95,15 +95,21 @@ class AddItemDetailsViewModel @Inject constructor(
         viewModelScope.launch {
             _uiState.update { it.copy(isLoading = true, errorMessage = null) }
             orderRepository.getMenuItemByIdFromApi(menuItemId).collectLatest { result ->
-                when(result) {
+                when (result) {
                     is DataResult.Success -> {
                         val menuItem = result.data
                         if (menuItem != null) {
-                            Log.d("AddItemDetailsVM", "Context locale in fetchMenuItemDetailsForNewOrder: ${applicationContext.resources.configuration.locales[0].toLanguageTag()}")
+                            Log.d(
+                                "AddItemDetailsVM",
+                                "Context locale in fetchMenuItemDetailsForNewOrder: ${applicationContext.resources.configuration.locales[0].toLanguageTag()}"
+                            )
                             _uiState.update {
                                 it.copy(
                                     menuItemOriginalId = menuItem.id,
-                                    itemName = getStringResourceForKey(applicationContext, menuItem.nameKey),
+                                    itemName = getStringResourceForKey(
+                                        applicationContext,
+                                        menuItem.nameKey
+                                    ),
                                     itemPrice = menuItem.price,
                                     isLoading = false
                                 )
@@ -118,6 +124,7 @@ class AddItemDetailsViewModel @Inject constructor(
                             }
                         }
                     }
+
                     is DataResult.Error -> {
                         _uiState.update {
                             it.copy(
@@ -127,9 +134,8 @@ class AddItemDetailsViewModel @Inject constructor(
                             )
                         }
                     }
-                    is DataResult.Loading -> {
-                        // Handled by the initial isLoading = true
-                    }
+
+                    is DataResult.Loading -> {}
                 }
             }
         }
@@ -208,12 +214,13 @@ class AddItemDetailsViewModel @Inject constructor(
 
                 } else if (currentState.activeOrderIdForNewItem != null) {
                     var baseMenuItem: com.example.lab1.data.model.MenuItem? = null
-                    orderRepository.getMenuItemByIdFromApi(currentState.menuItemOriginalId).first { result ->
-                        if (result is DataResult.Success) {
-                            baseMenuItem = result.data
+                    orderRepository.getMenuItemByIdFromApi(currentState.menuItemOriginalId)
+                        .first { result ->
+                            if (result is DataResult.Success) {
+                                baseMenuItem = result.data
+                            }
+                            true
                         }
-                        true // Stop collecting after first emission
-                    }
 
                     if (baseMenuItem == null) {
                         _uiState.update { it.copy(errorMessage = "menu_item_not_found_error") }
@@ -222,7 +229,10 @@ class AddItemDetailsViewModel @Inject constructor(
                     val newOrderItem = OrderItemEntity(
                         orderIdFk = currentState.activeOrderIdForNewItem,
                         menuOriginalId = currentState.menuItemOriginalId,
-                        itemName = getStringResourceForKey(applicationContext, baseMenuItem!!.nameKey),
+                        itemName = getStringResourceForKey(
+                            applicationContext,
+                            baseMenuItem!!.nameKey
+                        ),
                         itemPrice = baseMenuItem!!.price,
                         quantity = currentState.roundedQuantity,
                         specialRequests = currentState.specialRequests.takeIf { it.isNotBlank() }

@@ -69,7 +69,9 @@ fun AddItemDetailsScreen(
 
         if (!uiState.isLoading) {
             Text(
-                text = if (uiState.isEditMode) stringResource(R.string.add_item_details_edit_title) else stringResource(R.string.add_item_details_add_title),
+                text = if (uiState.isEditMode) stringResource(R.string.add_item_details_edit_title) else stringResource(
+                    R.string.add_item_details_add_title
+                ),
                 style = MaterialTheme.typography.headlineSmall
             )
             Text(
@@ -83,7 +85,10 @@ fun AddItemDetailsScreen(
                 modifier = Modifier.padding(bottom = 16.dp)
             )
 
-            Text(stringResource(R.string.quantity_label, uiState.roundedQuantity), style = MaterialTheme.typography.bodyLarge)
+            Text(
+                stringResource(R.string.quantity_label, uiState.roundedQuantity),
+                style = MaterialTheme.typography.bodyLarge
+            )
             Slider(
                 value = uiState.quantity,
                 onValueChange = {
@@ -117,7 +122,10 @@ fun AddItemDetailsScreen(
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.SpaceBetween
             ) {
-                Text(stringResource(R.string.mark_as_urgent_label), style = MaterialTheme.typography.bodyLarge)
+                Text(
+                    stringResource(R.string.mark_as_urgent_label),
+                    style = MaterialTheme.typography.bodyLarge
+                )
                 Switch(
                     checked = uiState.isUrgent,
                     onCheckedChange = {
@@ -147,7 +155,7 @@ fun AddItemDetailsScreen(
                     text = when (uiState.buttonText) {
                         "add_to_order_button" -> stringResource(R.string.add_to_order_button)
                         "update_item_button" -> stringResource(R.string.update_item_button)
-                        else -> uiState.buttonText // Should not happen
+                        else -> uiState.buttonText
                     },
                     fontSize = 16.sp
                 )

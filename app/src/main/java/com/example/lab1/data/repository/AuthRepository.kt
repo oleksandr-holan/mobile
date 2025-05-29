@@ -27,7 +27,7 @@ class AuthRepositoryImpl @Inject constructor(
     private val tag = "AuthRepositoryImpl"
 
     override suspend fun login(username: String, passwordHash: String): AuthResult {
-        delay(500) // Simulate network delay
+        delay(500)
         val user = userDao.getUserByUsername(username)
         return if (user != null && user.passwordHash == passwordHash) {
             Log.d(tag, "Login successful for user '$username'")
@@ -44,7 +44,7 @@ class AuthRepositoryImpl @Inject constructor(
         passwordHash: String,
         dateOfBirth: String?
     ): AuthResult {
-        delay(1000) // Simulate network delay
+        delay(1000)
         if (username.length < 4) {
             Log.d(tag, "Registration failed for user '$username'. Username too short.")
             return AuthResult.Error("username_too_short_error")
@@ -55,12 +55,17 @@ class AuthRepositoryImpl @Inject constructor(
         }
 
         try {
-            val newUser = User(username = username, passwordHash = passwordHash, dateOfBirth = dateOfBirth)
+            val newUser =
+                User(username = username, passwordHash = passwordHash, dateOfBirth = dateOfBirth)
             userDao.insertUser(newUser)
             Log.d(tag, "Registration successful for user '$username'. DOB: $dateOfBirth")
             return AuthResult.Success
         } catch (e: SQLiteConstraintException) {
-            Log.w(tag, "Registration failed for user '$username'. Username likely already exists.", e)
+            Log.w(
+                tag,
+                "Registration failed for user '$username'. Username likely already exists.",
+                e
+            )
             return AuthResult.Error("username_already_exists_error")
         } catch (e: Exception) {
             Log.e(tag, "Registration failed for user '$username'. Exception: ${e.message}", e)

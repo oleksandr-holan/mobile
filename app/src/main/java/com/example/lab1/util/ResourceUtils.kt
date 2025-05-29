@@ -10,7 +10,6 @@ fun getStringResourceForKey(context: Context, key: String): String {
     var localizedContext = context
     val currentConfiguration = context.resources.configuration
 
-    // Check if the context's primary locale matches the desired default locale
     val primaryLocaleInContext = if (currentConfiguration.locales.isEmpty) null else currentConfiguration.locales[0]
 
     if (primaryLocaleInContext != desiredLocale) {

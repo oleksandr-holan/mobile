@@ -19,10 +19,9 @@ class DailySpecialsActivity : ComponentActivity() {
         val buttonClose = findViewById<Button>(R.id.buttonClose)
 
         buttonClose.setOnClickListener {
-            finish() // Close the activity
+            finish()
         }
 
-        // Store original padding values from XML
         val originalPaddingLeft = rootView.paddingLeft
         val originalPaddingTop = rootView.paddingTop
         val originalPaddingRight = rootView.paddingRight
@@ -30,7 +29,6 @@ class DailySpecialsActivity : ComponentActivity() {
 
         ViewCompat.setOnApplyWindowInsetsListener(rootView) { v, insets ->
             val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
-            // Apply original XML padding + system bar insets
             v.setPadding(
                 originalPaddingLeft + systemBars.left,
                 originalPaddingTop + systemBars.top,
