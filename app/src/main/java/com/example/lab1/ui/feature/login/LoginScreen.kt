@@ -19,6 +19,7 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.flowWithLifecycle
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.platform.testTag // Added import
 import com.example.lab1.R
 import java.util.Locale
 
@@ -82,7 +83,7 @@ fun LoginScreen(
                 onValueChange = { loginViewModel.onAction(LoginUiAction.UsernameChanged(it)) },
                 label = { Text(stringResource(R.string.username_label)) },
                 singleLine = true,
-                modifier = Modifier.fillMaxWidth(),
+                modifier = Modifier.fillMaxWidth().testTag("login_username_input"), // Added testTag
                 isError = uiState.errorMessage != null,
                 enabled = !uiState.isLoading
             )
@@ -109,7 +110,7 @@ fun LoginScreen(
                         Icon(imageVector = image, description)
                     }
                 },
-                modifier = Modifier.fillMaxWidth(),
+                modifier = Modifier.fillMaxWidth().testTag("login_password_input"), // Added testTag
                 isError = uiState.errorMessage != null,
                 enabled = !uiState.isLoading
             )
@@ -121,11 +122,11 @@ fun LoginScreen(
                     loginViewModel.onAction(LoginUiAction.LoginClicked)
                 },
                 enabled = uiState.isLoginEnabled && !uiState.isLoading,
-                modifier = Modifier.fillMaxWidth()
+                modifier = Modifier.fillMaxWidth().testTag("login_login_button") // Added testTag
             ) {
                 if (uiState.isLoading) {
                     CircularProgressIndicator(
-                        modifier = Modifier.size(24.dp),
+                        modifier = Modifier.size(24.dp).testTag("login_loading_indicator"), // Added testTag
                         color = MaterialTheme.colorScheme.onPrimary
                     )
                 } else {
@@ -136,6 +137,7 @@ fun LoginScreen(
 
             TextButton(
                 onClick = onNavigateToRegister,
+                modifier = Modifier.testTag("login_register_button"), // Added testTag
                 enabled = !uiState.isLoading
             ) {
                 Text(stringResource(R.string.register_prompt))

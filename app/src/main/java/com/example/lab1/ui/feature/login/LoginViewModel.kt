@@ -1,5 +1,6 @@
 package com.example.lab1.ui.feature.login
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.lab1.data.repository.AuthRepository
@@ -101,6 +102,7 @@ class LoginViewModel @Inject constructor(
             when (val result = authRepository.login(currentState.username, currentState.password)) {
                 is AuthResult.Success -> {
                     _uiState.update { it.copy(isLoading = false) }
+                    Log.d("LoginViewModelTest", "isLoading set to false, login success")
                     _sideEffect.emit(LoginSideEffect.NavigateToMainApp)
                 }
 
