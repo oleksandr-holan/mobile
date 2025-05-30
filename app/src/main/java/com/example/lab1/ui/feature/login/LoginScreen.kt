@@ -1,25 +1,44 @@
 package com.example.lab1.ui.feature.login
 
 import android.util.Log
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.safeDrawingPadding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Visibility
 import androidx.compose.material.icons.filled.VisibilityOff
-import androidx.compose.material3.*
-import androidx.compose.runtime.*
+import androidx.compose.material3.Button
+import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.lifecycle.compose.LocalLifecycleOwner
+import androidx.compose.ui.platform.testTag
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.dp
-import androidx.lifecycle.Lifecycle
-import androidx.lifecycle.flowWithLifecycle
 import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.platform.testTag // Added import
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.compose.LocalLifecycleOwner
+import androidx.lifecycle.flowWithLifecycle
 import com.example.lab1.R
 import java.util.Locale
 
@@ -31,15 +50,17 @@ fun LoginScreen(
 ) {
     val currentLanguage = Locale.getDefault().language
     val loginTitleString = stringResource(R.string.login_title)
-    Log.d("LoginScreen", "Composing. Current Locale.getDefault(): $currentLanguage. Login title: $loginTitleString")
+    Log.d(
+        "LoginScreen",
+        "Composing. Current Locale.getDefault(): $currentLanguage. Login title: $loginTitleString"
+    )
 
     val uiState by loginViewModel.uiState.collectAsState()
     val lifecycleOwner = LocalLifecycleOwner.current
 
     LaunchedEffect(loginViewModel.sideEffect, lifecycleOwner) {
         loginViewModel.sideEffect.flowWithLifecycle(
-            lifecycleOwner.lifecycle,
-            Lifecycle.State.STARTED
+            lifecycleOwner.lifecycle, Lifecycle.State.STARTED
         ).collect { effect ->
             when (effect) {
                 is LoginSideEffect.NavigateToMainApp -> {
@@ -83,7 +104,9 @@ fun LoginScreen(
                 onValueChange = { loginViewModel.onAction(LoginUiAction.UsernameChanged(it)) },
                 label = { Text(stringResource(R.string.username_label)) },
                 singleLine = true,
-                modifier = Modifier.fillMaxWidth().testTag("login_username_input"), // Added testTag
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .testTag("login_username_input"),
                 isError = uiState.errorMessage != null,
                 enabled = !uiState.isLoading
             )
@@ -97,11 +120,12 @@ fun LoginScreen(
                 visualTransformation = if (uiState.isPasswordVisible) VisualTransformation.None else PasswordVisualTransformation(),
                 keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
                 trailingIcon = {
-                    val image = if (uiState.isPasswordVisible)
-                        Icons.Filled.Visibility
+                    val image = if (uiState.isPasswordVisible) Icons.Filled.Visibility
                     else Icons.Filled.VisibilityOff
                     val description =
-                        if (uiState.isPasswordVisible) stringResource(R.string.hide_password_desc) else stringResource(R.string.show_password_desc)
+                        if (uiState.isPasswordVisible) stringResource(R.string.hide_password_desc) else stringResource(
+                            R.string.show_password_desc
+                        )
 
                     IconButton(
                         onClick = { loginViewModel.onAction(LoginUiAction.TogglePasswordVisibility) },
@@ -110,7 +134,9 @@ fun LoginScreen(
                         Icon(imageVector = image, description)
                     }
                 },
-                modifier = Modifier.fillMaxWidth().testTag("login_password_input"), // Added testTag
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .testTag("login_password_input"),
                 isError = uiState.errorMessage != null,
                 enabled = !uiState.isLoading
             )
@@ -122,11 +148,15 @@ fun LoginScreen(
                     loginViewModel.onAction(LoginUiAction.LoginClicked)
                 },
                 enabled = uiState.isLoginEnabled && !uiState.isLoading,
-                modifier = Modifier.fillMaxWidth().testTag("login_login_button") // Added testTag
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .testTag("login_login_button")
             ) {
                 if (uiState.isLoading) {
                     CircularProgressIndicator(
-                        modifier = Modifier.size(24.dp).testTag("login_loading_indicator"), // Added testTag
+                        modifier = Modifier
+                            .size(24.dp)
+                            .testTag("login_loading_indicator"),
                         color = MaterialTheme.colorScheme.onPrimary
                     )
                 } else {
@@ -137,7 +167,7 @@ fun LoginScreen(
 
             TextButton(
                 onClick = onNavigateToRegister,
-                modifier = Modifier.testTag("login_register_button"), // Added testTag
+                modifier = Modifier.testTag("login_register_button"),
                 enabled = !uiState.isLoading
             ) {
                 Text(stringResource(R.string.register_prompt))

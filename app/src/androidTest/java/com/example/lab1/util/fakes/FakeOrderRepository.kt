@@ -13,7 +13,7 @@ import java.util.Calendar
 import javax.inject.Inject
 import javax.inject.Singleton
 
-@Singleton // Ensure Hilt provides the same instance if needed, though for tests it might be fresh
+@Singleton
 class FakeOrderRepository @Inject constructor() : OrderRepository {
 
     private val _latestActiveOrderFlow = MutableStateFlow<OrderEntity?>(null)
@@ -42,7 +42,7 @@ class FakeOrderRepository @Inject constructor() : OrderRepository {
             status = "Active"
         )
         ordersMap[newOrderId] = newOrder
-        _latestActiveOrderFlow.value = newOrder // Update the latest active order
+        _latestActiveOrderFlow.value = newOrder
         return newOrderId
     }
 
@@ -61,10 +61,12 @@ class FakeOrderRepository @Inject constructor() : OrderRepository {
         }
     }
 
-    override suspend fun addOrderItemToOrder(orderItem: OrderItemEntity): Long = 1L // Keep simple for now
+    override suspend fun addOrderItemToOrder(orderItem: OrderItemEntity): Long = 1L
     override suspend fun updateOrderItem(orderItem: OrderItemEntity) {}
     override suspend fun deleteOrderItem(orderItem: OrderItemEntity) {}
-    override fun getOrderItemsForOrder(orderId: Long): Flow<List<OrderItemEntity>> = flowOf(emptyList())
+    override fun getOrderItemsForOrder(orderId: Long): Flow<List<OrderItemEntity>> =
+        flowOf(emptyList())
+
     override fun getOrderItemById(orderItemId: Long): Flow<OrderItemEntity?> = flowOf(null)
 
     fun clearAllOrders() {

@@ -1,6 +1,9 @@
 package com.example.lab1.di
 
-import com.example.lab1.data.repository.*
+import com.example.lab1.data.repository.AuthRepository
+import com.example.lab1.data.repository.OrderRepository
+import com.example.lab1.data.repository.ProfileRepository
+import com.example.lab1.data.repository.SettingsRepository
 import com.example.lab1.util.fakes.FakeAuthRepository
 import com.example.lab1.util.fakes.FakeOrderRepository
 import com.example.lab1.util.fakes.FakeProfileRepository
@@ -13,8 +16,7 @@ import javax.inject.Singleton
 
 @Module
 @TestInstallIn(
-    components = [SingletonComponent::class],
-    replaces = [RepositoryModule::class] // Assuming RepositoryModule provides all these
+    components = [SingletonComponent::class], replaces = [RepositoryModule::class]
 )
 abstract class TestRepositoryModule {
 

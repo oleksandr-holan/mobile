@@ -55,8 +55,8 @@ dependencies {
     implementation(libs.androidx.recyclerview)
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
-    androidTestImplementation(libs.androidx.test.core.ktx) // Added
-    androidTestImplementation(libs.androidx.test.ext.junit.ktx) // Added
+    androidTestImplementation(libs.androidx.test.core.ktx)
+    androidTestImplementation(libs.androidx.test.ext.junit.ktx)
     androidTestImplementation(libs.androidx.espresso.core)
     androidTestImplementation(platform(libs.androidx.compose.bom))
     androidTestImplementation(libs.androidx.ui.test.junit4)
@@ -93,7 +93,7 @@ dependencies {
     implementation(libs.coil.compose)
 
     testImplementation(libs.mockk)
-    testImplementation(libs.kotlinx.coroutines.test) // For testing coroutines
+    testImplementation(libs.kotlinx.coroutines.test)
 
 }
 

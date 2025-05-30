@@ -8,8 +8,8 @@ import javax.inject.Inject
 class FakeAuthRepository @Inject constructor() : AuthRepository {
     var loginDelay: Long = 0L
     var nextAuthResultProvider: suspend (username: String, passwordHash: String) -> AuthResult =
-        { _, _ -> AuthResult.Success } // Default success, no delay
-    var registerShouldSucceed: Boolean = true
+        { _, _ -> AuthResult.Success }
+    private var registerShouldSucceed: Boolean = true
 
     override suspend fun login(username: String, passwordHash: String): AuthResult {
         delay(loginDelay)
@@ -17,15 +17,13 @@ class FakeAuthRepository @Inject constructor() : AuthRepository {
     }
 
     override suspend fun register(
-        username: String,
-        passwordHash: String,
-        dateOfBirth: String?
+        username: String, passwordHash: String, dateOfBirth: String?
     ): AuthResult {
-        delay(loginDelay) // can reuse loginDelay for simplicity
+        delay(loginDelay)
         return if (registerShouldSucceed) AuthResult.Success else AuthResult.Error("fake_registration_error")
     }
 
     override suspend fun logout() {
-        // No-op for this fake
+
     }
 }

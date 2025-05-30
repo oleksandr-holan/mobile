@@ -4,11 +4,10 @@ import com.example.lab1.data.repository.SettingsRepository
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.flowOf
 import javax.inject.Inject
 
 class FakeSettingsRepository @Inject constructor() : SettingsRepository {
-    private val _loggedInUser = MutableStateFlow<String?>(null) // Ensure logged out by default
+    private val _loggedInUser = MutableStateFlow<String?>(null)
     private val _notificationsEnabled = MutableStateFlow(true)
     private val _soundsEnabled = MutableStateFlow(true)
     private val _appTheme = MutableStateFlow(SettingsRepository.DEFAULT_THEME)

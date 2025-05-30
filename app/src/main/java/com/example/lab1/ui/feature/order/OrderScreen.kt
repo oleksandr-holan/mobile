@@ -50,10 +50,9 @@ import com.example.lab1.data.model.OrderItemEntity
 import com.example.lab1.ui.navigation.AppDestinations
 import kotlinx.coroutines.flow.collectLatest
 
-// Test Tags for OrderScreen
+
 const val ORDER_SCREEN_NEW_ORDER_BUTTON_TAG = "order_screen_new_order_button"
-const val ORDER_SCREEN_ACTIVE_ORDER_DISPLAY_TAG =
-    "order_screen_active_order_display" // For the Text showing order ID
+const val ORDER_SCREEN_ACTIVE_ORDER_DISPLAY_TAG = "order_screen_active_order_display"
 const val ORDER_SCREEN_NO_ACTIVE_ORDER_TEXT_TAG = "order_screen_no_active_order_text"
 const val ORDER_SCREEN_FAB_TAG = "order_screen_fab"
 const val ORDER_SCREEN_LOADING_ORDER_TAG = "order_screen_loading_order"
@@ -99,7 +98,7 @@ fun OrderScreen(
     Scaffold(floatingActionButton = {
         FloatingActionButton(
             onClick = { orderViewModel.onAction(OrderScreenAction.FabClicked) },
-            modifier = Modifier.testTag(ORDER_SCREEN_FAB_TAG) // Added testTag
+            modifier = Modifier.testTag(ORDER_SCREEN_FAB_TAG)
         ) {
             Icon(
                 Icons.Filled.Add,
@@ -127,17 +126,17 @@ fun OrderScreen(
                         fontSize = 20.sp,
                         fontWeight = FontWeight.Bold,
                         color = MaterialTheme.colorScheme.primary,
-                        modifier = Modifier.testTag(ORDER_SCREEN_ACTIVE_ORDER_DISPLAY_TAG) // Added testTag
+                        modifier = Modifier.testTag(ORDER_SCREEN_ACTIVE_ORDER_DISPLAY_TAG)
                     )
                 } ?: Text(
                     text = stringResource(R.string.no_active_order_text),
                     fontSize = 20.sp,
                     fontWeight = FontWeight.Bold,
-                    modifier = Modifier.testTag(ORDER_SCREEN_NO_ACTIVE_ORDER_TEXT_TAG) // Added testTag
+                    modifier = Modifier.testTag(ORDER_SCREEN_NO_ACTIVE_ORDER_TEXT_TAG)
                 )
                 Button(
                     onClick = { orderViewModel.onAction(OrderScreenAction.CreateNewOrder) },
-                    modifier = Modifier.testTag(ORDER_SCREEN_NEW_ORDER_BUTTON_TAG) // Added testTag
+                    modifier = Modifier.testTag(ORDER_SCREEN_NEW_ORDER_BUTTON_TAG)
                 ) {
                     Text(stringResource(R.string.new_order_button))
                 }
@@ -149,7 +148,7 @@ fun OrderScreen(
                 Box(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .testTag(ORDER_SCREEN_LOADING_ORDER_TAG), // Added testTag
+                        .testTag(ORDER_SCREEN_LOADING_ORDER_TAG),
                     contentAlignment = Alignment.Center
                 ) {
                     CircularProgressIndicator()
@@ -164,11 +163,11 @@ fun OrderScreen(
                 Text(
                     text = stringResource(
                         R.string.generic_error_text, it
-                    ), // Keep generic error text for now
+                    ),
                     color = MaterialTheme.colorScheme.error,
                     modifier = Modifier
                         .padding(vertical = 8.dp)
-                        .testTag(ORDER_SCREEN_ERROR_MESSAGE_TAG) // Added testTag
+                        .testTag(ORDER_SCREEN_ERROR_MESSAGE_TAG)
 
                 )
             }
@@ -178,7 +177,7 @@ fun OrderScreen(
                     modifier = Modifier
                         .fillMaxWidth()
                         .padding(top = 16.dp)
-                        .testTag(ORDER_SCREEN_LOADING_ITEMS_TAG), // Added testTag
+                        .testTag(ORDER_SCREEN_LOADING_ITEMS_TAG),
                     contentAlignment = Alignment.Center
                 ) {
                     CircularProgressIndicator()
@@ -191,11 +190,11 @@ fun OrderScreen(
                 Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
                     Text(stringResource(R.string.create_new_order_prompt), fontSize = 18.sp)
                 }
-            } else if (uiState.currentOrderItems.isEmpty() && uiState.currentOrder != null && !uiState.isLoadingItems) { // ensure not loading items
+            } else if (uiState.currentOrderItems.isEmpty() && uiState.currentOrder != null) {
                 Box(
                     modifier = Modifier
                         .fillMaxSize()
-                        .testTag(ORDER_SCREEN_EMPTY_ORDER_PROMPT_TAG), // Added testTag
+                        .testTag(ORDER_SCREEN_EMPTY_ORDER_PROMPT_TAG),
                     contentAlignment = Alignment.Center
                 ) {
                     Text(stringResource(R.string.empty_order_prompt), fontSize = 18.sp)
@@ -205,7 +204,8 @@ fun OrderScreen(
                     modifier = Modifier.fillMaxSize(),
                     verticalArrangement = Arrangement.spacedBy(8.dp)
                 ) {
-                    items(uiState.currentOrderItems,
+                    items(
+                        uiState.currentOrderItems,
                         key = { item -> item.orderItemId }) { orderItem ->
                         OrderItemRow(orderItem = orderItem, onClick = {
                             orderViewModel.onAction(OrderScreenAction.OrderItemClicked(orderItem.orderItemId))
@@ -227,15 +227,14 @@ fun OrderScreen(
 fun OrderItemRow(
     orderItem: OrderItemEntity, onClick: () -> Unit, onDelete: () -> Unit
 ) {
-    val dismissState = rememberSwipeToDismissBoxState( // Corrected OptIn needed above
-        confirmValueChange = {
-            if (it == SwipeToDismissBoxValue.EndToStart) {
-                onDelete()
-                true
-            } else {
-                false
-            }
-        })
+    val dismissState = rememberSwipeToDismissBoxState(confirmValueChange = {
+        if (it == SwipeToDismissBoxValue.EndToStart) {
+            onDelete()
+            true
+        } else {
+            false
+        }
+    })
 
     SwipeToDismissBox(
         state = dismissState, backgroundContent = {
