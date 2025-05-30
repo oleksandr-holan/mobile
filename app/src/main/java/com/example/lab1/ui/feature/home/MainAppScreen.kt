@@ -11,6 +11,7 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.testTag // Ensure this is imported
 import androidx.navigation.NavHostController
 import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
@@ -33,6 +34,10 @@ import com.example.lab1.ui.feature.profile.ProfileScreen
 import com.example.lab1.ui.feature.settings.SettingsScreen
 import com.example.lab1.ui.feature.item.AddItemDetailsScreen
 
+// Define a constant for the test tag
+const val MAIN_APP_SCREEN_TITLE_TAG = "app_top_bar_title_main_app" // Used for testing the top bar title
+const val MENU_SCREEN_MISSING_ORDER_ID_ERROR_TAG = "menu_screen_missing_order_id_error" // New Tag
+
 @Composable
 fun MainAppScreen(outerNavController: NavHostController) {
     val innerNavController: NavHostController = rememberNavController()
@@ -45,6 +50,8 @@ fun MainAppScreen(outerNavController: NavHostController) {
             it == BottomNavItem.Orders.route -> stringResource(BottomNavItem.Orders.titleResId)
             it == BottomNavItem.Profile.route -> stringResource(BottomNavItem.Profile.titleResId)
             it == AppDestinations.MENU_SCREEN_ROUTE -> stringResource(R.string.select_menu_items_title)
+            // Check for MENU_SCREEN_WITH_ORDER_ROUTE specifically for the title when on MenuScreen with an order ID
+            it.startsWith(AppDestinations.MENU_SCREEN_ROUTE) -> stringResource(R.string.select_menu_items_title)
             it.startsWith(AppDestinations.ADD_ITEM_DETAILS_ROUTE) -> stringResource(R.string.item_details_title)
             it == BottomNavItem.Settings.route -> stringResource(BottomNavItem.Settings.titleResId)
             else -> stringResource(R.string.order_app_title)
@@ -61,11 +68,11 @@ fun MainAppScreen(outerNavController: NavHostController) {
         topBar = {
             AppTopAppBar(
                 title = currentScreenTitle,
-                canNavigateBack = canNavigateBack, 
+                canNavigateBack = canNavigateBack,
                 onNavigateBack = { innerNavController.popBackStack() },
                 actions = {
                     if (currentRoute == BottomNavItem.Orders.route) {
-                        IconButton(onClick = { 
+                        IconButton(onClick = {
                             context.startActivity(Intent(context, OrderHistoryActivity::class.java))
                         }) {
                             Icon(
@@ -124,7 +131,10 @@ fun MainAppScreen(outerNavController: NavHostController) {
                     )
                 } else {
                     Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-                        Text(stringResource(R.string.error_active_order_id_missing))
+                        Text(
+                            stringResource(R.string.error_active_order_id_missing),
+                            modifier = Modifier.testTag(MENU_SCREEN_MISSING_ORDER_ID_ERROR_TAG) // Added testTag
+                        )
                     }
                 }
             }
