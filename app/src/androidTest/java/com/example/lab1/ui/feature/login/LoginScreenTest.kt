@@ -8,6 +8,7 @@ import com.example.lab1.MainActivity
 import com.example.lab1.R
 import com.example.lab1.data.repository.AuthResult
 import com.example.lab1.util.fakes.FakeAuthRepository
+// import com.example.lab1.util.fakes.FakeSettingsRepository // Not directly needed here, but TestRepositoryModule handles it
 import dagger.hilt.android.testing.HiltAndroidRule
 import dagger.hilt.android.testing.HiltAndroidTest
 import org.junit.Before
@@ -27,85 +28,77 @@ class LoginScreenTest {
     val composeTestRule = createAndroidComposeRule<MainActivity>()
 
     @Inject
-    lateinit var fakeAuthRepository: FakeAuthRepository // To control login behavior
+    lateinit var fakeAuthRepository: FakeAuthRepository
 
     @Before
     fun setUp() {
         hiltRule.inject()
-        // Ensure MainActivity starts on LoginScreen by default with FakeSettingsRepository
-        // (which is set to logged-out state)
+        // FakeSettingsRepository (provided by TestRepositoryModule) ensures logged-out state,
+        // so MainActivity starts on LoginScreen.
     }
 
     @Test
     fun loginScreen_initialElements_areDisplayed() {
-        // Verify Login Title (optional, but good for context)
-        // We need to wait for UI to settle, especially if there's navigation logic
         composeTestRule.waitUntilExists(hasText(composeTestRule.activity.getString(R.string.login_title)), timeoutMillis = 5000)
         composeTestRule.onNodeWithText(composeTestRule.activity.getString(R.string.login_title)).assertIsDisplayed()
 
-        // Verify Username Input
         composeTestRule.onNodeWithTag("login_username_input").assertIsDisplayed()
-        composeTestRule.onNodeWithTag("login_username_input")
-            .assert(hasSetTextAction()) // Checks if it's an input field
+        composeTestRule.onNodeWithTag("login_username_input").assert(hasSetTextAction())
 
-        // Verify Password Input
         composeTestRule.onNodeWithTag("login_password_input").assertIsDisplayed()
-        composeTestRule.onNodeWithTag("login_password_input")
-            .assert(hasSetTextAction())
+        composeTestRule.onNodeWithTag("login_password_input").assert(hasSetTextAction())
 
-        // Verify Login Button
         composeTestRule.onNodeWithTag("login_login_button").assertIsDisplayed()
         composeTestRule.onNodeWithTag("login_login_button").assertHasClickAction()
 
-        // Verify Register Button/Text
         composeTestRule.onNodeWithTag("login_register_button").assertIsDisplayed()
         composeTestRule.onNodeWithTag("login_register_button").assertHasClickAction()
     }
 
     @Test
-    fun loginScreen_inputAndLoginAttempt_showsLoading() {
-        // Configure fake repository for this test
-        fakeAuthRepository.loginDelay = 1000 // Simulate network latency
-        fakeAuthRepository.nextAuthResultProvider = { _, _ ->
-            // Keep it pending to show loading, or return success if we want to test navigation
-            AuthResult.Success // Let's assume it would eventually succeed
-        }
+    fun loginScreen_successfulLogin_navigatesToMainAppScreen() {
+        // Configure fake repository for a successful login with no delay
+        fakeAuthRepository.loginDelay = 0L
+        fakeAuthRepository.nextAuthResultProvider = { _, _ -> AuthResult.Success }
+
+        val usernameToType = "testuser"
+        val passwordToType = "password123"
 
         // Input Username
-        composeTestRule.onNodeWithTag("login_username_input").performTextInput("testuser")
-        composeTestRule.onNodeWithTag("login_username_input").assert(hasText("testuser"))
+        composeTestRule.onNodeWithTag("login_username_input").performTextInput(usernameToType)
+        composeTestRule.onNodeWithTag("login_username_input").assert(hasText(usernameToType))
 
         // Input Password
-        composeTestRule.onNodeWithTag("login_password_input").performTextInput("password123")
-        composeTestRule.onNodeWithTag("login_password_input").assert(hasText("password123"))
+        composeTestRule.onNodeWithTag("login_password_input").performTextInput(passwordToType)
+        // Password field might not directly show text if visual transformation is on,
+        // but performTextInput works. We can check if the button becomes enabled.
 
         // Click Login Button
-        // The button should be enabled now since both fields have text
+        // The button should be enabled now since both fields have text (ViewModel logic)
         composeTestRule.onNodeWithTag("login_login_button").assertIsEnabled()
         composeTestRule.onNodeWithTag("login_login_button").performClick()
 
-        // Verify loading indicator is shown (inside the button)
-        // It replaces the button's text content.
-        composeTestRule.onNodeWithTag("login_loading_indicator", useUnmergedTree = true).assertIsDisplayed()
+        // After successful login and navigation, MainAppScreen shows OrderScreen by default.
+        // The AppTopAppBar in MainAppScreen should display "Orders" as the title.
+        val expectedMainScreenTitle = composeTestRule.activity.getString(R.string.orders_title)
 
-        // Optionally, verify the "Login" text is gone from the button
-        composeTestRule.onNodeWithText(composeTestRule.activity.getString(R.string.login_button_text))
-            .assertDoesNotExist() // This text should be replaced by the CircularProgressIndicator
+        // Wait for the "Orders" title to appear, indicating navigation has occurred.
+        // Increased timeout as navigation and view composition can take a moment.
+        composeTestRule.waitUntilExists(hasTestTag("app_top_bar_title_$expectedMainScreenTitle"), timeoutMillis = 10000)
+        composeTestRule.onNodeWithTag("app_top_bar_title_$expectedMainScreenTitle").assertIsDisplayed()
 
-        // To make the test complete and not leave the app in a loading state indefinitely for subsequent tests
-        // (if any were to run in the same activity instance, though typically they don't):
-        // We can wait for the loading to "finish" if we were testing navigation.
-        // For just showing loading, this is sufficient.
-        // If testing navigation, you'd wait for the next screen.
-        // composeTestRule.waitForIdle() // Allow coroutines to progress
+        // As an additional check, the login screen's title should no longer be present
+        composeTestRule.onNodeWithText(composeTestRule.activity.getString(R.string.login_title))
+            .assertDoesNotExist()
     }
 }
 
+// Helper extension for waiting until a node with specific text exists
 fun ComposeTestRule.waitUntilExists(
     matcher: SemanticsMatcher,
-    timeoutMillis: Long = 2000L // Default timeout, can be overridden
+    timeoutMillis: Long = 2000L
 ) {
-    this.waitUntil(timeoutMillis) { // Now 'this' explicitly refers to ComposeTestRule
+    this.waitUntil(timeoutMillis) {
         this.onAllNodes(matcher).fetchSemanticsNodes().isNotEmpty()
     }
 }

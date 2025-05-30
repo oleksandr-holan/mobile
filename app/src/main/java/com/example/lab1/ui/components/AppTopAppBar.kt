@@ -7,6 +7,8 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.res.stringResource
 import com.example.lab1.R
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.testTag
 
 @OptIn(ExperimentalMaterial3Api::class) 
 @Composable
@@ -17,7 +19,7 @@ fun AppTopAppBar(
     actions: @Composable RowScope.() -> Unit = {}
 ) {
     TopAppBar(
-        title = { Text(title) },
+        title = { Text(title, modifier = Modifier.testTag("app_top_bar_title_$title")) },
         navigationIcon = {
             if (canNavigateBack) {
                 IconButton(onClick = onNavigateBack) {
