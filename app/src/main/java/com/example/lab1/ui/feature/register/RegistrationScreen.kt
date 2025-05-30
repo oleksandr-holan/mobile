@@ -1,26 +1,46 @@
 package com.example.lab1.ui.feature.register
 
 import android.util.Log
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Visibility
 import androidx.compose.material.icons.filled.VisibilityOff
-import androidx.compose.material3.*
-import androidx.compose.runtime.*
+import androidx.compose.material3.Button
+import androidx.compose.material3.Checkbox
+import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.lifecycle.compose.LocalLifecycleOwner
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.dp
-import androidx.lifecycle.Lifecycle
-import androidx.lifecycle.flowWithLifecycle
 import androidx.hilt.navigation.compose.hiltViewModel
-import com.example.lab1.ui.components.AppTopAppBar
-import androidx.compose.ui.res.stringResource
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.compose.LocalLifecycleOwner
+import androidx.lifecycle.flowWithLifecycle
 import com.example.lab1.R
+import com.example.lab1.ui.components.AppTopAppBar
 
 @Composable
 fun RegistrationScreen(
@@ -33,8 +53,7 @@ fun RegistrationScreen(
 
     LaunchedEffect(registrationViewModel.sideEffect, lifecycleOwner) {
         registrationViewModel.sideEffect.flowWithLifecycle(
-            lifecycleOwner.lifecycle,
-            Lifecycle.State.STARTED
+            lifecycleOwner.lifecycle, Lifecycle.State.STARTED
         ).collect { effect ->
             when (effect) {
                 is RegistrationSideEffect.NavigateToMainApp -> {
@@ -45,15 +64,13 @@ fun RegistrationScreen(
         }
     }
 
-    Scaffold(
-        topBar = {
-            AppTopAppBar(
-                title = stringResource(R.string.register_title),
-                canNavigateBack = true,
-                onNavigateBack = onNavigateBackToLogin
-            )
-        }
-    ) { innerPadding ->
+    Scaffold(topBar = {
+        AppTopAppBar(
+            title = stringResource(R.string.register_title),
+            canNavigateBack = true,
+            onNavigateBack = onNavigateBackToLogin
+        )
+    }) { innerPadding ->
         Column(
             modifier = Modifier
                 .fillMaxSize()
@@ -78,8 +95,7 @@ fun RegistrationScreen(
             }
             Spacer(modifier = Modifier.height(8.dp))
 
-            OutlinedTextField(
-                value = uiState.username,
+            OutlinedTextField(value = uiState.username,
                 onValueChange = {
                     registrationViewModel.onAction(
                         RegistrationUiAction.UsernameChanged(
@@ -91,12 +107,10 @@ fun RegistrationScreen(
                 singleLine = true,
                 modifier = Modifier.fillMaxWidth(),
                 isError = uiState.errorMessage?.let { it == "username_too_short_error" || it == "username_already_exists_error" } == true,
-                enabled = !uiState.isLoading
-            )
+                enabled = !uiState.isLoading)
             Spacer(modifier = Modifier.height(16.dp))
 
-            OutlinedTextField(
-                value = uiState.password,
+            OutlinedTextField(value = uiState.password,
                 onValueChange = {
                     registrationViewModel.onAction(
                         RegistrationUiAction.PasswordChanged(
@@ -112,7 +126,9 @@ fun RegistrationScreen(
                     val image =
                         if (uiState.isPasswordVisible) Icons.Filled.Visibility else Icons.Filled.VisibilityOff
                     val description =
-                        if (uiState.isPasswordVisible) stringResource(R.string.hide_password_desc) else stringResource(R.string.show_password_desc)
+                        if (uiState.isPasswordVisible) stringResource(R.string.hide_password_desc) else stringResource(
+                            R.string.show_password_desc
+                        )
                     IconButton(
                         onClick = { registrationViewModel.onAction(RegistrationUiAction.TogglePasswordVisibility) },
                         enabled = !uiState.isLoading
@@ -126,8 +142,7 @@ fun RegistrationScreen(
             )
             Spacer(modifier = Modifier.height(16.dp))
 
-            OutlinedTextField(
-                value = uiState.dateOfBirth,
+            OutlinedTextField(value = uiState.dateOfBirth,
                 onValueChange = {
                     registrationViewModel.onAction(
                         RegistrationUiAction.DateOfBirthChanged(
@@ -150,15 +165,13 @@ fun RegistrationScreen(
                 verticalAlignment = Alignment.CenterVertically,
             ) {
                 Checkbox(
-                    checked = uiState.isPrivacyPolicyAccepted,
-                    onCheckedChange = {
+                    checked = uiState.isPrivacyPolicyAccepted, onCheckedChange = {
                         registrationViewModel.onAction(
                             RegistrationUiAction.PrivacyPolicyAcceptedChanged(
                                 it
                             )
                         )
-                    },
-                    enabled = !uiState.isLoading
+                    }, enabled = !uiState.isLoading
                 )
                 Text(
                     text = stringResource(R.string.privacy_policy_accept),
@@ -181,8 +194,7 @@ fun RegistrationScreen(
             ) {
                 if (uiState.isLoading) {
                     CircularProgressIndicator(
-                        modifier = Modifier.size(24.dp),
-                        color = MaterialTheme.colorScheme.onPrimary
+                        modifier = Modifier.size(24.dp), color = MaterialTheme.colorScheme.onPrimary
                     )
                 } else {
                     Text(stringResource(R.string.register_button_text))
@@ -191,8 +203,7 @@ fun RegistrationScreen(
             Spacer(modifier = Modifier.height(16.dp))
 
             TextButton(
-                onClick = onNavigateBackToLogin,
-                enabled = !uiState.isLoading
+                onClick = onNavigateBackToLogin, enabled = !uiState.isLoading
             ) {
                 Text(stringResource(R.string.login_prompt))
             }

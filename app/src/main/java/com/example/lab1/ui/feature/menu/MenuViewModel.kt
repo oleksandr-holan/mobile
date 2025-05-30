@@ -21,12 +21,12 @@ data class MenuScreenState(
     val menuItems: List<MenuItem> = emptyList(),
     val isLoading: Boolean = true,
     val errorMessage: String? = null,
-    val selectedCategory: String? = null 
+    val selectedCategory: String? = null
 )
 
 sealed class MenuScreenAction {
     data class MenuItemClicked(val menuItemId: String) : MenuScreenAction()
-    data class FilterByCategory(val category: String?) : MenuScreenAction() 
+    data class FilterByCategory(val category: String?) : MenuScreenAction()
 }
 
 sealed class MenuScreenSideEffect {
@@ -50,18 +50,26 @@ class MenuViewModel @Inject constructor(
 
     private fun fetchMenuItemsFromApi(category: String? = null) {
         viewModelScope.launch {
-            _uiState.update { it.copy(isLoading = true, errorMessage = null, selectedCategory = category) }
-            orderRepository.observeMenuItemsFromApi()
-                .collectLatest { result ->
+            _uiState.update {
+                it.copy(
+                    isLoading = true, errorMessage = null, selectedCategory = category
+                )
+            }
+            orderRepository.observeMenuItemsFromApi().collectLatest { result ->
                     when (result) {
                         is DataResult.Loading -> {
                             _uiState.update { it.copy(isLoading = true) }
                         }
+
                         is DataResult.Success -> {
                             val filteredItems = if (category == null) {
                                 result.data
                             } else {
-                                result.data.filter { it.category.equals(category, ignoreCase = true) }
+                                result.data.filter {
+                                    it.category.equals(
+                                        category, ignoreCase = true
+                                    )
+                                }
                             }
                             _uiState.update {
                                 it.copy(
@@ -71,11 +79,11 @@ class MenuViewModel @Inject constructor(
                                 )
                             }
                         }
+
                         is DataResult.Error -> {
                             _uiState.update {
                                 it.copy(
-                                    isLoading = false,
-                                    errorMessage = result.message
+                                    isLoading = false, errorMessage = result.message
                                 )
                             }
                         }
@@ -91,6 +99,7 @@ class MenuViewModel @Inject constructor(
                     _sideEffect.emit(MenuScreenSideEffect.NavigateToNewOrderItemDetails(action.menuItemId))
                 }
             }
+
             is MenuScreenAction.FilterByCategory -> {
                 fetchMenuItemsFromApi(action.category)
             }

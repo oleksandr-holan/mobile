@@ -52,7 +52,7 @@ class MainActivity : ComponentActivity() {
 
             LaunchedEffect(key1 = Unit) {
                 val loggedInUser = settingsRepository.loggedInUserUsernameFlow.first()
-                startDestination = if (loggedInUser != null && loggedInUser.isNotBlank()) {
+                startDestination = if (!loggedInUser.isNullOrBlank()) {
                     Log.d(tag, "User '$loggedInUser' is logged in. Navigating to Main App.")
                     AppDestinations.MAIN_APP_ROUTE
                 } else {
